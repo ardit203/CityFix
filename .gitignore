@@ -1,0 +1,108 @@
+# =========================================================
+# Root .gitignore for:
+# /app/backend  -> Spring Boot
+# /app/frontend -> React
+# =========================================================
+
+# =========================================================
+# OS files
+# =========================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================================================
+# IDE / Editor files
+# =========================================================
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+# =========================================================
+# Logs
+# =========================================================
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================================================
+# Environment / secrets
+# =========================================================
+.env
+.env.*
+!.env.example
+
+# =========================================================
+# Backend: Spring Boot / Java
+# Path: /app/backend
+# =========================================================
+
+# Maven
+backend/target/
+
+# Gradle
+backend/build/
+backend/.gradle/
+
+# Compiled Java files
+backend/**/*.class
+
+# Packaged files
+backend/**/*.jar
+backend/**/*.war
+backend/**/*.ear
+
+# Spring / STS / IntelliJ generated
+backend/.springBeans
+backend/.sts4-cache
+backend/out/
+
+# Local application config overrides
+backend/application-local.properties
+backend/application-local.yml
+backend/application-local.yaml
+
+# Optional: uploaded/local generated files
+backend/uploads/
+backend/tmp/
+backend/temp/
+
+# =========================================================
+# Frontend: React / Node
+# Path: /app/frontend
+# =========================================================
+
+# Dependencies
+frontend/node_modules/
+
+# Build outputs
+frontend/build/
+frontend/dist/
+
+# Test / coverage
+frontend/coverage/
+
+# Cache
+frontend/.cache/
+frontend/.parcel-cache/
+frontend/.eslintcache
+
+# Framework / tooling temp files
+frontend/.vite/
+frontend/.turbo/
+
+# =========================================================
+# Misc temp files
+# =========================================================
+*.tmp
+*.temp
+*.swp
+*.swo
