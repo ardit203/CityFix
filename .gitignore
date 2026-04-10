@@ -40,6 +40,14 @@ pnpm-debug.log*
 .env.*
 !.env.example
 
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
 # =========================================================
 # Backend: Spring Boot / Java
 # Path: /app/backend
