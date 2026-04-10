@@ -12,11 +12,17 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "user_profiles")
+@NamedEntityGraph(
+        name = "user-profile-entity-graph",
+        attributeNodes = {
+                @NamedAttributeNode("user")
+        }
+)
 public class UserProfile {
     @Id
     private Long userId;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "user_id")
     private User user;

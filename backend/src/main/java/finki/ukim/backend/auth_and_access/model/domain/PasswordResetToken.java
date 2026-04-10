@@ -14,8 +14,14 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @Table(name = "password_reset_tokens")
+@NamedEntityGraph(
+        name = "password-reset-token-entity-graph",
+        attributeNodes = {
+                @NamedAttributeNode("user")
+        }
+)
 public class PasswordResetToken extends BaseAuditableEntity {
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
