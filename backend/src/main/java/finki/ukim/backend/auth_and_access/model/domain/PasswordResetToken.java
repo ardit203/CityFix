@@ -26,7 +26,7 @@ public class PasswordResetToken extends BaseAuditableEntity {
     private User user;
 
     @Column(nullable = false, unique = true)
-    private String token;
+    private String tokenHash;
 
     @Column(nullable = false)
     private LocalDateTime expiresAt;
