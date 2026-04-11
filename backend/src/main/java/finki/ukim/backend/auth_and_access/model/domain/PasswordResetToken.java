@@ -36,7 +36,7 @@ public class PasswordResetToken extends BaseAuditableEntity {
 
     public PasswordResetToken(User user, String token, LocalDateTime expiresAt) {
         this.user = user;
-        this.token = token;
+        this.tokenHash = token;
         this.expiresAt = expiresAt;
     }
 
