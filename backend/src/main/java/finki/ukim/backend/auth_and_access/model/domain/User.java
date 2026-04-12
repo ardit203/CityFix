@@ -58,6 +58,13 @@ public class User extends BaseAuditableEntity implements UserDetails {
         this.email = email;
     }
 
+    public User(String username, String password, String email, Role role) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(role);
