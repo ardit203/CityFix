@@ -1,6 +1,7 @@
 package finki.ukim.backend.auth_and_access.model.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,9 +28,11 @@ public class UserProfile {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @NotBlank
     @Column(nullable = false)
     private String name;
 
+    @NotBlank
     @Column(nullable = false)
     private String surname;
 
@@ -37,6 +40,12 @@ public class UserProfile {
     private Address address;
 
     private String profilePictureUrl;
+
+    public UserProfile(User user, String name, String surname) {
+        this.user = user;
+        this.name = name;
+        this.surname = surname;
+    }
 
 
     public UserProfile(User user, String name, String surname, Address address) {

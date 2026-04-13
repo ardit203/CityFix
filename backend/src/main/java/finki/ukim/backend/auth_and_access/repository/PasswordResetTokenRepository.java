@@ -15,7 +15,7 @@ public interface PasswordResetTokenRepository extends JpaRepository<PasswordRese
     List<PasswordResetToken> findAllByUser_Id(Long userId);
 
     @EntityGraph(value = "password-reset-token-entity-graph", type = EntityGraph.EntityGraphType.FETCH)
-    Optional<PasswordResetToken> findByUserId(Long id);
+    List<PasswordResetToken> findByUserId(Long userId);
 
     @Query("""
             select pt from PasswordResetToken pt

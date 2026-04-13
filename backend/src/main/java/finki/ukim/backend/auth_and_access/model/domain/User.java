@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,13 +32,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 @AllArgsConstructor
 @Table(name = "users")
 public class User extends BaseAuditableEntity implements UserDetails {
-    @Column(unique = true)
+    @NotBlank
+    @Column(nullable = false, unique = true)
     private String username;
 
+    @NotBlank
     @Column(nullable = false)
     private String password;
 
     @Email
+    @NotBlank
     @Column(nullable = false, unique = true)
     private String email;
 

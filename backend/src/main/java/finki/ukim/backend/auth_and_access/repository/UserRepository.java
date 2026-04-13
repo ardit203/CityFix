@@ -27,7 +27,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
                     u.email as email 
             from users as u
             """, nativeQuery = true)
-    Optional<UserWithIdUsernameAndEmail> findAllWithIdUsernameAndEmail();
+    List<UserWithIdUsernameAndEmail> findAllWithIdUsernameAndEmail();
 
 
 }
