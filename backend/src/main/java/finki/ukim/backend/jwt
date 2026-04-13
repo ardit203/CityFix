@@ -1,0 +1,550 @@
+package mk.ukim.finki.eshopbackend.config;
+
+import java.util.List;
+import mk.ukim.finki.eshopbackend.web.filter.JwtFilter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+public class JwtWebSecurityConfig {
+    private final JwtFilter jwtFilter;
+
+    public JwtWebSecurityConfig(JwtFilter jwtFilter) {
+        this.jwtFilter = jwtFilter;
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
+        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        corsConfiguration.setAllowedHeaders(List.of("*"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return source;
+    }
+
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        return RoleHierarchyImpl.withDefaultRolePrefix()
+            .role("ADMINISTRATOR").implies("USER")
+            .build();
+    }
+
+    @Bean
+    static MethodSecurityExpressionHandler methodSecurityExpressionHandler(RoleHierarchy roleHierarchy) {
+        DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
+        expressionHandler.setRoleHierarchy(roleHierarchy);
+        return expressionHandler;
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors(corsCustomizer ->
+                corsCustomizer.configurationSource(corsConfigurationSource())
+            )
+            .headers(headers -> headers
+                .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
+            )
+            .authorizeHttpRequests(authorizeHttpRequestsCustomizer ->
+                authorizeHttpRequestsCustomizer
+                    .requestMatchers(
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/api/user/register",
+                        "/api/user/login"
+                    )
+                    .permitAll()
+                    .requestMatchers(
+                        "/api/user/me"
+                    )
+                    .authenticated()
+                    .requestMatchers(
+                        "/api/categories",
+                        "/api/categories/{id}",
+                        "/api/products",
+                        "/api/products/{id}"
+                    )
+                    .hasRole("USER")
+                    .requestMatchers(
+                        "/api/categories/add",
+                        "/api/categories/{id}/edit",
+                        "/api/categories/{id}/delete",
+                        "/api/products/add",
+                        "/api/products/{id}/edit",
+                        "/api/products/{id}/delete"
+                    )
+                    .hasRole("ADMINISTRATOR")
+                    .anyRequest()
+                    .hasRole("ADMINISTRATOR")
+            )
+            .sessionManagement(sessionManagementConfigurer ->
+                sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
+}
+
+--------------------------------
+
+@Configuration
+public class OpenApiConfig {
+    @Bean
+    public OpenAPI customOpenApi() {
+        return new OpenAPI()
+            .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
+            .components(new Components().addSecuritySchemes(
+                "bearerAuth",
+                new SecurityScheme()
+                    .name("Authorization")
+                    .type(SecurityScheme.Type.HTTP)
+                    .scheme("bearer")
+                    .bearerFormat("JWT")
+            ));
+    }
+
+}
+
+
+-------------------------------
+package mk.ukim.finki.eshopbackend.constants;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class JwtConstants {
+    public static String SECRET_KEY;
+    public static Long EXPIRATION_TIME;
+    public static String HEADER;
+    public static String TOKEN_PREFIX;
+
+    @Value("${jwt.secret}")
+    public void setSecretKey(String secretKey) {
+        SECRET_KEY = secretKey;
+    }
+
+    @Value("${jwt.expiration}")
+    public void setExpirationTime(Long expirationTime) {
+        EXPIRATION_TIME = expirationTime;
+    }
+
+    @Value("${jwt.header}")
+    public void setHeader(String header) {
+        HEADER = header;
+    }
+
+    @Value("${jwt.token-prefix}")
+    public void setTokenPrefix(String tokenPrefix) {
+        TOKEN_PREFIX = tokenPrefix;
+    }
+}
+--------------------------------
+
+package mk.ukim.finki.eshopbackend.helpers;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import java.security.Key;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import mk.ukim.finki.eshopbackend.constants.JwtConstants;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
+@Component
+public class JwtHelper {
+    private Key getSignIn() {
+        byte[] keyBytes = Decoders.BASE64.decode(JwtConstants.SECRET_KEY);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts
+            .parserBuilder()
+            .setSigningKey(getSignIn())
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
+    }
+
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        Claims allClaims = extractAllClaims(token);
+        return claimsResolver.apply(allClaims);
+    }
+
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    private String buildToken(
+        Map<String, Object> extraClaims,
+        String subject,
+        Long expiration
+    ) {
+        return Jwts
+            .builder()
+            .setClaims(extraClaims)
+            .setSubject(subject)
+            .setIssuedAt(new Date(System.currentTimeMillis()))
+            .setExpiration(new Date(System.currentTimeMillis() + JwtConstants.EXPIRATION_TIME))
+            .signWith(getSignIn(), SignatureAlgorithm.HS256)
+            .compact();
+    }
+
+    public String generateToken(UserDetails userDetails) {
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("roles", userDetails.getAuthorities());
+        return buildToken(extraClaims, userDetails.getUsername(), JwtConstants.EXPIRATION_TIME);
+    }
+
+    public boolean isExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+}
+
+--------------------------------
+
+public record LoginUserRequestDto(
+    String username,
+    String password
+) {
+}
+
+--------------------------------
+public record LoginUserResponseDto(
+    String token
+) {
+}
+--------------------------------
+
+package mk.ukim.finki.eshopbackend.model.dto;
+
+import mk.ukim.finki.eshopbackend.model.domain.User;
+
+public record RegisterUserRequestDto(
+    String name,
+    String surname,
+    String email,
+    String username,
+    String password
+) {
+    public User toUser() {
+        return new User(name, surname, email, username, password);
+    }
+}
+--------------------------------
+package mk.ukim.finki.eshopbackend.model.dto;
+
+import mk.ukim.finki.eshopbackend.model.domain.User;
+import mk.ukim.finki.eshopbackend.model.enums.Role;
+
+public record RegisterUserResponseDto(
+    String username,
+    String name,
+    String surname,
+    String email,
+    Role role
+) {
+    public static RegisterUserResponseDto from(User user) {
+        return new RegisterUserResponseDto(
+            user.getUsername(),
+            user.getName(),
+            user.getSurname(),
+            user.getEmail(),
+            user.getRole()
+        );
+    }
+}
+
+
+--------------------------------
+@Service
+public class UserApplicationServiceImpl implements UserApplicationService {
+    private final UserService userService;
+    private final JwtHelper jwtHelper;
+
+    public UserApplicationServiceImpl(UserService userService, JwtHelper jwtHelper) {
+        this.userService = userService;
+        this.jwtHelper = jwtHelper;
+    }
+
+    @Override
+    public Optional<RegisterUserResponseDto> register(RegisterUserRequestDto registerUserRequestDto) {
+        User user = userService.register(registerUserRequestDto.toUser());
+        RegisterUserResponseDto displayUserDto = RegisterUserResponseDto.from(user);
+        return Optional.of(displayUserDto);
+    }
+
+    @Override
+    public Optional<LoginUserResponseDto> login(LoginUserRequestDto loginUserRequestDto) {
+        User user = userService.login(loginUserRequestDto.username(), loginUserRequestDto.password());
+
+        String token = jwtHelper.generateToken(user);
+
+        return Optional.of(new LoginUserResponseDto(token));
+    }
+
+    @Override
+    public Optional<RegisterUserResponseDto> findByUsername(String username) {
+        return userService
+            .findByUsername(username)
+            .map(RegisterUserResponseDto::from);
+    }
+}
+--------------------------------
+@Service
+public class UserServiceImpl implements UserService {
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public User register(User user) {
+        if (userRepository.existsByUsername(user.getUsername()))
+            throw new UsernameAlreadyExistsException(user.getUsername());
+        return userRepository.save(new User(
+            user.getName(),
+            user.getSurname(),
+            user.getEmail(),
+            user.getUsername(),
+            passwordEncoder.encode(user.getPassword())
+        ));
+    }
+
+    @Override
+    public User login(String username, String password) {
+        User user = userRepository
+            .findByUsername(username)
+            .orElseThrow(() -> new UserNotFoundException(username));
+        if (!passwordEncoder.matches(password, user.getPassword()))
+            throw new IncorrectPasswordException();
+        return user;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository
+            .findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException(username));
+    }
+}
+--------------------------------
+@RestController
+@RequestMapping("/api/user")
+public class UserController {
+    private final UserApplicationService userApplicationService;
+
+    public UserController(UserApplicationService userApplicationService) {
+        this.userApplicationService = userApplicationService;
+    }
+
+    @GetMapping("/{username}")
+    public ResponseEntity<RegisterUserResponseDto> findByUsername(@PathVariable String username) {
+        return userApplicationService
+            .findByUsername(username)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<RegisterUserResponseDto> me(@AuthenticationPrincipal User user) {
+        return userApplicationService
+            .findByUsername(user.getUsername())
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.badRequest().build());
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<RegisterUserResponseDto> register(@RequestBody RegisterUserRequestDto registerUserRequestDto) {
+        return userApplicationService
+            .register(registerUserRequestDto)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.badRequest().build());
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginUserResponseDto> login(@RequestBody LoginUserRequestDto loginUserRequestDto) {
+        return userApplicationService
+            .login(loginUserRequestDto)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.badRequest().build());
+    }
+}
+--------------------------------
+public record JwtExceptionResponseDto(
+    Date timestamp,
+    int status,
+    String error,
+    String message,
+    String path
+) {
+    public JwtExceptionResponseDto(int status, String error, String message, String path) {
+        this(new Date(), status, error, message, path);
+    }
+}
+--------------------------------
+@Component
+public class JwtFilter extends OncePerRequestFilter {
+    private final JwtHelper jwtHelper;
+    private final UserService userService;
+    private final HandlerExceptionResolver handlerExceptionResolver;
+
+    public JwtFilter(JwtHelper jwtHelper, UserService userService, HandlerExceptionResolver handlerExceptionResolver) {
+        this.jwtHelper = jwtHelper;
+        this.userService = userService;
+        this.handlerExceptionResolver = handlerExceptionResolver;
+    }
+
+    @Override
+    protected void doFilterInternal(
+        @NonNull HttpServletRequest request,
+        @NonNull HttpServletResponse response,
+        @NonNull FilterChain filterChain
+    ) throws ServletException, IOException {
+        String headerValue = request.getHeader(JwtConstants.HEADER);
+        if (headerValue == null || !headerValue.startsWith(JwtConstants.TOKEN_PREFIX)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String token = headerValue.substring(JwtConstants.TOKEN_PREFIX.length());
+
+        try {
+            String username = jwtHelper.extractUsername(token);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (username == null || authentication != null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            Optional<User> user = userService.findByUsername(username);
+            if (user.isEmpty()) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            if (!jwtHelper.isExpired(token)) {
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    user.get(),
+                    null,
+                    user.get().getAuthorities()
+                );
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        } catch (JwtException jwtException) {
+            handlerExceptionResolver.resolveException(
+                request,
+                response,
+                null,
+                jwtException
+            );
+            return;
+        }
+
+        filterChain.doFilter(request, response);
+    }
+}
+--------------------------------
+@Component
+public class JwtFilter extends OncePerRequestFilter {
+    private final JwtHelper jwtHelper;
+    private final UserService userService;
+    private final HandlerExceptionResolver handlerExceptionResolver;
+
+    public JwtFilter(JwtHelper jwtHelper, UserService userService, HandlerExceptionResolver handlerExceptionResolver) {
+        this.jwtHelper = jwtHelper;
+        this.userService = userService;
+        this.handlerExceptionResolver = handlerExceptionResolver;
+    }
+
+    @Override
+    protected void doFilterInternal(
+        @NonNull HttpServletRequest request,
+        @NonNull HttpServletResponse response,
+        @NonNull FilterChain filterChain
+    ) throws ServletException, IOException {
+        String headerValue = request.getHeader(JwtConstants.HEADER);
+        if (headerValue == null || !headerValue.startsWith(JwtConstants.TOKEN_PREFIX)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String token = headerValue.substring(JwtConstants.TOKEN_PREFIX.length());
+
+        try {
+            String username = jwtHelper.extractUsername(token);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (username == null || authentication != null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            Optional<User> user = userService.findByUsername(username);
+            if (user.isEmpty()) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            if (!jwtHelper.isExpired(token)) {
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    user.get(),
+                    null,
+                    user.get().getAuthorities()
+                );
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        } catch (JwtException jwtException) {
+            handlerExceptionResolver.resolveException(
+                request,
+                response,
+                null,
+                jwtException
+            );
+            return;
+        }
+
+        filterChain.doFilter(request, response);
+    }
+}
+--------------------------------
