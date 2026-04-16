@@ -1,11 +1,12 @@
 package finki.ukim.backend.auth_and_access.service.domain.impl;
 
-import finki.ukim.backend.auth_and_access.helper.PasswordChecker;
-import finki.ukim.backend.auth_and_access.model.domain.Address;
+import finki.ukim.backend.auth_and_access.constants.PasswordConstants;
+import finki.ukim.backend.auth_and_access.helper.PasswordHelper;
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.enums.Role;
 import finki.ukim.backend.auth_and_access.model.exception.*;
 import finki.ukim.backend.auth_and_access.repository.UserRepository;
+import finki.ukim.backend.auth_and_access.service.domain.PasswordService;
 import finki.ukim.backend.auth_and_access.service.domain.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,13 +15,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @AllArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordService passwordService;
+    private static final int MAX_FAILED_ATTEMPTS = 5;
 
     @Override
     public Optional<User> findByUsername(String username) {
@@ -38,9 +41,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User register(User user) {
-        findByUsername(user.getUsername()).orElseThrow(() -> new UsernameAlreadyExistsException(user.getUsername()));
-        findByEmail(user.getEmail()).orElseThrow(() -> new EmailAlreadyExistsException(user.getEmail()));
+    public User register(User user, String confirmPassword) {
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new UsernameAlreadyExistsException(user.getUsername());
+        }
+
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new EmailAlreadyExistsException(user.getEmail());
+        }
+
+        String encodedPassword = passwordService.preparePasswordForRegistration(
+                user.getPassword(),
+                confirmPassword
+        );
+
+        user.setPassword(encodedPassword);
         return userRepository.save(user);
     }
 
@@ -49,54 +64,98 @@ public class UserServiceImpl implements UserService {
         User user = userRepository
                 .findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
-        if (!passwordEncoder.matches(password, user.getPassword()))
+
+        if (user.isLocked()) {
+            throw new AccountLockedException(username, user.getLockedUntil());
+        }
+
+        if (!passwordService.matches(password, user.getPassword())) {
+            handleFailedLogin(user);
             throw new InvalidUserCredentialsException();
-        return user;
+        }
+        return handleSuccessfulLogin(user);
     }
 
     @Override
     @Transactional
-    public Optional<User> update(String username, User user) {
-        return findByUsername(username).map((existingUser) -> {
-            existingUser.setName(user.getName());
-            existingUser.setSurname(user.getSurname());
-
-            findByEmail(user.getEmail()).orElseThrow(() -> new EmailAlreadyExistsException(user.getEmail()));
-            existingUser.setEmail(user.getEmail());
-
-            findByUsername(user.getUsername()).orElseThrow(() -> new UsernameAlreadyExistsException(user.getUsername()));
-            existingUser.setUsername(user.getUsername());
-
-            existingUser.setAddress(user.getAddress());
-            return userRepository.save(existingUser);
+    public Optional<User> update(Long id, String username, String email, Role role, Boolean notificationsEnabled) {
+        return findById(id).map(existing -> {
+            if (userRepository.existsByUsername(username)) {
+                throw new UsernameAlreadyExistsException(username);
+            }
+            if (userRepository.existsByEmail(email)) {
+                throw new EmailAlreadyExistsException(email);
+            }
+            existing.setUsername(username);
+            existing.setEmail(email);
+            existing.setRole(role);
+            existing.setNotificationsEnabled(notificationsEnabled);
+            return userRepository.save(existing);
         });
     }
 
     @Override
+    public Optional<User> deleteById(Long id) {
+        Optional<User> user = findById(id);
+        user.ifPresent(userRepository::delete);
+        return user;
+    }
+
+    @Override
+    public Optional<User> deleteByUsername(String username) {
+        Optional<User> user = findByUsername(username);
+        user.ifPresent(userRepository::delete);
+        return user;
+    }
+
+    @Override
     public Optional<User> changePassword(String username, String currentPassword, String newPassword, String confirmNewPassword) {
-        return findByUsername(username).map((user) -> {
-            if (currentPassword == null || currentPassword.isEmpty() || newPassword == null || newPassword.isEmpty() || confirmNewPassword == null || confirmNewPassword.isEmpty()) {
-                throw new PasswordCannotBeEmptyException();
-            }
+        return findByUsername(username).map(user -> {
+            String encodedNewPassword = passwordService.preparePasswordForChange(
+                    currentPassword,
+                    user.getPassword(),
+                    newPassword,
+                    confirmNewPassword
+            );
 
-            if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
-                throw new InvalidCurrentPasswordException();
-            }
-
-            if (!newPassword.equals(confirmNewPassword)) {
-                throw new NewPasswordsDoNotMatchException();
-            }
-
-            if (passwordEncoder.matches(newPassword, user.getPassword())) {
-                throw new NewPasswordCannotBeSameAsOldException();
-            }
-            PasswordChecker.checkPassword(newPassword);
-
-            user.setPassword(passwordEncoder.encode(newPassword));
+            user.setPassword(encodedNewPassword);
             return userRepository.save(user);
         });
     }
 
+    @Override
+    public void handleFailedLogin(User user) {
+        int failedAttempts = user.getFailedLoginAttempts() + 1;
+
+        if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
+            user.setFailedLoginAttempts(0);
+            user.setLockLevel(user.getLockLevel() + 1);
+            user.setLockedUntil(calculateLockedUntil(user.getLockLevel()));
+        } else {
+            user.setFailedLoginAttempts(failedAttempts);
+        }
+
+        userRepository.save(user);
+    }
+
+    @Override
+    public User handleSuccessfulLogin(User user) {
+        user.setFailedLoginAttempts(0);
+        user.setLockedUntil(null);
+        user.setLockLevel(0);
+        return userRepository.save(user);
+    }
+
+    @Override
+    public LocalDateTime calculateLockedUntil(int lockLevel) {
+        return switch (lockLevel) {
+            case 1 -> LocalDateTime.now().plusMinutes(5);
+            case 2 -> LocalDateTime.now().plusMinutes(30);
+            case 3 -> LocalDateTime.now().plusHours(2);
+            case 4 -> LocalDateTime.now().plusHours(24);
+            default -> LocalDateTime.now().plusDays(30);
+        };
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

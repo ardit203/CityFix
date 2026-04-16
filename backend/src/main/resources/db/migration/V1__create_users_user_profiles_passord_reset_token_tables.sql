@@ -8,20 +8,23 @@ create table users
     email                 varchar(255) not null unique,
     role                  varchar(50)  not null,
     failed_login_attempts int     default 0,
+    lock_level            int     default 0,
     locked_until          timestamp,
     notifications_enabled boolean default true
 );
 
 create table user_profiles
 (
-    user_id     bigserial primary key,
-    created_at  timestamp    not null,
-    updated_at  timestamp    not null,
-    name        varchar(255) not null,
-    surname     varchar(255) not null,
-    street      varchar(255),
-    city        varchar(255),
-    postal_code varchar(255),
+    user_id             bigserial primary key,
+    name                varchar(255) not null,
+    surname             varchar(255) not null,
+    phone_number        varchar(255),
+    street              varchar(255),
+    city                varchar(255),
+    postal_code         varchar(255),
+    date_of_birth       date,
+    gender              varchar(50),
+    profile_picture_url varchar(255),
     foreign key (user_id) references users (id) on delete cascade
 );
 

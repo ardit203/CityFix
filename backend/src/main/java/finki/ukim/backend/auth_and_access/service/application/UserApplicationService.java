@@ -5,15 +5,21 @@ import finki.ukim.backend.auth_and_access.model.dto.*;
 import java.util.Optional;
 
 public interface UserApplicationService {
-    Optional<RegisterUserResponseDto> register(RegisterUserRequestDto registerUserRequestDto);
+    Optional<DisplayUserDto> register(CreateUserDto createUserDto);
+
 
     Optional<LoginUserResponseDto> login(LoginUserRequestDto loginUserRequestDto);
 
-    Optional<RegisterUserResponseDto> findByUsername(String username);
 
-    Optional<RegisterUserResponseDto> findByEmail(String email);
+    Optional<DisplayBasicUserDto> findByUsername(String username);
 
-    Optional<RegisterUserResponseDto> update(String username, RegisterUserRequestDto registerUserRequestDto);
+    Optional<DisplayBasicUserDto> findByEmail(String email);
 
-    Optional<RegisterUserResponseDto> changePassword(String username, ChangePasswordDto changePasswordDto);
+    Optional<DisplayBasicUserDto> update(Long id, CreateBasicUserDto createBasicUserDto);
+
+    Optional<DisplayBasicUserDto> changePassword(String username, ChangePasswordDto changePasswordDto);
+
+    Optional<DisplayBasicUserDto> deleteByUsername(String username);
+
+    Optional<DisplayBasicUserDto> deleteById(Long id);
 }

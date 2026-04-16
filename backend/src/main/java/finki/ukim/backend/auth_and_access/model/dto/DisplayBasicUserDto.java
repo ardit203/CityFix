@@ -3,24 +3,20 @@ package finki.ukim.backend.auth_and_access.model.dto;
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.enums.Role;
 
-import java.time.LocalDateTime;
-
-public record RegisterUserResponseDto(
+public record DisplayBasicUserDto(
+        Long id,
         String username,
         String email,
         Role role,
-        String name,
-        String surname,
-        String profilePictureUrl
+        Boolean notificationsEnabled
 ) {
-    public static RegisterUserResponseDto from(User user) {
-        return new RegisterUserResponseDto(
+    public static DisplayBasicUserDto from(User user) {
+        return new DisplayBasicUserDto(
+                user.getId(),
                 user.getUsername(),
                 user.getEmail(),
                 user.getRole(),
-                user.getName(),
-                user.getSurname(),
-                user.getProfilePictureUrl()
+                user.getNotificationsEnabled()
         );
     }
 }

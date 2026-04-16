@@ -58,7 +58,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleGeneric(Exception exception) {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiError.of(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong"));
+                .body(ApiError.of(HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

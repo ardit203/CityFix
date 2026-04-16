@@ -2,6 +2,8 @@ package finki.ukim.backend.auth_and_access.web.filter;
 
 import finki.ukim.backend.auth_and_access.constants.JwtConstants;
 import finki.ukim.backend.auth_and_access.helper.JwtHelper;
+import finki.ukim.backend.auth_and_access.model.domain.User;
+import finki.ukim.backend.auth_and_access.service.domain.UserService;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,6 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 @AllArgsConstructor

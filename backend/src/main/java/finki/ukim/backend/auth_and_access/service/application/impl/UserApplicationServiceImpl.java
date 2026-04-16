@@ -3,7 +3,9 @@ package finki.ukim.backend.auth_and_access.service.application.impl;
 import finki.ukim.backend.auth_and_access.helper.JwtHelper;
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.dto.*;
+import finki.ukim.backend.auth_and_access.model.exception.UserNotFoundException;
 import finki.ukim.backend.auth_and_access.service.application.UserApplicationService;
+import finki.ukim.backend.auth_and_access.service.application.UserProfileApplicationService;
 import finki.ukim.backend.auth_and_access.service.domain.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,11 +17,16 @@ import java.util.Optional;
 public class UserApplicationServiceImpl implements UserApplicationService {
     private final UserService userService;
     private final JwtHelper jwtHelper;
+    private final UserProfileApplicationService userProfileApplicationService;
 
     @Override
-    public Optional<RegisterUserResponseDto> register(RegisterUserRequestDto registerUserRequestDto) {
-        User user = userService.register(registerUserRequestDto.toUser());
-        return Optional.of(RegisterUserResponseDto.from(user));
+    public Optional<DisplayUserDto> register(CreateUserDto createUserDto) {
+        User user = userService.register(createUserDto.toUser(), createUserDto.confirmPassword());
+        DisplayUserProfileDto displayUserProfileDto = userProfileApplicationService
+                .create(
+                        user, createUserDto.userProfile()
+                );
+        return Optional.of(DisplayUserDto.from(user, displayUserProfileDto));
     }
 
     @Override
@@ -32,30 +39,53 @@ public class UserApplicationServiceImpl implements UserApplicationService {
     }
 
     @Override
-    public Optional<RegisterUserResponseDto> findByUsername(String username) {
-        return userService.findByUsername(username).map(RegisterUserResponseDto::from);
-    }
-
-    @Override
-    public Optional<RegisterUserResponseDto> findByEmail(String email) {
-        return userService.findByEmail(email).map(RegisterUserResponseDto::from);
-    }
-
-    @Override
-    public Optional<RegisterUserResponseDto> update(String username, RegisterUserRequestDto registerUserRequestDto) {
+    public Optional<DisplayBasicUserDto> findByUsername(String username) {
         return userService
-                .update(username, registerUserRequestDto.toUser())
-                .map(RegisterUserResponseDto::from);
+                .findByUsername(username)
+                .map(DisplayBasicUserDto::from);
     }
 
     @Override
-    public Optional<RegisterUserResponseDto> changePassword(String username, ChangePasswordDto changePasswordDto) {
+    public Optional<DisplayBasicUserDto> findByEmail(String email) {
+        return userService
+                .findByEmail(email)
+                .map(DisplayBasicUserDto::from);
+    }
+
+    @Override
+    public Optional<DisplayBasicUserDto> update(Long id, CreateBasicUserDto createBasicUserDto) {
+        return userService
+                .update(
+                        id,
+                        createBasicUserDto.username(),
+                        createBasicUserDto.email(),
+                        createBasicUserDto.role(),
+                        createBasicUserDto.notificationsEnabled()
+                )
+                .map(DisplayBasicUserDto::from);
+    }
+
+    @Override
+    public Optional<DisplayBasicUserDto> changePassword(String username, ChangePasswordDto changePasswordDto) {
         return userService
                 .changePassword(
-                        username, changePasswordDto.currentPassword(),
+                        username,
+                        changePasswordDto.currentPassword(),
                         changePasswordDto.newPassword(),
                         changePasswordDto.confirmNewPassword()
                 )
-                .map(RegisterUserResponseDto::from);
+                .map(DisplayBasicUserDto::from);
+    }
+
+    @Override
+    public Optional<DisplayBasicUserDto> deleteByUsername(String username) {
+        return userService.deleteByUsername(username)
+                .map(DisplayBasicUserDto::from);
+    }
+
+    @Override
+    public Optional<DisplayBasicUserDto> deleteById(Long id) {
+        return userService.deleteById(id)
+                .map(DisplayBasicUserDto::from);
     }
 }

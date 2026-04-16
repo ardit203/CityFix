@@ -1,11 +1,15 @@
 package finki.ukim.backend.auth_and_access.model.domain;
 
+import finki.ukim.backend.auth_and_access.model.enums.Gender;
 import finki.ukim.backend.auth_and_access.model.enums.Role;
 import finki.ukim.backend.common.model.BaseAuditableEntity;
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -39,22 +43,8 @@ public class User extends BaseAuditableEntity implements UserDetails {
     @Column(nullable = false)
     private Role role;
 
-
-    /// ///////////
-    @NotBlank
-    @Column(nullable = false)
-    private String name;
-
-    @NotBlank
-    @Column(nullable = false)
-    private String surname;
-
-    @Embedded
-    private Address address;
-
-    private String profilePictureUrl;
-    /// /////////////////////////////
-
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UserProfile profile;
 
     @Column(nullable = false)
     private Integer failedLoginAttempts = 0;
@@ -62,6 +52,8 @@ public class User extends BaseAuditableEntity implements UserDetails {
     private LocalDateTime lockedUntil;
 
     private Boolean notificationsEnabled = true;
+
+    private Integer lockLevel = 0;
 
     public User(String username, String password, String email) {
         this.username = username;
@@ -74,16 +66,6 @@ public class User extends BaseAuditableEntity implements UserDetails {
         this.password = password;
         this.email = email;
         this.role = role;
-    }
-
-    public User(String username, String password, String email, Role role, String name, String surname, Address address) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.role = role;
-        this.name = name;
-        this.surname = surname;
-        this.address = address;
     }
 
     @Override
