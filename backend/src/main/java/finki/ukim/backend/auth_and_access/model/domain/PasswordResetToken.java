@@ -1,5 +1,6 @@
 package finki.ukim.backend.auth_and_access.model.domain;
 
+import finki.ukim.backend.auth_and_access.service.domain.impl.PasswordResetServiceImpl;
 import finki.ukim.backend.common.model.BaseAuditableEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,10 +35,10 @@ public class PasswordResetToken extends BaseAuditableEntity {
     private LocalDateTime usedAt;
     private LocalDateTime invalidatedAt;
 
-    public PasswordResetToken(User user, String token, LocalDateTime expiresAt) {
+    public PasswordResetToken(User user, String token, int expirationMinutes) {
         this.user = user;
         this.tokenHash = token;
-        this.expiresAt = expiresAt;
+        this.expiresAt = LocalDateTime.now().plusMinutes(expirationMinutes);
     }
 
 

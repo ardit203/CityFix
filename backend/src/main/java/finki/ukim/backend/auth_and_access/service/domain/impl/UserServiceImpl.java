@@ -95,6 +95,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
     public Optional<User> deleteById(Long id) {
         Optional<User> user = findById(id);
         user.ifPresent(userRepository::delete);

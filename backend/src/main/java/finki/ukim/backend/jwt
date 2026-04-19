@@ -2,10 +2,23 @@
     "username": "ardit203",
     "email": "arditselmani01@gmail.com",
     "password": "@ARDIT2003",
+    "confirmPassword": "@ARDIT2003",
     "role": "ROLE_CITIZEN",
-    "name": "Ardit",
-    "surname": "Selmani",
-    "city": "New York",
-    "street": "Broadway",
-    "postalCode": "10001"
+    "userProfile": {
+        "name": "Ardit",
+        "surname": "Selmani",
+        "city": "New York",
+        "street": "Broadway",
+        "postalCode": "10001",
+        "dateOfBirth": "2003-01-01",
+        "gender": "MALE",
+        "phoneNumber": "+1234567890"
+    }
 }
+
+{
+"username": "ardit203",
+"password": "@ARDIT2003"
+}
+
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX0NJVElaRU4iXSwic3ViIjoiYXJkaXQyMDMiLCJpYXQiOjE3NzYzODQ1MjAsImV4cCI6MTc3NzI0ODUyMH0.Dgm25EQCLEdXUVYzESbC0ALONpJjWcgaAjkQdcSt5u4

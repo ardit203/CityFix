@@ -50,6 +50,8 @@ public class UserProfile {
         this.surname = surname;
         this.address = address;
         this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+        this.phoneNumber = phoneNumber;
     }
 
     public UserProfile(String name, String surname, Address address, LocalDate dateOfBirth, Gender gender, String phoneNumber){
@@ -57,5 +59,7 @@ public class UserProfile {
         this.surname = surname;
         this.address = address;
         this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+        this.phoneNumber = phoneNumber;
     }
 }

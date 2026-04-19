@@ -33,12 +33,15 @@ public class JwtWebSecurityConfig {
                                         "/swagger-ui/**",
                                         "/v3/api-docs/**",
                                         "/api/user/register",
-                                        "/api/user/login"
+                                        "/api/user/login",
+                                        "/api/password-reset/**"
                                 )
                                 .permitAll()
                                 .requestMatchers(
                                         "/api/user/me"
                                 )
+                                .authenticated()
+                                .anyRequest()
                                 .authenticated()
                 )
                 .sessionManagement(sessionManagementConfigurer ->

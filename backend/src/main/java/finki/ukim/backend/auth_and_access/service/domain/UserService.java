@@ -20,6 +20,8 @@ public interface UserService extends UserDetailsService {
 
     Optional<User> update(Long id, String username, String email, Role role, Boolean notificationsEnabled);
 
+    User save(User user);
+
     Optional<User> deleteById(Long id);
 
     Optional<User> deleteByUsername(String username);
