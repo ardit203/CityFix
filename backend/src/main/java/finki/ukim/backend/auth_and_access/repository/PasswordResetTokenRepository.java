@@ -68,10 +68,10 @@ public interface PasswordResetTokenRepository extends JpaRepository<PasswordRese
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("""
             update PasswordResetToken pt
-            set pt.invalidatedAt = :now
+            set pt.invalidatedAt = CURRENT_TIMESTAMP
             where pt.user.id = :userId
               and pt.id <> :currentTokenId
-              and pt.expiresAt > :now
+              and pt.expiresAt > CURRENT_TIMESTAMP
               and pt.usedAt is null
               and pt.invalidatedAt is null
             """)
