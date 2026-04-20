@@ -29,8 +29,8 @@ public class PasswordResetApplicationServiceImpl implements PasswordResetApplica
     }
 
     @Override
-    public String requestPasswordReset(String email) {
-        return passwordResetService.requestPasswordReset(email);
+    public void requestPasswordReset(String email) {
+        passwordResetService.requestPasswordReset(email);
     }
 
     @Override

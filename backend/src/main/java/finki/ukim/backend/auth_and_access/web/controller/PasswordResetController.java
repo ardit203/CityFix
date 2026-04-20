@@ -15,10 +15,9 @@ public class PasswordResetController {
     private final PasswordResetApplicationService passwordResetApplicationService;
 
     @PostMapping("/request")
-    public ResponseEntity<String> requestReset(@RequestParam String email) {
-        String token = passwordResetApplicationService.requestPasswordReset(email);
-
-        return ResponseEntity.ok(token);
+    public ResponseEntity<?> requestReset(@RequestParam String email) {
+        passwordResetApplicationService.requestPasswordReset(email);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/confirm")

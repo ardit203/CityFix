@@ -31,11 +31,11 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 
     @Override
     @Transactional
-    public String requestPasswordReset(String email) {
+    public void requestPasswordReset(String email) {
         Optional<User> optionalUser = userService.findByEmail(email);
 
         if (optionalUser.isEmpty()) {
-            return "Email address not found. Please check and try again.";
+            return;
         }
 
         User user = optionalUser.get();
@@ -51,7 +51,6 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 
         // Send the raw token in email, never the hash
         // emailService.sendPasswordResetEmail(user.getEmail(), rawToken);
-        return rawToken;
     }
 
     @Override

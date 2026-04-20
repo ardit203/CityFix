@@ -11,7 +11,7 @@ public interface PasswordResetService {
 
     Optional<PasswordResetToken> findActiveByUserId(Long userId);
 
-    String requestPasswordReset(String email);
+    void requestPasswordReset(String email);
 
     Optional<User> resetPassword(String token, String newPassword, String confirmPassword);
 

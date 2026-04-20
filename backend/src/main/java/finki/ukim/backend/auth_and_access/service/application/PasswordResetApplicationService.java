@@ -10,7 +10,7 @@ public interface PasswordResetApplicationService {
 
     Optional<DisplayPasswordResetTokenDto> findActiveByUserId(Long userId);
 
-    String requestPasswordReset(String email);
+    void requestPasswordReset(String email);
 
     Optional<DisplayBasicUserDto> resetPassword(String token, String newPassword, String confirmPassword);
 
