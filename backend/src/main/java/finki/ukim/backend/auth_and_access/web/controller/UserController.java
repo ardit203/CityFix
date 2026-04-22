@@ -50,15 +50,15 @@ public class UserController {
                 .orElse(ResponseEntity.badRequest().build());
     }
 
-    @PostMapping("/update")
-    public ResponseEntity<DisplayBasicUserDto> update(@AuthenticationPrincipal User user, @RequestBody CreateBasicUserDto createBasicUserDto) {
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<DisplayBasicUserDto> update(@PathVariable Long userId, @RequestBody CreateBasicUserDto createBasicUserDto) {
         return userApplicationService
-                .update(user.getId(), createBasicUserDto)
+                .update(userId, createBasicUserDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());
     }
 
-    @PostMapping("/change-password")
+    @PutMapping("/change-password")
     public ResponseEntity<DisplayBasicUserDto> changePassword(@AuthenticationPrincipal User user, @RequestBody ChangePasswordDto changePasswordDto) {
         return userApplicationService
                 .changePassword(user.getUsername(), changePasswordDto)
@@ -66,10 +66,10 @@ public class UserController {
                 .orElse(ResponseEntity.badRequest().build());
     }
 
-    @PostMapping("/delete")
-    public ResponseEntity<DisplayBasicUserDto> delete(@AuthenticationPrincipal User user) {
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<DisplayBasicUserDto> delete(@PathVariable Long userId) {
         return userApplicationService
-                .deleteById(user.getId())
+                .deleteById(userId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());
     }

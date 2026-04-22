@@ -11,6 +11,9 @@
 Thumbs.db
 desktop.ini
 .testFile
+docker-nuke.sh
+nuke-containers.sh
+nuke-images.sh
 
 # =========================================================
 # IDE / Editor files

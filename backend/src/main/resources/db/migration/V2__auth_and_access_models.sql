@@ -15,17 +15,18 @@ create table users
 
 create table user_profiles
 (
-    user_id             bigserial primary key,
-    name                varchar(255) not null,
-    surname             varchar(255) not null,
-    phone_number        varchar(255),
-    street              varchar(255),
-    city                varchar(255),
-    postal_code         varchar(255),
-    date_of_birth       date,
-    gender              varchar(50),
-    profile_picture_url varchar(255),
-    foreign key (user_id) references users (id) on delete cascade
+    user_id         bigserial primary key,
+    name            varchar(255) not null,
+    surname         varchar(255) not null,
+    phone_number    varchar(255),
+    street          varchar(255),
+    city            varchar(255),
+    postal_code     varchar(255),
+    date_of_birth   date,
+    gender          varchar(50),
+    profile_picture bigserial,
+    foreign key (user_id) references users (id) on delete cascade,
+    foreign key (profile_picture) references files (id) on delete cascade
 );
 
 create table password_reset_tokens
@@ -40,3 +41,14 @@ create table password_reset_tokens
     invalidated_at timestamp,
     foreign key (user_id) references users (id) on delete cascade
 );
+
+
+create index idx_password_reset_tokens_user_id
+    on password_reset_tokens (user_id);
+
+create index idx_password_reset_tokens_expires_at
+    on password_reset_tokens (expires_at);
+
+create index idx_prt_active_by_user
+    on password_reset_tokens (user_id, expires_at) where used_at is null
+      and invalidated_at is null;
