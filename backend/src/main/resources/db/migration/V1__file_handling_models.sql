@@ -6,5 +6,5 @@ create table files
     file_name  varchar(255) not null unique,
     file_type  varchar(255) not null,
     file_url   varchar(255) not null unique,
-    fileSize   bigserial    not null
+    file_size   bigserial    not null
 );

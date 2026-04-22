@@ -7,6 +7,7 @@ import finki.ukim.backend.auth_and_access.service.application.UserProfileApplica
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,18 +44,18 @@ public class UserProfileController {
     }
 
 
-    @PostMapping("/update")
-    public ResponseEntity<DisplayUserDto> update(@AuthenticationPrincipal User user, @RequestBody CreateUserProfileDto createUserProfileDto) {
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<DisplayUserDto> update(@PathVariable Long userId, @RequestBody CreateUserProfileDto createUserProfileDto) {
         return userProfileApplicationService
-                .update(user.getId(), createUserProfileDto)
+                .update(userId, createUserProfileDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());
     }
 
-    @PostMapping("/update-profile-picture")
-    public ResponseEntity<DisplayUserDto> updateProfilePicture(@AuthenticationPrincipal User user, @RequestBody MultipartFile profilePicture) {
+    @PutMapping("/update-profile-picture/{userId}")
+    public ResponseEntity<DisplayUserDto> updateProfilePicture(@PathVariable Long userId, @RequestBody MultipartFile profilePicture) {
         return userProfileApplicationService
-                .updateProfilePicture(user.getUsername(), profilePicture)
+                .updateProfilePicture(userId, profilePicture)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());
     }
