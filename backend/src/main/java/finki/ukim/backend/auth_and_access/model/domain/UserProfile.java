@@ -1,6 +1,7 @@
 package finki.ukim.backend.auth_and_access.model.domain;
 
 import finki.ukim.backend.auth_and_access.model.enums.Gender;
+import finki.ukim.backend.file_handling.model.domain.File;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,7 @@ public class UserProfile {
     private Long userId;
 
     @MapsId
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, fetch = FetchType.EAGER)
     private User user;
 
     @NotBlank
@@ -42,7 +43,9 @@ public class UserProfile {
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
 
-    private String profilePictureUrl;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "profile_picture_id")
+    private File profilePicture;
 
     public UserProfile(User user, String name, String surname, Address address, LocalDate dateOfBirth, Gender gender, String phoneNumber) {
         this.user = user;

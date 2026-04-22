@@ -22,7 +22,7 @@ public class UserProfileApplicationServiceImpl implements UserProfileApplication
 
     @Override
     public Optional<DisplayUserDto> findByUserId(Long userId) {
-        return userProfileService.findByUserIdWithUser(userId)
+        return userProfileService.findByUserId(userId)
                 .map(up -> {
                     DisplayUserProfileDto profileDto = DisplayUserProfileDto.from(up);
                     return new DisplayUserDto(
@@ -85,8 +85,20 @@ public class UserProfileApplicationServiceImpl implements UserProfileApplication
     }
 
     @Override
-    public Optional<DisplayUserDto> updateProfilePicture(String username, MultipartFile profilePicture) {
-        return Optional.empty();
+    public Optional<DisplayUserDto> updateProfilePicture(Long userId, MultipartFile profilePicture) {
+        return userProfileService
+                .updateProfilePicture(userId, profilePicture)
+                .map(up -> {
+                    DisplayUserProfileDto profileDto = DisplayUserProfileDto.from(up);
+                    return new DisplayUserDto(
+                            up.getUser().getId(),
+                            up.getUser().getUsername(),
+                            up.getUser().getEmail(),
+                            up.getUser().getRole(),
+                            up.getUser().getNotificationsEnabled(),
+                            profileDto
+                    );
+                });
     }
 
 

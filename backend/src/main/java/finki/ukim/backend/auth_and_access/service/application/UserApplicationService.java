@@ -7,9 +7,7 @@ import java.util.Optional;
 public interface UserApplicationService {
     Optional<DisplayUserDto> register(CreateUserDto createUserDto);
 
-
     Optional<LoginUserResponseDto> login(LoginUserRequestDto loginUserRequestDto);
-
 
     Optional<DisplayBasicUserDto> findByUsername(String username);
 

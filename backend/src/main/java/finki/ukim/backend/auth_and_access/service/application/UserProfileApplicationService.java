@@ -19,5 +19,5 @@ public interface UserProfileApplicationService {
 
     Optional<DisplayUserDto> update(Long userId, CreateUserProfileDto createUserProfileDto);
 
-    Optional<DisplayUserDto> updateProfilePicture(String username, MultipartFile profilePicture);
+    Optional<DisplayUserDto> updateProfilePicture(Long userId, MultipartFile profilePicture);
 }
