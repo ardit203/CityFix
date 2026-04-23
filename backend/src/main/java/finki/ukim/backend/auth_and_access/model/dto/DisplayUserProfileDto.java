@@ -28,7 +28,7 @@ public record DisplayUserProfileDto(
                 userProfile.getDateOfBirth(),
                 userProfile.getGender(),
                 userProfile.getPhoneNumber(),
-                userProfile.getProfilePicture().getFileUrl()
+                userProfile.getProfilePicture() == null ? null : userProfile.getProfilePicture().getFileUrl()
         );
     }
 }

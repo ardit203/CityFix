@@ -1,6 +1,7 @@
 package finki.ukim.backend.auth_and_access.config;
 
 import finki.ukim.backend.auth_and_access.web.filter.JwtFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,27 +28,28 @@ public class JwtWebSecurityConfig {
                 .headers(headers -> headers
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 )
-                .authorizeHttpRequests(authorizeHttpRequestsCustomizer ->
-                        authorizeHttpRequestsCustomizer
-                                .requestMatchers(
-                                        "/swagger-ui/**",
-                                        "/v3/api-docs/**",
-                                        "/api/user/register",
-                                        "/api/user/login",
-                                        "/api/password-reset/**"
-                                )
-                                .permitAll()
-                                .requestMatchers(
-                                        "/api/user/me"
-                                )
-                                .authenticated()
-                                .anyRequest()
-                                .authenticated()
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) ->
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+                        .accessDeniedHandler((request, response, accessDeniedException) ->
+                                response.sendError(HttpServletResponse.SC_FORBIDDEN))
                 )
-                .sessionManagement(sessionManagementConfigurer ->
-                        sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/api/user/register",
+                                "/api/user/login",
+                                "/api/password-reset/**"
+                        ).permitAll()
+                        .requestMatchers("/api/user/me").authenticated()
+                        .anyRequest().authenticated()
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 }

@@ -26,7 +26,7 @@ public class File extends BaseAuditableEntity {
     @Column(nullable = false, unique = true)
     private String fileUrl;
 
-    @Max(value = 10, message = "File size must be less than or equal to 10 MB")
+    @Max(value = 10L * 1024 * 1024, message = "File size must be less than or equal to 10 MB")
     @Column(nullable = false)
     private Long fileSize;
 
