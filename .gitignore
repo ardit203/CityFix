@@ -10,7 +10,6 @@
 .DS_Store
 Thumbs.db
 desktop.ini
-.testFile
 docker-nuke.sh
 nuke-containers.sh
 nuke-images.sh
@@ -84,6 +83,7 @@ backend/application-local.yaml
 
 # Optional: uploaded/local generated files
 backend/uploads/
+backend/utility/
 backend/tmp/
 backend/temp/
 backend/HELP.md
