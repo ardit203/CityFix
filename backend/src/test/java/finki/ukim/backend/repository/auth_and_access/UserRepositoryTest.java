@@ -18,6 +18,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -54,15 +55,15 @@ public class UserRepositoryTest {
         ));
     }
 
+    // ── findAllWithIdUsernameAndEmail (native query) ───────────────────────
+
     @Test
-    void testFindAllWithIdUsernameAndEmail() {
+    void findAllWithIdUsernameAndEmail_shouldReturnAllUsers() {
         List<UserWithIdUsernameAndEmail> results = userRepository.findAllWithIdUsernameAndEmail();
 
         assertThat(results).hasSize(4);
-
         assertThat(results)
-                .extracting(UserWithIdUsernameAndEmail::getUsername,
-                        UserWithIdUsernameAndEmail::getEmail)
+                .extracting(UserWithIdUsernameAndEmail::getUsername, UserWithIdUsernameAndEmail::getEmail)
                 .containsExactlyInAnyOrder(
                         tuple("User1", "email1@gmail.com"),
                         tuple("User2", "email2@gmail.com"),
@@ -70,4 +71,79 @@ public class UserRepositoryTest {
                         tuple("User4", "email4@gmail.com")
                 );
     }
+
+    // ── findByUsername ────────────────────────────────────────────────────
+
+    @Test
+    void findByUsername_shouldReturnUser_whenUsernameExists() {
+        Optional<User> result = userRepository.findByUsername("User1");
+
+        assertThat(result).isPresent();
+        assertThat(result.get().getEmail()).isEqualTo("email1@gmail.com");
+        assertThat(result.get().getRole()).isEqualTo(Role.ROLE_CITIZEN);
+    }
+
+    @Test
+    void findByUsername_shouldReturnEmpty_whenUsernameDoesNotExist() {
+        Optional<User> result = userRepository.findByUsername("nobody");
+
+        assertThat(result).isEmpty();
+    }
+
+    // ── findByEmail ───────────────────────────────────────────────────────
+
+    @Test
+    void findByEmail_shouldReturnUser_whenEmailExists() {
+        Optional<User> result = userRepository.findByEmail("email3@gmail.com");
+
+        assertThat(result).isPresent();
+        assertThat(result.get().getUsername()).isEqualTo("User3");
+    }
+
+    @Test
+    void findByEmail_shouldReturnEmpty_whenEmailDoesNotExist() {
+        Optional<User> result = userRepository.findByEmail("ghost@example.com");
+
+        assertThat(result).isEmpty();
+    }
+
+    // ── existsByUsername / existsByEmail ──────────────────────────────────
+
+    @Test
+    void existsByUsername_shouldReturnTrue_whenUsernameExists() {
+        assertThat(userRepository.existsByUsername("User2")).isTrue();
+    }
+
+    @Test
+    void existsByUsername_shouldReturnFalse_whenUsernameDoesNotExist() {
+        assertThat(userRepository.existsByUsername("nonexistent")).isFalse();
+    }
+
+    @Test
+    void existsByEmail_shouldReturnTrue_whenEmailExists() {
+        assertThat(userRepository.existsByEmail("email4@gmail.com")).isTrue();
+    }
+
+    @Test
+    void existsByEmail_shouldReturnFalse_whenEmailDoesNotExist() {
+        assertThat(userRepository.existsByEmail("unknown@example.com")).isFalse();
+    }
+
+    // ── findAllByRole ─────────────────────────────────────────────────────
+
+    @Test
+    void findAllByRole_shouldReturnOnlyUsersWithThatRole() {
+        List<User> citizens = userRepository.findAllByRole(Role.ROLE_CITIZEN);
+
+        assertThat(citizens).hasSize(1);
+        assertThat(citizens.get(0).getUsername()).isEqualTo("User1");
+    }
+
+//    @Test
+//    void findAllByRole_shouldReturnEmpty_whenNoUsersWithRole() {
+//        // No ROLE_GUEST in the setup data
+//        List<User> results = userRepository.findAllByRole(Role.ROLE_GUEST);
+//
+//        assertThat(results).isEmpty();
+//    }
 }
