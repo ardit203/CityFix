@@ -62,8 +62,8 @@ public class UserApplicationServiceImpl implements UserApplicationService {
     }
 
     @Override
-    public List<UserWithIdUsernameAndEmail> findAll() {
-        return userService.findAll();
+    public List<DisplayUserBasicDto> findAll() {
+        return DisplayUserBasicDto.fromProjection(userService.findAll());
     }
 
     @Override

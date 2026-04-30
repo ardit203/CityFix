@@ -2,9 +2,6 @@ package finki.ukim.backend.auth_and_access.model.dto;
 
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.enums.Role;
-import finki.ukim.backend.auth_and_access.model.projection.UserProjection;
-
-import java.util.List;
 
 public record DisplayUserDto(
         Long id,

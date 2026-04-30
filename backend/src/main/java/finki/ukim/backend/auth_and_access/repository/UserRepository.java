@@ -2,7 +2,7 @@ package finki.ukim.backend.auth_and_access.repository;
 
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.enums.Role;
-import finki.ukim.backend.auth_and_access.model.projection.UserProjection;
+import finki.ukim.backend.auth_and_access.model.projection.UserPageableProjection;
 import finki.ukim.backend.auth_and_access.model.projection.UserWithIdUsernameAndEmail;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 import java.util.Optional;
@@ -65,7 +64,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
                   and (:email is null or lower(u.email) like lower(concat('%', :email, '%')))
                   and (:role is null or u.role = :role)
             """)
-    Page<UserProjection> findFiltered(
+    Page<UserPageableProjection> findFiltered(
             @Param("id") Long id,
             @Param("username") String username,
             @Param("email") String email,

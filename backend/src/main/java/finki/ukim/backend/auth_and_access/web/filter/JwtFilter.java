@@ -1,6 +1,6 @@
 package finki.ukim.backend.auth_and_access.web.filter;
 
-import finki.ukim.backend.auth_and_access.constants.JwtConstants;
+import finki.ukim.backend.auth_and_access.constants.JwtProperties;
 import finki.ukim.backend.auth_and_access.helper.JwtHelper;
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.exception.UserNotFoundException;
@@ -21,7 +21,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Component
 @AllArgsConstructor
@@ -29,6 +28,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtHelper jwtHelper;
     private final UserService userService;
     private final HandlerExceptionResolver handlerExceptionResolver;
+    private final JwtProperties jwtProperties;
 
 
     @Override
@@ -37,13 +37,13 @@ public class JwtFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        String headerValue = request.getHeader(JwtConstants.HEADER);
-        if (headerValue == null || !headerValue.startsWith(JwtConstants.TOKEN_PREFIX)) {
+        String headerValue = request.getHeader(jwtProperties.getHeader());
+        if (headerValue == null || !headerValue.startsWith(jwtProperties.getTokenPrefix())) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = headerValue.substring(JwtConstants.TOKEN_PREFIX.length());
+        String token = headerValue.substring(jwtProperties.getTokenPrefix().length());
 
         try {
             String username = jwtHelper.extractUsername(token);

@@ -1,11 +1,12 @@
 package finki.ukim.backend.auth_and_access.helper;
 
-import finki.ukim.backend.auth_and_access.constants.JwtConstants;
+import finki.ukim.backend.auth_and_access.constants.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -16,9 +17,11 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Component
+@AllArgsConstructor
 public class JwtHelper {
+    private final JwtProperties jwtProperties;
     private Key getSignIn() {
-        byte[] keyBytes = Decoders.BASE64.decode(JwtConstants.SECRET_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.getSecret());
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -54,7 +57,7 @@ public class JwtHelper {
             .setClaims(extraClaims)
             .setSubject(subject)
             .setIssuedAt(new Date(System.currentTimeMillis()))
-            .setExpiration(new Date(System.currentTimeMillis() + JwtConstants.EXPIRATION_TIME))
+            .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getExpiration()))
             .signWith(getSignIn(), SignatureAlgorithm.HS256)
             .compact();
     }
@@ -62,7 +65,7 @@ public class JwtHelper {
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("roles", userDetails.getAuthorities());
-        return buildToken(extraClaims, userDetails.getUsername(), JwtConstants.EXPIRATION_TIME);
+        return buildToken(extraClaims, userDetails.getUsername(), jwtProperties.getExpiration());
     }
 
     public boolean isExpired(String token) {

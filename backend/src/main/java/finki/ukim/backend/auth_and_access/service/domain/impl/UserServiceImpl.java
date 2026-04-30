@@ -5,14 +5,14 @@ import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.domain.UserProfile;
 import finki.ukim.backend.auth_and_access.model.enums.Role;
 import finki.ukim.backend.auth_and_access.model.exception.*;
-import finki.ukim.backend.auth_and_access.model.projection.UserProjection;
+import finki.ukim.backend.auth_and_access.model.projection.UserPageableProjection;
 import finki.ukim.backend.auth_and_access.model.projection.UserWithIdUsernameAndEmail;
 import finki.ukim.backend.auth_and_access.repository.UserRepository;
 import finki.ukim.backend.auth_and_access.service.domain.PasswordService;
 import finki.ukim.backend.auth_and_access.service.domain.UserService;
+import finki.ukim.backend.file_handling.constants.FileConstants;
 import finki.ukim.backend.file_handling.helper.FileHelper;
 import finki.ukim.backend.file_handling.model.domain.File;
-import finki.ukim.backend.file_handling.model.enums.FileType;
 import finki.ukim.backend.file_handling.model.exception.FileErrorException;
 import finki.ukim.backend.file_handling.service.domain.FileService;
 import lombok.AllArgsConstructor;
@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserProjection> findAll(int page, int size, String sortBy, Long id, String username, String email, Role role) {
+    public Page<UserPageableProjection> findAll(int page, int size, String sortBy, Long id, String username, String email, Role role) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).and(Sort.by("createdAt")));
 
         return userRepository.findFiltered(id, username, email, role, pageable);
@@ -214,7 +214,7 @@ public class UserServiceImpl implements UserService {
         if (existingFile != null) {
             file = fileService.update(existingFile.getId(), profilePicture);
         } else {
-            file = fileService.create(profilePicture, "profile");
+            file = fileService.create(profilePicture, FileConstants.PROFILE_PIC_DIR);
         }
 
         existingUser.getProfile().setProfilePicture(file);

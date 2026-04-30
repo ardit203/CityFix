@@ -3,7 +3,7 @@ package finki.ukim.backend.auth_and_access.service.domain;
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.domain.UserProfile;
 import finki.ukim.backend.auth_and_access.model.enums.Role;
-import finki.ukim.backend.auth_and_access.model.projection.UserProjection;
+import finki.ukim.backend.auth_and_access.model.projection.UserPageableProjection;
 import finki.ukim.backend.auth_and_access.model.projection.UserWithIdUsernameAndEmail;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService extends UserDetailsService {
     User findById(Long id);
@@ -26,13 +25,13 @@ public interface UserService extends UserDetailsService {
 
     List<UserWithIdUsernameAndEmail> findAll();
 
-    Page<UserProjection> findAll(int page,
-                                 int size,
-                                 String sortBy,
-                                 Long id,
-                                 String username,
-                                 String email,
-                                 Role role);
+    Page<UserPageableProjection> findAll(int page,
+                                         int size,
+                                         String sortBy,
+                                         Long id,
+                                         String username,
+                                         String email,
+                                         Role role);
 
     User adminUpdateUser(Long id, User user);
 

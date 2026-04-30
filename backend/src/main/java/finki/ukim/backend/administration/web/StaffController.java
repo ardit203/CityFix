@@ -22,7 +22,7 @@ public class StaffController {
 
     @GetMapping
     public ResponseEntity<List<DisplayBasicStaffDto>> findAll(@AuthenticationPrincipal User currentUser) {
-        return ResponseEntity.ok(staffApplicationService.findAll());
+        return ResponseEntity.ok(staffApplicationService.findAll(currentUser));
     }
 
     @GetMapping("/paged")
@@ -58,41 +58,41 @@ public class StaffController {
 
     @GetMapping("/detailed")
     public ResponseEntity<List<DisplayStaffDto>> findAllWithAll(@AuthenticationPrincipal User currentUser) {
-        return ResponseEntity.ok(staffApplicationService.findAllWithAll());
+        return ResponseEntity.ok(staffApplicationService.findAllWithAll(currentUser));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<DisplayStaffDto> findById(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {
-        return ResponseEntity.ok(staffApplicationService.findById(id));
+        return ResponseEntity.ok(staffApplicationService.findById(id, currentUser));
     }
 
     @GetMapping("/userId/{userId}")
     public ResponseEntity<DisplayStaffDto> findByUserId(@PathVariable Long userId, @AuthenticationPrincipal User currentUser) {
-        return ResponseEntity.ok(staffApplicationService.findByUserId(userId));
+        return ResponseEntity.ok(staffApplicationService.findByUserId(currentUser, userId));
     }
 
     @GetMapping("/department/{departmentId}")
     public ResponseEntity<List<DisplayBasicStaffDto>> findByDepartmentId(@PathVariable Long departmentId, @AuthenticationPrincipal User currentUser) {
-        return ResponseEntity.ok(staffApplicationService.findByDepartmentId(departmentId));
+        return ResponseEntity.ok(staffApplicationService.findByDepartmentId(currentUser, departmentId));
     }
 
     @GetMapping("/municipality/{municipalityId}")
     public ResponseEntity<List<DisplayBasicStaffDto>> findByMunicipalityId(@PathVariable Long municipalityId, @AuthenticationPrincipal User currentUser) {
-        return ResponseEntity.ok(staffApplicationService.findByMunicipalityId(municipalityId));
+        return ResponseEntity.ok(staffApplicationService.findByMunicipalityId(currentUser, municipalityId));
     }
 
     @PostMapping
     public ResponseEntity<DisplayStaffDto> create(@RequestBody CreateStaffDto createStaffDto, @AuthenticationPrincipal User currentUser) {
-        return ResponseEntity.ok(staffApplicationService.create(createStaffDto));
+        return ResponseEntity.ok(staffApplicationService.create(currentUser, createStaffDto));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<DisplayBasicStaffDto> update(@PathVariable Long id, @RequestBody CreateStaffDto createStaffDto, @AuthenticationPrincipal User currentUser) {
-        return ResponseEntity.ok(staffApplicationService.update(id, createStaffDto));
+        return ResponseEntity.ok(staffApplicationService.update(id, currentUser, createStaffDto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<DisplayBasicStaffDto> delete(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {
-        return ResponseEntity.ok(staffApplicationService.deleteById(id));
+        return ResponseEntity.ok(staffApplicationService.deleteById(id, currentUser));
     }
 }

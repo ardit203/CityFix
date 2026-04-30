@@ -2,14 +2,9 @@ package finki.ukim.backend.administration.service.domain;
 
 import finki.ukim.backend.administration.model.domain.Category;
 import finki.ukim.backend.administration.model.projection.CategoryPageableProjection;
-import finki.ukim.backend.auth_and_access.model.projection.UserProjection;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CategoryService {
     List<Category> findAll();

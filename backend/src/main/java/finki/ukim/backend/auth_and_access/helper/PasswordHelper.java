@@ -1,7 +1,6 @@
 package finki.ukim.backend.auth_and_access.helper;
 
 import finki.ukim.backend.auth_and_access.constants.PasswordConstants;
-import finki.ukim.backend.auth_and_access.model.exception.*;
 import org.springframework.stereotype.Component;
 
 @Component

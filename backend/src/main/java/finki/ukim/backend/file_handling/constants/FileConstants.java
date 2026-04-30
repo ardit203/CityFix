@@ -1,13 +1,10 @@
 package finki.ukim.backend.file_handling.constants;
 
 import finki.ukim.backend.file_handling.model.enums.FileType;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
 import java.util.List;
 
-@Configuration
 public class FileConstants {
     public static String UPLOAD_DIR = "uploads";
     public static String DEFAULT_DIR = "files";

@@ -22,7 +22,7 @@ public interface UserApplicationService {
 
     DisplayUserDto deleteProfilePicture(Long id);
 
-    List<UserWithIdUsernameAndEmail> findAll();
+    List<DisplayUserBasicDto> findAll();
 
     Page<DisplayUserPageableDto> findAll(int page, int size, String sortBy, Long id, String username, String email, Role role);
 

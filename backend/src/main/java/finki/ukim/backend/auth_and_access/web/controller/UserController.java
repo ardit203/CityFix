@@ -24,7 +24,7 @@ public class UserController {
     private final UserApplicationService userApplicationService;
 
     @GetMapping
-    public ResponseEntity<List<UserWithIdUsernameAndEmail>> findAll() {
+    public ResponseEntity<List<DisplayUserBasicDto>> findAll() {
         return ResponseEntity.ok(userApplicationService.findAll());
     }
 
