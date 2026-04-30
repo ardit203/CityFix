@@ -5,6 +5,7 @@ import finki.ukim.backend.administration.model.dto.DisplayDepartmentDto;
 import finki.ukim.backend.administration.service.application.DepartmentApplicationService;
 import finki.ukim.backend.administration.service.domain.DepartmentService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,13 +23,13 @@ public class DepartmentApplicationServiceImpl implements DepartmentApplicationSe
     }
 
     @Override
-    public Optional<DisplayDepartmentDto> findById(Long id) {
-        return departmentService.findById(id).map(DisplayDepartmentDto::from);
+    public DisplayDepartmentDto findById(Long id) {
+        return DisplayDepartmentDto.from(departmentService.findById(id));
     }
 
     @Override
-    public Optional<DisplayDepartmentDto> findByName(String name) {
-        return departmentService.findByName(name).map(DisplayDepartmentDto::from);
+    public DisplayDepartmentDto findByName(String name) {
+        return DisplayDepartmentDto.from(departmentService.findByName(name));
     }
 
     @Override
@@ -37,16 +38,19 @@ public class DepartmentApplicationServiceImpl implements DepartmentApplicationSe
     }
 
     @Override
-    public Optional<DisplayDepartmentDto> update(Long id, CreateDepartmentDto createDepartmentDto) {
-        return departmentService
-                .update(id, createDepartmentDto.toDepartment())
-                .map(DisplayDepartmentDto::from);
+    public DisplayDepartmentDto update(Long id, CreateDepartmentDto createDepartmentDto) {
+        return DisplayDepartmentDto.from(departmentService.update(id, createDepartmentDto.toDepartment()));
     }
 
     @Override
-    public Optional<DisplayDepartmentDto> deleteById(Long id) {
+    public DisplayDepartmentDto deleteById(Long id) {
+        return DisplayDepartmentDto.from(departmentService.deleteById(id));
+    }
+
+    @Override
+    public Page<DisplayDepartmentDto> findAll(int page, int size, String sortBy, Long id, String text) {
         return departmentService
-                .deleteById(id)
+                .findAll(page, size, sortBy, id, text)
                 .map(DisplayDepartmentDto::from);
     }
 }

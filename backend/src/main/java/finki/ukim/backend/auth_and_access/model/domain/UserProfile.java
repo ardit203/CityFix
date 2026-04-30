@@ -22,7 +22,7 @@ public class UserProfile {
     private Long userId;
 
     @MapsId
-    @OneToOne(optional = false, fetch = FetchType.EAGER)
+    @OneToOne(optional = false, fetch = FetchType.LAZY)
     private User user;
 
     @NotBlank
@@ -43,7 +43,7 @@ public class UserProfile {
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_picture_id")
     private File profilePicture;
 

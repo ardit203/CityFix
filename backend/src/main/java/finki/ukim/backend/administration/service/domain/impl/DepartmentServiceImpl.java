@@ -1,9 +1,14 @@
 package finki.ukim.backend.administration.service.domain.impl;
 
 import finki.ukim.backend.administration.model.domain.Department;
+import finki.ukim.backend.administration.model.exception.DepartmentNotFoundException;
 import finki.ukim.backend.administration.repository.DepartmentRepository;
 import finki.ukim.backend.administration.service.domain.DepartmentService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,13 +25,15 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public Optional<Department> findById(Long id) {
-        return departmentRepository.findById(id);
+    public Department findById(Long id) {
+        return departmentRepository.findById(id)
+                .orElseThrow(() -> new DepartmentNotFoundException(id));
     }
 
     @Override
-    public Optional<Department> findByName(String name) {
-        return departmentRepository.findByName(name);
+    public Department findByName(String name) {
+        return departmentRepository.findByName(name)
+                .orElseThrow(() -> new DepartmentNotFoundException(name));
     }
 
     @Override
@@ -35,19 +42,29 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public Optional<Department> update(Long id, Department department) {
-        return findById(id)
-                .map(existingDepartment -> {
-                    existingDepartment.setName(department.getName());
-                    existingDepartment.setDescription(department.getDescription());
-                    return departmentRepository.save(existingDepartment);
-                });
+    public Department update(Long id, Department department) {
+        Department existingDepartment = findById(id);
+
+        if (department.getName() != null) {
+            existingDepartment.setName(department.getName());
+        }
+        if (department.getDescription() != null) {
+            existingDepartment.setDescription(department.getDescription());
+        }
+        return departmentRepository.save(existingDepartment);
+
     }
 
     @Override
-    public Optional<Department> deleteById(Long id) {
-        Optional<Department> department = findById(id);
-        department.ifPresent(departmentRepository::delete);
+    public Department deleteById(Long id) {
+        Department department = findById(id);
+        departmentRepository.delete(department);
         return department;
+    }
+
+    @Override
+    public Page<Department> findAll(int page, int size, String sortBy, Long id, String text) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).and(Sort.by("createdAt")));
+        return departmentRepository.findFiltered(id, text, pageable);
     }
 }

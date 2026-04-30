@@ -8,6 +8,6 @@ public class FileNotFoundException extends ResourceNotFoundException {
     }
 
         public FileNotFoundException(Long id) {
-            super(String.format("File with ID '%d' does not exist.", id));
+            super(String.format("File with id '%d' does not exist.", id));
         }
 }

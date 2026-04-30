@@ -5,6 +5,7 @@ import finki.ukim.backend.administration.model.dto.DisplayMunicipalityDto;
 import finki.ukim.backend.administration.service.application.MunicipalityApplicationService;
 import finki.ukim.backend.administration.service.domain.MunicipalityService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,18 +22,13 @@ public class MunicipalityApplicationServiceImpl implements MunicipalityApplicati
     }
 
     @Override
-    public Optional<DisplayMunicipalityDto> findById(Long id) {
-        return municipalityService.findById(id).map(DisplayMunicipalityDto::from);
+    public DisplayMunicipalityDto findById(Long id) {
+        return DisplayMunicipalityDto.from(municipalityService.findById(id));
     }
 
     @Override
-    public Optional<DisplayMunicipalityDto> findByName(String name) {
-        return municipalityService.findByName(name).map(DisplayMunicipalityDto::from);
-    }
-
-    @Override
-    public Optional<DisplayMunicipalityDto> findByCode(String code) {
-        return municipalityService.findByCode(code).map(DisplayMunicipalityDto::from);
+    public DisplayMunicipalityDto findByCode(String code) {
+        return DisplayMunicipalityDto.from(municipalityService.findByCode(code));
     }
 
     @Override
@@ -43,16 +39,19 @@ public class MunicipalityApplicationServiceImpl implements MunicipalityApplicati
     }
 
     @Override
-    public Optional<DisplayMunicipalityDto> update(Long id, CreateMunicipalityDto createMunicipalityDto) {
-        return municipalityService
-                .update(id, createMunicipalityDto.toMunicipality())
-                .map(DisplayMunicipalityDto::from);
+    public DisplayMunicipalityDto update(Long id, CreateMunicipalityDto createMunicipalityDto) {
+        return DisplayMunicipalityDto.from(municipalityService.update(id, createMunicipalityDto.toMunicipality()));
     }
 
     @Override
-    public Optional<DisplayMunicipalityDto> deleteById(Long id) {
+    public DisplayMunicipalityDto deleteById(Long id) {
+        return DisplayMunicipalityDto.from(municipalityService.deleteById(id));
+    }
+
+    @Override
+    public Page<DisplayMunicipalityDto> findAll(int page, int size, String sortBy, Long id, String code, String name) {
         return municipalityService
-                .deleteById(id)
+                .findAll(page, size, sortBy, id, code, name)
                 .map(DisplayMunicipalityDto::from);
     }
 }

@@ -35,15 +35,15 @@ public class JwtWebSecurityConfig {
                                 response.sendError(HttpServletResponse.SC_FORBIDDEN))
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/api/user/register",
-                                "/api/user/login",
-                                "/api/password-reset/**"
-                        ).permitAll()
-                        .requestMatchers("/api/user/me").authenticated()
-                        .anyRequest().authenticated()
+                                .anyRequest()
+                                .permitAll()
+//                        .requestMatchers(
+//                                "/swagger-ui/**",
+//                                "/v3/api-docs/**",
+//                                "/api/auth/**"
+//                        ).permitAll()
+//                        .requestMatchers("/api/user/me").authenticated()
+//                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

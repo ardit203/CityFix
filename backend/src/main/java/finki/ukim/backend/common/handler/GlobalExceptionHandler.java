@@ -85,12 +85,12 @@ public class GlobalExceptionHandler {
                 .body(ApiError.of(HttpStatus.BAD_REQUEST, "Request body is missing or invalid"));
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ApiError> handleDataIntegrity(DataIntegrityViolationException exception) {
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(ApiError.of(HttpStatus.CONFLICT, "Database constraint violation"));
-    }
+//    @ExceptionHandler(DataIntegrityViolationException.class)
+//    public ResponseEntity<ApiError> handleDataIntegrity(DataIntegrityViolationException exception) {
+//        return ResponseEntity
+//                .status(HttpStatus.CONFLICT)
+//                .body(ApiError.of(HttpStatus.CONFLICT, exception.getMessage()));
+//    }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiError> handleAccessDenied(AccessDeniedException exception) {

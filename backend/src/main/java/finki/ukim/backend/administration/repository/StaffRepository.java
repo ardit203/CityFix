@@ -1,6 +1,11 @@
 package finki.ukim.backend.administration.repository;
 
 import finki.ukim.backend.administration.model.domain.Staff;
+import finki.ukim.backend.administration.model.projection.CategoryPageableProjection;
+import finki.ukim.backend.administration.model.projection.StaffPageableProjection;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -27,11 +32,20 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
     Optional<Staff> findStaffById(@Param("id") Long id);
 
     /// //////////////////////////////////////////////////////////////////////////////////////
+    @EntityGraph(attributePaths = {"user", "department", "municipality"})
     @Query("""
             select s from Staff s
-            where s.user.username = :username
+            where s.user.id = :userId
             """)
-    Optional<Staff> findByUsername(@Param("username") String username);
+    Optional<Staff> findByUserId(@Param("userId") Long userId);
+
+
+    @EntityGraph(attributePaths = {"municipality"})
+    @Query("""
+            select s from Staff s
+            where s.user.id = :userId
+            """)
+    Optional<Staff> findByUserIdWithMunicipality(@Param("userId") Long userId);
 
     @Query("""
             select s from Staff s
@@ -83,12 +97,65 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
             join fetch s.user
             join fetch s.department
             join fetch s.municipality
-            where s.user.username = :username
+            where s.user.id = :userId
             and s.department.id = :departmentId
             and s.municipality.id = :municipalityId""")
     Optional<Staff> find(
-            @Param("username") String username,
+            @Param("userId") Long userId,
             @Param("departmentId") Long departmentId,
             @Param("municipalityId") Long municipalityId
     );
+
+
+    @Query("""
+                select s.id as id,
+                       p.name as name,
+                       p.surname as surname,
+                       u.email as email,
+                       u.username as username,
+                       d.name as departmentName,
+                       m.name as municipalityName,
+                       m.code as municipalityCode
+                from Staff s
+                join s.user u
+                join u.profile p
+                join s.department d
+                join s.municipality m
+                where (:id is null or s.id = :id)
+                  and (:userId is null or u.id = :userId)
+                  and (:departmentId is null or d.id = :departmentId)
+                  and (:municipalityId is null or m.id = :municipalityId)
+                  and (
+                        :username is null
+                        or lower(u.username) like lower(concat('%', :username, '%'))
+                      )
+                  and (
+                        :municipalityCode is null
+                        or lower(m.code) like lower(concat('%', :municipalityCode, '%'))
+                      )
+                  and (
+                        :municipalityName is null
+                        or lower(m.name) like lower(concat('%', :municipalityName, '%'))
+                      )
+            """)
+    Page<StaffPageableProjection> findFiltered(
+            @Param("id") Long id,
+            @Param("userId") Long userId,
+            @Param("departmentId") Long departmentId,
+            @Param("municipalityId") Long municipalityId,
+            @Param("username") String username,
+            @Param("municipalityCode") String municipalityCode,
+            @Param("municipalityName") String municipalityName,
+            Pageable pageable
+    );
+
+
+    List<Staff> findByDepartmentIdAndMunicipalityId(Long departmentId, Long municipalityId);
+
+    @EntityGraph(attributePaths = {"user", "department", "municipality"})
+    @Query("""
+                select s from Staff s
+                where s.municipality.id = :municipalityId
+            """)
+    List<Staff> findAllWithAllByMunicipalityId(@Param("municipalityId") Long municipalityId);
 }

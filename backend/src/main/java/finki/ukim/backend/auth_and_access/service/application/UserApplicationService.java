@@ -1,23 +1,38 @@
 package finki.ukim.backend.auth_and_access.service.application;
 
 import finki.ukim.backend.auth_and_access.model.dto.*;
+import finki.ukim.backend.auth_and_access.model.enums.Role;
+import finki.ukim.backend.auth_and_access.model.projection.UserWithIdUsernameAndEmail;
+import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public interface UserApplicationService {
-    Optional<DisplayUserDto> register(CreateUserDto createUserDto);
+    DisplayUserDto findById(Long id);
 
-    Optional<LoginUserResponseDto> login(LoginUserRequestDto loginUserRequestDto);
+    DisplayUserDto updateAccount(Long id, UpdateMyAccountDto updateMyAccountDto);
 
-    Optional<DisplayBasicUserDto> findByUsername(String username);
+    DisplayUserDto updateProfile(Long id, UpdateMyProfileDto updateMyProfileDto);
 
-    Optional<DisplayBasicUserDto> findByEmail(String email);
+    DisplayUserDto changePassword(Long id, ChangePasswordDto changePasswordDto);
 
-    Optional<DisplayBasicUserDto> update(Long id, CreateBasicUserDto createBasicUserDto);
+    DisplayUserDto updateProfilePicture(Long id, MultipartFile file);
 
-    Optional<DisplayBasicUserDto> changePassword(String username, ChangePasswordDto changePasswordDto);
+    DisplayUserDto deleteProfilePicture(Long id);
 
-    Optional<DisplayBasicUserDto> deleteByUsername(String username);
+    List<UserWithIdUsernameAndEmail> findAll();
 
-    Optional<DisplayBasicUserDto> deleteById(Long id);
+    Page<DisplayUserPageableDto> findAll(int page, int size, String sortBy, Long id, String username, String email, Role role);
+
+    DisplayUserDto deleteById(Long id);
+
+    DisplayUserDto changeRole(Long id, Role role);
+
+    DisplayUserDto lock(Long id, LocalDateTime until);
+
+    DisplayUserDto unlock(Long id);
+
+    DisplayUserDto adminUpdate(Long id, AdminUpdateUserDto adminUpdateUserDto);
 }

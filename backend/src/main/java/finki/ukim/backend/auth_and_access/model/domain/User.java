@@ -5,7 +5,6 @@ import finki.ukim.backend.auth_and_access.model.enums.Role;
 import finki.ukim.backend.common.model.BaseAuditableEntity;
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
@@ -68,6 +67,14 @@ public class User extends BaseAuditableEntity implements UserDetails {
         this.role = role;
     }
 
+    public User(String username, String password, String email, Role role, Boolean notificationsEnabled) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.notificationsEnabled = notificationsEnabled;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(role);
@@ -76,5 +83,10 @@ public class User extends BaseAuditableEntity implements UserDetails {
 
     public Boolean isLocked() {
         return lockedUntil != null && lockedUntil.isAfter(LocalDateTime.now());
+    }
+
+    public void setProfile(UserProfile userProfile) {
+        this.profile = userProfile;
+        profile.setUser(this);
     }
 }

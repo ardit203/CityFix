@@ -2,6 +2,9 @@ package finki.ukim.backend.auth_and_access.model.dto;
 
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.enums.Role;
+import finki.ukim.backend.auth_and_access.model.projection.UserProjection;
+
+import java.util.List;
 
 public record DisplayUserDto(
         Long id,
@@ -9,16 +12,18 @@ public record DisplayUserDto(
         String email,
         Role role,
         Boolean notificationsEnabled,
-        DisplayUserProfileDto userProfile
+        DisplayUserProfileDto profile
 ) {
-    public static DisplayUserDto from(User user, DisplayUserProfileDto displayUserProfileDto) {
+    public static DisplayUserDto from(User user) {
         return new DisplayUserDto(
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
                 user.getRole(),
                 user.getNotificationsEnabled(),
-                displayUserProfileDto
+                DisplayUserProfileDto.from(user.getProfile())
         );
     }
+
+
 }

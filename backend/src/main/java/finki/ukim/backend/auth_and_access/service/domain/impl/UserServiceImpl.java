@@ -1,98 +1,136 @@
 package finki.ukim.backend.auth_and_access.service.domain.impl;
 
-import finki.ukim.backend.auth_and_access.constants.PasswordConstants;
-import finki.ukim.backend.auth_and_access.helper.PasswordHelper;
+import finki.ukim.backend.auth_and_access.model.domain.Address;
 import finki.ukim.backend.auth_and_access.model.domain.User;
+import finki.ukim.backend.auth_and_access.model.domain.UserProfile;
 import finki.ukim.backend.auth_and_access.model.enums.Role;
 import finki.ukim.backend.auth_and_access.model.exception.*;
+import finki.ukim.backend.auth_and_access.model.projection.UserProjection;
+import finki.ukim.backend.auth_and_access.model.projection.UserWithIdUsernameAndEmail;
 import finki.ukim.backend.auth_and_access.repository.UserRepository;
 import finki.ukim.backend.auth_and_access.service.domain.PasswordService;
 import finki.ukim.backend.auth_and_access.service.domain.UserService;
+import finki.ukim.backend.file_handling.helper.FileHelper;
+import finki.ukim.backend.file_handling.model.domain.File;
+import finki.ukim.backend.file_handling.model.enums.FileType;
+import finki.ukim.backend.file_handling.model.exception.FileErrorException;
+import finki.ukim.backend.file_handling.service.domain.FileService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.List;
 
 @AllArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordService passwordService;
-    private static final int MAX_FAILED_ATTEMPTS = 5;
+    private final FileService fileService;
+    private final FileHelper fileHelper;
 
     @Override
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
     }
 
     @Override
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
     }
 
     @Override
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+    public List<UserWithIdUsernameAndEmail> findAll() {
+        return userRepository.findAllWithIdUsernameAndEmail();
     }
 
     @Override
-    public User register(User user, String confirmPassword) {
-        if (userRepository.existsByUsername(user.getUsername())) {
-            throw new UsernameAlreadyExistsException(user.getUsername());
-        }
+    public Page<UserProjection> findAll(int page, int size, String sortBy, Long id, String username, String email, Role role) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).and(Sort.by("createdAt")));
 
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new EmailAlreadyExistsException(user.getEmail());
-        }
-
-        String encodedPassword = passwordService.preparePasswordForRegistration(
-                user.getPassword(),
-                confirmPassword
-        );
-
-        user.setPassword(encodedPassword);
-        return userRepository.save(user);
+        return userRepository.findFiltered(id, username, email, role, pageable);
     }
 
     @Override
-    public User login(String username, String password) {
-        User user = userRepository
-                .findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException(username));
+    public User adminUpdateUser(Long id, User user) {
+        User existingUser = findByIdWithProfileAndPic(id);
 
-        if (user.isLocked()) {
-            throw new AccountLockedException(username, user.getLockedUntil());
-        }
-
-        if (!passwordService.matches(password, user.getPassword())) {
-            handleFailedLogin(user);
-            throw new InvalidUserCredentialsException();
-        }
-        return handleSuccessfulLogin(user);
-    }
-
-    @Override
-    @Transactional
-    public Optional<User> update(Long id, String username, String email, Role role, Boolean notificationsEnabled) {
-        return findById(id).map(existing -> {
-            if (userRepository.existsByUsername(username)) {
-                throw new UsernameAlreadyExistsException(username);
+        if (user.getUsername() != null && !user.getUsername().equals(existingUser.getUsername())) {
+            if (userRepository.existsByUsername(user.getUsername())) {
+                throw new UsernameAlreadyExistsException(user.getUsername());
             }
-            if (userRepository.existsByEmail(email)) {
-                throw new EmailAlreadyExistsException(email);
+            existingUser.setUsername(user.getUsername());
+        }
+
+        if (user.getEmail() != null && !user.getEmail().equals(existingUser.getEmail())) {
+            if (userRepository.existsByEmail(user.getEmail())) {
+                throw new EmailAlreadyExistsException(user.getEmail());
             }
-            existing.setUsername(username);
-            existing.setEmail(email);
-            existing.setRole(role);
-            existing.setNotificationsEnabled(notificationsEnabled);
-            return userRepository.save(existing);
-        });
+            existingUser.setEmail(user.getEmail());
+
+            // Optional but recommended:
+            // user.setEmailVerified(false);
+            // send verification email
+        }
+
+        if (user.getNotificationsEnabled() != null) {
+            existingUser.setNotificationsEnabled(user.getNotificationsEnabled());
+        }
+
+        if (user.getProfile() != null) {
+            if (existingUser.getProfile() == null) {
+                existingUser.setProfile(user.getProfile());
+            } else {
+                UserProfile existingProfile = existingUser.getProfile();
+                UserProfile newProfile = user.getProfile();
+
+                if (newProfile.getName() != null) {
+                    existingProfile.setName(newProfile.getName());
+                }
+                if (newProfile.getSurname() != null) {
+                    existingProfile.setSurname(newProfile.getSurname());
+                }
+                if (newProfile.getPhoneNumber() != null) {
+                    existingProfile.setPhoneNumber(newProfile.getPhoneNumber());
+                }
+                if (newProfile.getAddress() != null) {
+                    existingProfile.setAddress(newProfile.getAddress());
+                }
+                if (newProfile.getDateOfBirth() != null) {
+                    existingProfile.setDateOfBirth(newProfile.getDateOfBirth());
+                }
+                if (newProfile.getGender() != null) {
+                    existingProfile.setGender(newProfile.getGender());
+                }
+            }
+        }
+
+        return userRepository.save(existingUser);
+
     }
+
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+    }
+
+    @Override
+    public User findByIdWithProfile(Long id) {
+        return userRepository.findByIdWithProfile(id).orElseThrow(() -> new UserNotFoundException(id));
+    }
+
+    @Override
+    public User findByIdWithProfileAndPic(Long id) {
+        return userRepository.findByIdWithProfileAndPic(id).orElseThrow(() -> new UserNotFoundException(id));
+    }
+
 
     @Override
     public User save(User user) {
@@ -100,72 +138,146 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> deleteById(Long id) {
-        Optional<User> user = findById(id);
-        user.ifPresent(userRepository::delete);
-        return user;
-    }
+    public User updateAccount(Long id, User user) {
+        User existing = findByIdWithProfileAndPic(id);
 
-    @Override
-    public Optional<User> deleteByUsername(String username) {
-        Optional<User> user = findByUsername(username);
-        user.ifPresent(userRepository::delete);
-        return user;
-    }
-
-    @Override
-    public Optional<User> changePassword(String username, String currentPassword, String newPassword, String confirmNewPassword) {
-        return findByUsername(username).map(user -> {
-            String encodedNewPassword = passwordService.preparePasswordForChange(
-                    currentPassword,
-                    user.getPassword(),
-                    newPassword,
-                    confirmNewPassword
-            );
-
-            user.setPassword(encodedNewPassword);
-            return userRepository.save(user);
-        });
-    }
-
-    @Override
-    public void handleFailedLogin(User user) {
-        int failedAttempts = user.getFailedLoginAttempts() + 1;
-
-        if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
-            user.setFailedLoginAttempts(0);
-            user.setLockLevel(user.getLockLevel() + 1);
-            user.setLockedUntil(calculateLockedUntil(user.getLockLevel()));
-        } else {
-            user.setFailedLoginAttempts(failedAttempts);
+        if (user.getUsername() != null && !user.getUsername().equals(existing.getUsername())) {
+            if (userRepository.existsByUsername(user.getUsername())) {
+                throw new UsernameAlreadyExistsException(user.getUsername());
+            }
+            existing.setUsername(user.getUsername());
         }
 
-        userRepository.save(user);
+        if (user.getEmail() != null && !user.getEmail().equals(existing.getEmail())) {
+            if (userRepository.existsByEmail(user.getEmail())) {
+                throw new EmailAlreadyExistsException(user.getEmail());
+            }
+            existing.setEmail(user.getEmail());
+
+            // Optional but recommended:
+            // user.setEmailVerified(false);
+            // send verification email
+        }
+
+        if (user.getNotificationsEnabled() != null) {
+            existing.setNotificationsEnabled(user.getNotificationsEnabled());
+        }
+
+        return userRepository.save(existing);
+
+
     }
 
     @Override
-    public User handleSuccessfulLogin(User user) {
-        user.setFailedLoginAttempts(0);
-        user.setLockedUntil(null);
-        user.setLockLevel(0);
+    public User updateProfile(Long id, UserProfile userProfile) {
+        User existing = findByIdWithProfileAndPic(id);
+
+        if (userProfile.getName() != null) {
+            existing.getProfile().setName(userProfile.getName());
+        }
+
+        if (userProfile.getSurname() != null) {
+            existing.getProfile().setSurname(userProfile.getSurname());
+        }
+
+        if (userProfile.getPhoneNumber() != null) {
+            existing.getProfile().setPhoneNumber(userProfile.getPhoneNumber());
+        }
+
+        if (userProfile.getAddress() != null) {
+            Address address = new Address(userProfile.getAddress().getStreet(), userProfile.getAddress().getCity(), userProfile.getAddress().getPostalCode());
+            existing.getProfile().setAddress(address);
+        }
+
+        if (userProfile.getDateOfBirth() != null) {
+            existing.getProfile().setDateOfBirth(userProfile.getDateOfBirth());
+        }
+
+        if (userProfile.getGender() != null) {
+            existing.getProfile().setGender(userProfile.getGender());
+        }
+
+        return userRepository.save(existing);
+
+    }
+
+    @Override
+    public User updateProfilePicture(Long id, MultipartFile profilePicture) {
+        if (!fileHelper.isImage(profilePicture)) {
+            throw new FileErrorException("The provided profile picture is not an image file.");
+        }
+        User existingUser = findByIdWithProfileAndPic(id);
+
+        File file;
+        File existingFile = existingUser.getProfile().getProfilePicture();
+
+        if (existingFile != null) {
+            file = fileService.update(existingFile.getId(), profilePicture);
+        } else {
+            file = fileService.create(profilePicture, "profile");
+        }
+
+        existingUser.getProfile().setProfilePicture(file);
+
+        return userRepository.save(existingUser);
+    }
+
+    @Override
+    public User deleteProfilePicture(Long id) {
+        User existing = findByIdWithProfileAndPic(id);
+        Long fileId = existing.getProfile().getProfilePicture().getId();
+        existing.getProfile().setProfilePicture(null);
+        fileService.deleteById(fileId);
+        return userRepository.save(existing);
+    }
+
+    @Override
+    public User deleteById(Long id) {
+        User user = findById(id);
+        userRepository.delete(user);
+        return user;
+    }
+
+    @Override
+    public User changeRole(Long id, Role role) {
+        User existing = findById(id);
+        existing.setRole(role);
+        return userRepository.save(existing);
+    }
+
+    @Override
+    public User lock(Long id, LocalDateTime until) {
+        User existing = findById(id);
+        existing.setLockedUntil(until);
+        return userRepository.save(existing);
+    }
+
+    @Override
+    public User unlock(Long id) {
+        User existing = findById(id);
+        existing.setLockedUntil(null);
+        existing.setFailedLoginAttempts(0);
+        existing.setLockLevel(0);
+        return userRepository.save(existing);
+
+    }
+
+    @Override
+    public User changePassword(Long id, String currentPassword, String newPassword, String confirmNewPassword) {
+        User user = findByIdWithProfileAndPic(id);
+        String encodedNewPassword = passwordService.preparePasswordForChange(
+                currentPassword,
+                user.getPassword(),
+                newPassword,
+                confirmNewPassword
+        );
+
+        user.setPassword(encodedNewPassword);
         return userRepository.save(user);
     }
 
     @Override
-    public LocalDateTime calculateLockedUntil(int lockLevel) {
-        return switch (lockLevel) {
-            case 1 -> LocalDateTime.now().plusMinutes(5);
-            case 2 -> LocalDateTime.now().plusMinutes(30);
-            case 3 -> LocalDateTime.now().plusHours(2);
-            case 4 -> LocalDateTime.now().plusHours(24);
-            default -> LocalDateTime.now().plusDays(30);
-        };
-    }
-
-    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository
-                .findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username));
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
     }
 }

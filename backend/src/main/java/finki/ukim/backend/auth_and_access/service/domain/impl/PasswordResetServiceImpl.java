@@ -3,14 +3,14 @@ package finki.ukim.backend.auth_and_access.service.domain.impl;
 import finki.ukim.backend.auth_and_access.helper.PasswordResetHelper;
 import finki.ukim.backend.auth_and_access.model.domain.PasswordResetToken;
 import finki.ukim.backend.auth_and_access.model.domain.User;
-import finki.ukim.backend.auth_and_access.model.exception.InvalidTokenException;
-import finki.ukim.backend.auth_and_access.model.exception.TokenNotFoundException;
-import finki.ukim.backend.auth_and_access.model.exception.UserWithEmailDoesNotExistException;
+import finki.ukim.backend.auth_and_access.model.exception.*;
 import finki.ukim.backend.auth_and_access.repository.PasswordResetTokenRepository;
 import finki.ukim.backend.auth_and_access.service.domain.PasswordResetService;
 import finki.ukim.backend.auth_and_access.service.domain.PasswordService;
 import finki.ukim.backend.auth_and_access.service.domain.UserService;
+import finki.ukim.backend.notification.model.events.PasswordResetEvent;
 import lombok.AllArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,18 +27,12 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     private final PasswordResetHelper passwordResetHelper;
     private final UserService userService;
     private final PasswordService passwordService;
-    // private final EmailService emailService; // add your mail service here
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional
     public void requestPasswordReset(String email) {
-        Optional<User> optionalUser = userService.findByEmail(email);
-
-        if (optionalUser.isEmpty()) {
-            return;
-        }
-
-        User user = optionalUser.get();
+        User user = userService.findByEmail(email);
 
         passwordResetTokenRepository.invalidateAllActiveByUserId(user.getId());
 
@@ -49,13 +43,12 @@ public class PasswordResetServiceImpl implements PasswordResetService {
 
         passwordResetTokenRepository.save(passwordResetToken);
 
-        // Send the raw token in email, never the hash
-        // emailService.sendPasswordResetEmail(user.getEmail(), rawToken);
+        eventPublisher.publishEvent(new PasswordResetEvent(user, rawToken));
     }
 
     @Override
     @Transactional
-    public Optional<User> resetPassword(String token, String newPassword, String confirmPassword) {
+    public User resetPassword(String token, String newPassword, String confirmPassword) {
         PasswordResetToken passwordResetToken = passwordResetTokenRepository
                 .findByTokenHashWithUser(passwordResetHelper.hashToken(token))
                 .orElseThrow(TokenNotFoundException::new);
@@ -79,19 +72,22 @@ public class PasswordResetServiceImpl implements PasswordResetService {
                 passwordResetToken.getId()
         );
 
-        return Optional.of(userService.save(user));
+        return userService.save(user);
     }
 
     @Override
-    public Optional<PasswordResetToken> findByToken(String token) {
+    public PasswordResetToken findByToken(String token) {
         return passwordResetTokenRepository.findByTokenHash(
-                passwordResetHelper.hashToken(token)
-        );
+                        passwordResetHelper.hashToken(token)
+                )
+                .orElseThrow(InvalidTokenException::new);
     }
 
     @Override
-    public Optional<PasswordResetToken> findActiveByUserId(Long userId) {
-        return passwordResetTokenRepository.findActiveByUserId(userId);
+    public PasswordResetToken findActiveByUserId(Long userId) {
+        return passwordResetTokenRepository
+                .findActiveByUserId(userId)
+                .orElseThrow(() -> new NoActiveTokenException(userId));
     }
 
     @Override

@@ -4,28 +4,45 @@ import finki.ukim.backend.administration.model.domain.Staff;
 import finki.ukim.backend.administration.model.dto.CreateStaffDto;
 import finki.ukim.backend.administration.model.dto.DisplayBasicStaffDto;
 import finki.ukim.backend.administration.model.dto.DisplayStaffDto;
+import finki.ukim.backend.administration.model.dto.DisplayStaffPageableDto;
+import finki.ukim.backend.auth_and_access.model.domain.User;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface StaffApplicationService {
-    List<DisplayBasicStaffDto> findAll();
+    List<DisplayBasicStaffDto> findAll(User user);
 
-    List<DisplayStaffDto> findAllWithAll();
+    List<DisplayStaffDto> findAllWithAll(User user);
 
-    Optional<DisplayStaffDto> findById(Long id);
+    Page<DisplayStaffPageableDto> findAll(
+            User user,
+            int page,
+            int size,
+            String sortBy,
+            Long id,
+            Long userId,
+            Long departmentId,
+            Long municipalityId,
+            String username,
+            String municipalityCode,
+            String municipalityName
+    );
 
-    Optional<DisplayStaffDto> find(CreateStaffDto createStaffDto);
+    DisplayStaffDto findById(Long id, User user);
 
-    Optional<DisplayStaffDto> findByUsername(String username);
+    DisplayStaffDto find(User user, CreateStaffDto createStaffDto);
 
-    List<DisplayBasicStaffDto> findByDepartmentId(Long departmentId);
+    DisplayStaffDto findByUserId(User user, Long userId);
 
-    List<DisplayBasicStaffDto> findByMunicipalityId(Long municipalityId);
+    List<DisplayBasicStaffDto> findByDepartmentId(User user, Long departmentId);
 
-    DisplayStaffDto create(CreateStaffDto createStaffDto);
+    List<DisplayBasicStaffDto> findByMunicipalityId(User user, Long municipalityId);
 
-    Optional<DisplayBasicStaffDto> update(Long id, CreateStaffDto createStaffDto);
+    DisplayStaffDto create(User user, CreateStaffDto createStaffDto);
 
-    Optional<DisplayBasicStaffDto> deleteById(Long id);
+    DisplayBasicStaffDto update(Long id, User user, CreateStaffDto createStaffDto);
+
+    DisplayBasicStaffDto deleteById(Long id, User user);
 }

@@ -4,6 +4,7 @@ import finki.ukim.backend.administration.model.dto.CreateMunicipalityDto;
 import finki.ukim.backend.administration.model.dto.DisplayMunicipalityDto;
 import finki.ukim.backend.administration.service.application.MunicipalityApplicationService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,25 +21,35 @@ public class MunicipalityController {
         return ResponseEntity.ok(municipalityApplicationService.findAll());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<DisplayMunicipalityDto> findById(@PathVariable Long id) {
-        return municipalityApplicationService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/paged")
+    public ResponseEntity<Page<DisplayMunicipalityDto>> findAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String code,
+            @RequestParam(required = false) String name
+    ) {
+        return ResponseEntity.ok(
+                municipalityApplicationService.findAll(
+                        page,
+                        size,
+                        sortBy,
+                        id,
+                        code,
+                        name
+                )
+        );
     }
 
-    @GetMapping("/name/{name}")
-    public ResponseEntity<DisplayMunicipalityDto> findByName(@PathVariable String name) {
-        return municipalityApplicationService.findByName(name)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/{id}")
+    public ResponseEntity<DisplayMunicipalityDto> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(municipalityApplicationService.findById(id));
     }
 
     @GetMapping("/code/{code}")
     public ResponseEntity<DisplayMunicipalityDto> findByCode(@PathVariable String code) {
-        return municipalityApplicationService.findByCode(code)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(municipalityApplicationService.findByCode(code));
     }
 
     @PostMapping
@@ -48,15 +59,11 @@ public class MunicipalityController {
 
     @PutMapping("/{id}")
     public ResponseEntity<DisplayMunicipalityDto> update(@PathVariable Long id, @RequestBody CreateMunicipalityDto createMunicipalityDto) {
-        return municipalityApplicationService.update(id, createMunicipalityDto)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(municipalityApplicationService.update(id, createMunicipalityDto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<DisplayMunicipalityDto> delete(@PathVariable Long id) {
-        return municipalityApplicationService.deleteById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(municipalityApplicationService.deleteById(id));
     }
 }

@@ -1,6 +1,7 @@
 package finki.ukim.backend.administration.service.domain;
 
 import finki.ukim.backend.administration.model.domain.Municipality;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,16 +9,15 @@ import java.util.Optional;
 public interface MunicipalityService {
     List<Municipality> findAll();
 
-    Optional<Municipality> findById(Long id);
+    Municipality findById(Long id);
 
-    Optional<Municipality> findByName(String name);
-
-    Optional<Municipality> findByCode(String code);
-
+    Municipality findByCode(String code);
 
     Municipality create(Municipality municipality);
 
-    Optional<Municipality> update(Long id, Municipality municipality);
+    Municipality update(Long id, Municipality municipality);
 
-    Optional<Municipality> deleteById(Long id);
+    Municipality deleteById(Long id);
+
+    Page<Municipality> findAll(int page, int size, String sortBy, Long id, String code, String name);
 }

@@ -4,6 +4,7 @@ import finki.ukim.backend.administration.model.dto.CreateDepartmentDto;
 import finki.ukim.backend.administration.model.dto.DisplayDepartmentDto;
 import finki.ukim.backend.administration.service.application.DepartmentApplicationService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,18 +21,33 @@ public class DepartmentController {
         return ResponseEntity.ok(departmentApplicationService.findAll());
     }
 
+    @GetMapping("/paged")
+    public ResponseEntity<Page<DisplayDepartmentDto>> findAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String text
+    ) {
+        return ResponseEntity.ok(
+                departmentApplicationService.findAll(
+                        page,
+                        size,
+                        sortBy,
+                        id,
+                        text
+                )
+        );
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<DisplayDepartmentDto> findById(@PathVariable Long id) {
-        return departmentApplicationService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(departmentApplicationService.findById(id));
     }
 
     @GetMapping("/name/{name}")
     public ResponseEntity<DisplayDepartmentDto> findByName(@PathVariable String name) {
-        return departmentApplicationService.findByName(name)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(departmentApplicationService.findByName(name));
     }
 
     @PostMapping
@@ -41,15 +57,11 @@ public class DepartmentController {
 
     @PutMapping("/{id}")
     public ResponseEntity<DisplayDepartmentDto> update(@PathVariable Long id, @RequestBody CreateDepartmentDto createDepartmentDto) {
-        return departmentApplicationService.update(id, createDepartmentDto)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(departmentApplicationService.update(id, createDepartmentDto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<DisplayDepartmentDto> delete(@PathVariable Long id) {
-        return departmentApplicationService.deleteById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(departmentApplicationService.deleteById(id));
     }
 }

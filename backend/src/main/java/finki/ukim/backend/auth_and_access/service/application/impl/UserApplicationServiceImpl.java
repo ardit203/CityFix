@@ -1,91 +1,98 @@
 package finki.ukim.backend.auth_and_access.service.application.impl;
 
-import finki.ukim.backend.auth_and_access.helper.JwtHelper;
-import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.dto.*;
-import finki.ukim.backend.auth_and_access.model.exception.UserNotFoundException;
+import finki.ukim.backend.auth_and_access.model.enums.Role;
+import finki.ukim.backend.auth_and_access.model.projection.UserWithIdUsernameAndEmail;
 import finki.ukim.backend.auth_and_access.service.application.UserApplicationService;
-import finki.ukim.backend.auth_and_access.service.application.UserProfileApplicationService;
 import finki.ukim.backend.auth_and_access.service.domain.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.List;
 
-@AllArgsConstructor
 @Service
+@AllArgsConstructor
 public class UserApplicationServiceImpl implements UserApplicationService {
     private final UserService userService;
-    private final JwtHelper jwtHelper;
-    private final UserProfileApplicationService userProfileApplicationService;
 
     @Override
-    public Optional<DisplayUserDto> register(CreateUserDto createUserDto) {
-        User user = userService.register(createUserDto.toUser(), createUserDto.confirmPassword());
-        DisplayUserProfileDto displayUserProfileDto = userProfileApplicationService
-                .create(
-                        user, createUserDto.userProfile()
-                );
-        return Optional.of(DisplayUserDto.from(user, displayUserProfileDto));
+    public DisplayUserDto findById(Long id) {
+        return DisplayUserDto.from(userService.findByIdWithProfileAndPic(id));
     }
 
     @Override
-    public Optional<LoginUserResponseDto> login(LoginUserRequestDto loginUserRequestDto) {
-        User user = userService.login(loginUserRequestDto.username(), loginUserRequestDto.password());
-
-        String token = jwtHelper.generateToken(user);
-
-        return Optional.of(new LoginUserResponseDto(token));
+    public DisplayUserDto updateAccount(Long id, UpdateMyAccountDto updateMyAccountDto) {
+        return DisplayUserDto.from(
+                userService.updateAccount(id, updateMyAccountDto.toUser())
+        );
     }
 
     @Override
-    public Optional<DisplayBasicUserDto> findByUsername(String username) {
-        return userService
-                .findByUsername(username)
-                .map(DisplayBasicUserDto::from);
+    public DisplayUserDto updateProfile(Long id, UpdateMyProfileDto updateMyProfileDto) {
+        return DisplayUserDto.from(
+                userService.updateProfile(id, updateMyProfileDto.toUserProfile())
+        );
     }
 
     @Override
-    public Optional<DisplayBasicUserDto> findByEmail(String email) {
-        return userService
-                .findByEmail(email)
-                .map(DisplayBasicUserDto::from);
-    }
-
-    @Override
-    public Optional<DisplayBasicUserDto> update(Long id, CreateBasicUserDto createBasicUserDto) {
-        return userService
-                .update(
+    public DisplayUserDto changePassword(Long id, ChangePasswordDto changePasswordDto) {
+        return DisplayUserDto.from(
+                userService.changePassword(
                         id,
-                        createBasicUserDto.username(),
-                        createBasicUserDto.email(),
-                        createBasicUserDto.role(),
-                        createBasicUserDto.notificationsEnabled()
-                )
-                .map(DisplayBasicUserDto::from);
-    }
-
-    @Override
-    public Optional<DisplayBasicUserDto> changePassword(String username, ChangePasswordDto changePasswordDto) {
-        return userService
-                .changePassword(
-                        username,
                         changePasswordDto.currentPassword(),
                         changePasswordDto.newPassword(),
                         changePasswordDto.confirmNewPassword()
                 )
-                .map(DisplayBasicUserDto::from);
+        );
     }
 
     @Override
-    public Optional<DisplayBasicUserDto> deleteByUsername(String username) {
-        return userService.deleteByUsername(username)
-                .map(DisplayBasicUserDto::from);
+    public DisplayUserDto updateProfilePicture(Long id, MultipartFile file) {
+        return DisplayUserDto.from(
+                userService.updateProfilePicture(id, file)
+        );
     }
 
     @Override
-    public Optional<DisplayBasicUserDto> deleteById(Long id) {
-        return userService.deleteById(id)
-                .map(DisplayBasicUserDto::from);
+    public DisplayUserDto deleteProfilePicture(Long id) {
+        return DisplayUserDto.from(userService.deleteProfilePicture(id));
+    }
+
+    @Override
+    public List<UserWithIdUsernameAndEmail> findAll() {
+        return userService.findAll();
+    }
+
+    @Override
+    public Page<DisplayUserPageableDto> findAll(int page, int size, String sortBy, Long id, String username, String email, Role role) {
+        return userService.findAll(page, size, sortBy, id, username, email, role).map(DisplayUserPageableDto::from);
+    }
+
+    @Override
+    public DisplayUserDto deleteById(Long id) {
+        return DisplayUserDto.from(userService.deleteById(id));
+    }
+
+    @Override
+    public DisplayUserDto changeRole(Long id, Role role) {
+        return DisplayUserDto.from(userService.changeRole(id, role));
+    }
+
+    @Override
+    public DisplayUserDto lock(Long id, LocalDateTime until) {
+        return DisplayUserDto.from(userService.lock(id, until));
+    }
+
+    @Override
+    public DisplayUserDto unlock(Long id) {
+        return DisplayUserDto.from(userService.unlock(id));
+    }
+
+    @Override
+    public DisplayUserDto adminUpdate(Long id, AdminUpdateUserDto adminUpdateUserDto) {
+        return DisplayUserDto.from(userService.adminUpdateUser(id, adminUpdateUserDto.toUser()));
     }
 }

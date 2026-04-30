@@ -24,9 +24,9 @@ create table user_profiles
     postal_code     varchar(255),
     date_of_birth   date,
     gender          varchar(50),
-    profile_picture_id bigserial,
+    profile_picture_id bigint,
     foreign key (user_id) references users (id) on delete cascade,
-    foreign key (profile_picture_id) references files (id) on delete cascade
+    foreign key (profile_picture_id) references files (id) on delete set null
 );
 
 create table password_reset_tokens

@@ -3,6 +3,7 @@ package finki.ukim.backend.auth_and_access.web.filter;
 import finki.ukim.backend.auth_and_access.constants.JwtConstants;
 import finki.ukim.backend.auth_and_access.helper.JwtHelper;
 import finki.ukim.backend.auth_and_access.model.domain.User;
+import finki.ukim.backend.auth_and_access.model.exception.UserNotFoundException;
 import finki.ukim.backend.auth_and_access.service.domain.UserService;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -32,9 +33,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-        @NonNull HttpServletRequest request,
-        @NonNull HttpServletResponse response,
-        @NonNull FilterChain filterChain
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         String headerValue = request.getHeader(JwtConstants.HEADER);
         if (headerValue == null || !headerValue.startsWith(JwtConstants.TOKEN_PREFIX)) {
@@ -52,27 +53,29 @@ public class JwtFilter extends OncePerRequestFilter {
                 return;
             }
 
-            Optional<User> user = userService.findByUsername(username);
-            if (user.isEmpty()) {
+            User user;
+            try {
+                user = userService.findByUsername(username);
+            } catch (UserNotFoundException e) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
             if (!jwtHelper.isExpired(token)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    user.get(),
-                    null,
-                    user.get().getAuthorities()
+                        user,
+                        null,
+                        user.getAuthorities()
                 );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         } catch (JwtException jwtException) {
             handlerExceptionResolver.resolveException(
-                request,
-                response,
-                null,
-                jwtException
+                    request,
+                    response,
+                    null,
+                    jwtException
             );
             return;
         }

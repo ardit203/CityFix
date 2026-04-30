@@ -23,48 +23,14 @@ public class FileConstants {
             FileType.PDF
     );
 
-
-    public static void setMaxFilesCount(Integer maxFilesCount) {
-        MAX_FILES_COUNT = maxFilesCount;
-    }
-
-    public static void setMaxFileSize(Long maxFileSize) {
-        MAX_FILE_SIZE = maxFileSize;
-    }
+    public static String PROFILE_PIC_DIR = "profile";
+    public static String REQUESTS_DIR = "requests";
 
     public static Long getMaxFileSizeInMB() {
         return MAX_FILE_SIZE / (1024 * 1024);
     }
 
-    public static Long getMaxTotalSizeInMB() {
-        return MAX_TOTAL_SIZE / (1024 * 1024);
-    }
-
-    public static void setMaxTotalSize(Long maxTotalSize) {
-        MAX_TOTAL_SIZE = maxTotalSize;
-    }
-
-
-    public static void setUploadDir(String uploadDir) {
-        UPLOAD_DIR = uploadDir;
-        setROOT(uploadDir);
-        setDefaultUrl(uploadDir + "/" + DEFAULT_DIR + "/");
-    }
-
-    public static void setDefaultDir(String defaultDir) {
-        DEFAULT_DIR = defaultDir;
-        setDefaultUrl(UPLOAD_DIR + "/" + DEFAULT_DIR + "/");
-    }
-
-    public static void setROOT(String path) {
-        FileConstants.ROOT = Path.of(path);
-    }
-
-    public static void setDefaultUrl(String defaultUrl) {
-        DEFAULT_URL = defaultUrl;
-    }
-
     public static String getBaseUrl(String directory) {
-        return UPLOAD_DIR + "/" + directory + "/";
+        return DEFAULT_URL + "/" + directory + "/";
     }
 }

@@ -1,28 +1,45 @@
 package finki.ukim.backend.administration.service.domain;
 
 import finki.ukim.backend.administration.model.domain.Staff;
+import finki.ukim.backend.administration.model.projection.StaffPageableProjection;
+import finki.ukim.backend.auth_and_access.model.domain.User;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface StaffService {
-    List<Staff> findAll();
+    List<Staff> findAll(User currentUser);
 
-    List<Staff> findAllWithAll();
+    List<Staff> findAllWithAll(User currentUser);
 
-    Optional<Staff> findById(Long id);
+    Staff findById(Long id, User currentUser);
 
-    Optional<Staff> find(String username, Long departmentId, Long municipalityId);
+    Staff find(User currentUser, Long userId, Long departmentId, Long municipalityId);
 
-    Optional<Staff> findByUsername(String username);
+    Staff findByUserId(User currentUser, Long userId);
 
-    List<Staff> findByDepartmentId(Long departmentId);
+    List<Staff> findByDepartmentId(User currentUser, Long departmentId);
 
-    List<Staff> findByMunicipalityId(Long municipalityId);
+    List<Staff> findByMunicipalityId(User currentUser, Long municipalityId);
 
-    Staff create(Staff staff);
+    Staff create(User currentUser, Staff staff);
 
-    Optional<Staff> update(Long id, Staff updatedStaff);
+    Staff update(Long id, User currentUser, Staff updatedStaff);
 
-    Optional<Staff> deleteById(Long id);
+    Staff deleteById(Long id, User currentUser);
+
+    Page<StaffPageableProjection> findAll(
+            User user,
+            int page,
+            int size,
+            String sortBy,
+            Long id,
+            Long userId,
+            Long departmentId,
+            Long municipalityId,
+            String username,
+            String municipalityCode,
+            String municipalityName
+    );
 }

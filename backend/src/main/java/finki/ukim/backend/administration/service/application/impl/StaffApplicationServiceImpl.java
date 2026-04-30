@@ -5,6 +5,7 @@ import finki.ukim.backend.administration.model.domain.Municipality;
 import finki.ukim.backend.administration.model.dto.CreateStaffDto;
 import finki.ukim.backend.administration.model.dto.DisplayBasicStaffDto;
 import finki.ukim.backend.administration.model.dto.DisplayStaffDto;
+import finki.ukim.backend.administration.model.dto.DisplayStaffPageableDto;
 import finki.ukim.backend.administration.model.exception.DepartmentNotFoundException;
 import finki.ukim.backend.administration.service.application.StaffApplicationService;
 import finki.ukim.backend.administration.service.domain.DepartmentService;
@@ -14,6 +15,7 @@ import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.exception.UserNotFoundException;
 import finki.ukim.backend.auth_and_access.service.domain.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,64 +30,86 @@ public class StaffApplicationServiceImpl implements StaffApplicationService {
     private final MunicipalityService municipalityService;
 
     @Override
-    public List<DisplayBasicStaffDto> findAll() {
-        return DisplayBasicStaffDto.from(staffService.findAll());
+    public List<DisplayBasicStaffDto> findAll(User currentUser) {
+        return DisplayBasicStaffDto.from(staffService.findAll(currentUser));
     }
 
     @Override
-    public List<DisplayStaffDto> findAllWithAll() {
-        return DisplayStaffDto.from(staffService.findAllWithAll());
+    public List<DisplayStaffDto> findAllWithAll(User currentUser) {
+        return DisplayStaffDto.from(staffService.findAllWithAll(currentUser));
     }
 
     @Override
-    public Optional<DisplayStaffDto> findById(Long id) {
-        return staffService.findById(id).map(DisplayStaffDto::from);
+    public Page<DisplayStaffPageableDto> findAll(
+            User currentUser,
+            int page,
+            int size,
+            String sortBy,
+            Long id,
+            Long userId,
+            Long departmentId,
+            Long municipalityId,
+            String username,
+            String municipalityCode,
+            String municipalityName
+    ) {
+        return staffService
+                .findAll(currentUser, page, size, sortBy, id, userId, departmentId, municipalityId, username, municipalityCode, municipalityName)
+                .map(DisplayStaffPageableDto::from);
     }
 
     @Override
-    public Optional<DisplayStaffDto> find(CreateStaffDto createStaffDto) {
-        return staffService.find(createStaffDto.username(), createStaffDto.departmentId(), createStaffDto.municipalityId()).map(DisplayStaffDto::from);
+    public DisplayStaffDto findById(Long id, User currentUser) {
+        return DisplayStaffDto.from(staffService.findById(id, currentUser));
     }
 
     @Override
-    public Optional<DisplayStaffDto> findByUsername(String username) {
-        return staffService.findByUsername(username).map(DisplayStaffDto::from);
+    public DisplayStaffDto find(User currentUser, CreateStaffDto createStaffDto) {
+        return DisplayStaffDto.from(
+                staffService.find(currentUser, createStaffDto.userId(), createStaffDto.departmentId(), createStaffDto.municipalityId())
+        );
     }
 
     @Override
-    public List<DisplayBasicStaffDto> findByDepartmentId(Long departmentId) {
-        return DisplayBasicStaffDto.from(staffService.findByDepartmentId(departmentId));
+    public DisplayStaffDto findByUserId(User currentUser, Long userId) {
+        return DisplayStaffDto.from(staffService.findByUserId(currentUser, userId));
+    }
+
+
+    @Override
+    public List<DisplayBasicStaffDto> findByDepartmentId(User currentUser, Long departmentId) {
+        return DisplayBasicStaffDto.from(staffService.findByDepartmentId(currentUser, departmentId));
     }
 
     @Override
-    public List<DisplayBasicStaffDto> findByMunicipalityId(Long municipalityId) {
-        return DisplayBasicStaffDto.from(staffService.findByMunicipalityId(municipalityId));
+    public List<DisplayBasicStaffDto> findByMunicipalityId(User currentUser, Long municipalityId) {
+        return DisplayBasicStaffDto.from(staffService.findByMunicipalityId(currentUser, municipalityId));
     }
 
     @Override
-    public DisplayStaffDto create(CreateStaffDto createStaffDto) {
-        User user = userService.findByUsername(createStaffDto.username()).orElseThrow(() -> new UserNotFoundException(createStaffDto.username()));
+    public DisplayStaffDto create(User currentUser, CreateStaffDto createStaffDto) {
+        User user = userService.findById(createStaffDto.userId());
 
-        Department department = departmentService.findById(createStaffDto.departmentId()).orElseThrow(() -> new DepartmentNotFoundException(createStaffDto.departmentId()));
+        Department department = departmentService.findById(createStaffDto.departmentId());
 
-        Municipality municipality = municipalityService.findById(createStaffDto.municipalityId()).orElseThrow(() -> new DepartmentNotFoundException(createStaffDto.municipalityId()));
+        Municipality municipality = municipalityService.findById(createStaffDto.municipalityId());
 
-        return DisplayStaffDto.from(staffService.create(createStaffDto.toStaff(user, department, municipality)));
+        return DisplayStaffDto.from(staffService.create(currentUser, createStaffDto.toStaff(user, department, municipality)));
     }
 
     @Override
-    public Optional<DisplayBasicStaffDto> update(Long id, CreateStaffDto createStaffDto) {
-        User user = userService.findByUsername(createStaffDto.username()).orElseThrow(() -> new UserNotFoundException(createStaffDto.username()));
+    public DisplayBasicStaffDto update(Long id, User currentUser, CreateStaffDto createStaffDto) {
+        User user = userService.findById(createStaffDto.userId());
 
-        Department department = departmentService.findById(createStaffDto.departmentId()).orElseThrow(() -> new DepartmentNotFoundException(createStaffDto.departmentId()));
+        Department department = departmentService.findById(createStaffDto.departmentId());
 
-        Municipality municipality = municipalityService.findById(createStaffDto.municipalityId()).orElseThrow(() -> new DepartmentNotFoundException(createStaffDto.municipalityId()));
+        Municipality municipality = municipalityService.findById(createStaffDto.municipalityId());
 
-        return staffService.update(id, createStaffDto.toStaff(user, department, municipality)).map(DisplayBasicStaffDto::from);
+        return DisplayBasicStaffDto.from(staffService.update(id, currentUser, createStaffDto.toStaff(user, department, municipality)));
     }
 
     @Override
-    public Optional<DisplayBasicStaffDto> deleteById(Long id) {
-        return staffService.deleteById(id).map(DisplayBasicStaffDto::from);
+    public DisplayBasicStaffDto deleteById(Long id, User currentUser) {
+        return DisplayBasicStaffDto.from(staffService.deleteById(id, currentUser));
     }
 }

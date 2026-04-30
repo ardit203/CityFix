@@ -6,10 +6,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -54,5 +56,19 @@ public class FileHelper {
             case "text/csv" -> FileType.CSV;
             default -> FileType.OTHER;
         };
+    }
+
+    public Boolean isImage(MultipartFile file) {
+        List<FileType> fileTypeList = getImageTypes();
+
+        if (file == null) {
+            return false;
+        }
+        FileType fileType = getFileType(file.getContentType());
+        return fileTypeList.contains(fileType);
+    }
+
+    private List<FileType> getImageTypes() {
+        return List.of(FileType.PNG, FileType.JPEG);
     }
 }

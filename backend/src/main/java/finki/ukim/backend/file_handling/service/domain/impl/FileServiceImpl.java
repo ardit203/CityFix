@@ -9,6 +9,7 @@ import finki.ukim.backend.file_handling.service.domain.FileStorageService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -24,18 +25,15 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Optional<File> findById(Long id) {
-        return fileRepository.findById(id);
+    public File findById(Long id) {
+        return fileRepository.findById(id)
+                .orElseThrow(() -> new FileNotFoundException(id));
     }
 
     @Override
-    public Optional<File> findByFileName(String fileName) {
-        return fileRepository.findByFileName(fileName);
-    }
-
-    @Override
-    public Optional<File> findByFileUrl(String fileUrl) {
-        return fileRepository.findByFileUrl(fileUrl);
+    public File findByFileUrl(String fileUrl) {
+        return fileRepository.findByFileUrl(fileUrl)
+                .orElseThrow(() -> new FileNotFoundException(fileUrl));
     }
 
     @Override
@@ -68,34 +66,30 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Optional<File> update(Long id, MultipartFile file, String directory) {
-        return findById(id)
-                .map(existingFile -> {
-                    fileStorageService.delete(existingFile.getFileUrl());
+    public File update(Long id, MultipartFile file, String directory) {
+        File existingFile = findById(id);
+        fileStorageService.delete(existingFile.getFileUrl());
 
-                    File savedFile = fileStorageService.save(file, directory);
+        File savedFile = fileStorageService.save(file, directory);
 
-                    existingFile.setFileName(savedFile.getFileName());
-                    existingFile.setFileType(savedFile.getFileType());
-                    existingFile.setFileUrl(savedFile.getFileUrl());
-                    existingFile.setFileSize(savedFile.getFileSize());
+        existingFile.setFileName(savedFile.getFileName());
+        existingFile.setFileType(savedFile.getFileType());
+        existingFile.setFileUrl(savedFile.getFileUrl());
+        existingFile.setFileSize(savedFile.getFileSize());
 
-                    return fileRepository.save(existingFile);
-                });
+        return fileRepository.save(existingFile);
     }
 
     @Override
-    public Optional<File> update(Long id, MultipartFile file) {
+    public File update(Long id, MultipartFile file) {
         return update(id, file, null);
     }
 
     @Override
-    public Optional<File> deleteById(Long id) {
-        return findById(id)
-                .map(file -> {
-                    fileStorageService.delete(file.getFileUrl());
-                    fileRepository.delete(file);
-                    return file;
-                });
+    public File deleteById(Long id) {
+        File file = findById(id);
+        fileStorageService.delete(file.getFileUrl());
+        fileRepository.delete(file);
+        return file;
     }
 }

@@ -3,9 +3,13 @@ package finki.ukim.backend.administration.web;
 import finki.ukim.backend.administration.model.dto.CreateStaffDto;
 import finki.ukim.backend.administration.model.dto.DisplayBasicStaffDto;
 import finki.ukim.backend.administration.model.dto.DisplayStaffDto;
+import finki.ukim.backend.administration.model.dto.DisplayStaffPageableDto;
 import finki.ukim.backend.administration.service.application.StaffApplicationService;
+import finki.ukim.backend.auth_and_access.model.domain.User;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,55 +21,78 @@ public class StaffController {
     private final StaffApplicationService staffApplicationService;
 
     @GetMapping
-    public ResponseEntity<List<DisplayBasicStaffDto>> findAll() {
+    public ResponseEntity<List<DisplayBasicStaffDto>> findAll(@AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok(staffApplicationService.findAll());
     }
 
+    @GetMapping("/paged")
+    public ResponseEntity<Page<DisplayStaffPageableDto>> findAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) Long departmentId,
+            @RequestParam(required = false) Long municipalityId,
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String municipalityCode,
+            @RequestParam(required = false) String municipalityName,
+            @AuthenticationPrincipal User currentUser
+    ) {
+        return ResponseEntity.ok(
+                staffApplicationService.findAll(
+                        currentUser,
+                        page,
+                        size,
+                        sortBy,
+                        id,
+                        userId,
+                        departmentId,
+                        municipalityId,
+                        username,
+                        municipalityCode,
+                        municipalityName
+                )
+        );
+    }
+
     @GetMapping("/detailed")
-    public ResponseEntity<List<DisplayStaffDto>> findAllWithAll() {
+    public ResponseEntity<List<DisplayStaffDto>> findAllWithAll(@AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok(staffApplicationService.findAllWithAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DisplayStaffDto> findById(@PathVariable Long id) {
-        return staffApplicationService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<DisplayStaffDto> findById(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {
+        return ResponseEntity.ok(staffApplicationService.findById(id));
     }
 
-    @GetMapping("/username/{username}")
-    public ResponseEntity<DisplayStaffDto> findByUsername(@PathVariable String username) {
-        return staffApplicationService.findByUsername(username)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/userId/{userId}")
+    public ResponseEntity<DisplayStaffDto> findByUserId(@PathVariable Long userId, @AuthenticationPrincipal User currentUser) {
+        return ResponseEntity.ok(staffApplicationService.findByUserId(userId));
     }
 
     @GetMapping("/department/{departmentId}")
-    public ResponseEntity<List<DisplayBasicStaffDto>> findByDepartmentId(@PathVariable Long departmentId) {
+    public ResponseEntity<List<DisplayBasicStaffDto>> findByDepartmentId(@PathVariable Long departmentId, @AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok(staffApplicationService.findByDepartmentId(departmentId));
     }
 
     @GetMapping("/municipality/{municipalityId}")
-    public ResponseEntity<List<DisplayBasicStaffDto>> findByMunicipalityId(@PathVariable Long municipalityId) {
+    public ResponseEntity<List<DisplayBasicStaffDto>> findByMunicipalityId(@PathVariable Long municipalityId, @AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok(staffApplicationService.findByMunicipalityId(municipalityId));
     }
 
     @PostMapping
-    public ResponseEntity<DisplayStaffDto> create(@RequestBody CreateStaffDto createStaffDto) {
+    public ResponseEntity<DisplayStaffDto> create(@RequestBody CreateStaffDto createStaffDto, @AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok(staffApplicationService.create(createStaffDto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DisplayBasicStaffDto> update(@PathVariable Long id, @RequestBody CreateStaffDto createStaffDto) {
-        return staffApplicationService.update(id, createStaffDto)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<DisplayBasicStaffDto> update(@PathVariable Long id, @RequestBody CreateStaffDto createStaffDto, @AuthenticationPrincipal User currentUser) {
+        return ResponseEntity.ok(staffApplicationService.update(id, createStaffDto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<DisplayBasicStaffDto> delete(@PathVariable Long id) {
-        return staffApplicationService.deleteById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<DisplayBasicStaffDto> delete(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {
+        return ResponseEntity.ok(staffApplicationService.deleteById(id));
     }
 }

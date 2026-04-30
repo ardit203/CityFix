@@ -9,11 +9,9 @@ import java.util.Optional;
 public interface FileService {
     List<File> findAll();
 
-    Optional<File> findById(Long id);
+    File findById(Long id);
 
-    Optional<File> findByFileName(String fileName);
-
-    Optional<File> findByFileUrl(String fileUrl);
+    File findByFileUrl(String fileUrl);
 
     List<File> findByFileType(FileType fileType);
 
@@ -25,9 +23,9 @@ public interface FileService {
 
     List<File> createAll(List<MultipartFile> files);
 
-    Optional<File> update(Long id, MultipartFile file, String directory);
+    File update(Long id, MultipartFile file, String directory);
 
-    Optional<File> update(Long id, MultipartFile file);
+    File update(Long id, MultipartFile file);
 
-    Optional<File> deleteById(Long id);
+    File deleteById(Long id);
 }

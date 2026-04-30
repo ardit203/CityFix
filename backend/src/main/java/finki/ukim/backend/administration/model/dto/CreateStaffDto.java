@@ -6,7 +6,7 @@ import finki.ukim.backend.administration.model.domain.Staff;
 import finki.ukim.backend.auth_and_access.model.domain.User;
 
 public record CreateStaffDto(
-        String username,
+        Long userId,
         Long departmentId,
         Long municipalityId
 
