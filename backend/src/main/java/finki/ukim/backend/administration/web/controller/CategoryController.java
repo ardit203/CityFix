@@ -1,4 +1,4 @@
-package finki.ukim.backend.administration.web;
+package finki.ukim.backend.administration.web.controller;
 
 import finki.ukim.backend.administration.model.dto.CreateCategoryDto;
 import finki.ukim.backend.administration.model.dto.DisplayBasicCategoryDto;
@@ -7,6 +7,7 @@ import finki.ukim.backend.administration.model.dto.DisplayCategoryPageableDto;
 import finki.ukim.backend.administration.service.application.CategoryApplicationService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,12 +61,12 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<DisplayCategoryDto> create(@RequestBody CreateCategoryDto createCategoryDto) {
+    public ResponseEntity<DisplayCategoryDto> create(@Valid @RequestBody CreateCategoryDto createCategoryDto) {
         return ResponseEntity.ok(categoryApplicationService.create(createCategoryDto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DisplayCategoryDto> update(@PathVariable Long id, @RequestBody CreateCategoryDto createCategoryDto) {
+    public ResponseEntity<DisplayCategoryDto> update(@PathVariable Long id, @Valid @RequestBody CreateCategoryDto createCategoryDto) {
         return ResponseEntity.ok(categoryApplicationService.update(id, createCategoryDto));
     }
 

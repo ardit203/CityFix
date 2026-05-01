@@ -1,10 +1,11 @@
-package finki.ukim.backend.administration.web;
+package finki.ukim.backend.administration.web.controller;
 
 import finki.ukim.backend.administration.model.dto.CreateMunicipalityDto;
 import finki.ukim.backend.administration.model.dto.DisplayMunicipalityDto;
 import finki.ukim.backend.administration.service.application.MunicipalityApplicationService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,12 +54,12 @@ public class MunicipalityController {
     }
 
     @PostMapping
-    public ResponseEntity<DisplayMunicipalityDto> create(@RequestBody CreateMunicipalityDto createMunicipalityDto) {
+    public ResponseEntity<DisplayMunicipalityDto> create(@Valid @RequestBody CreateMunicipalityDto createMunicipalityDto) {
         return ResponseEntity.ok(municipalityApplicationService.create(createMunicipalityDto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DisplayMunicipalityDto> update(@PathVariable Long id, @RequestBody CreateMunicipalityDto createMunicipalityDto) {
+    public ResponseEntity<DisplayMunicipalityDto> update(@PathVariable Long id, @Valid @RequestBody CreateMunicipalityDto createMunicipalityDto) {
         return ResponseEntity.ok(municipalityApplicationService.update(id, createMunicipalityDto));
     }
 

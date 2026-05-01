@@ -4,6 +4,7 @@ package finki.ukim.backend.auth_and_access.web.controller;
 import finki.ukim.backend.auth_and_access.model.dto.*;
 import finki.ukim.backend.auth_and_access.service.application.AuthApplicationService;
 import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,13 +15,13 @@ public class AuthController {
     private final AuthApplicationService authApplicationService;
 
     @PostMapping("/register")
-    public ResponseEntity<DisplayUserDto> register(@RequestBody RegisterDto registerDto) {
+    public ResponseEntity<DisplayUserDto> register(@Valid @RequestBody RegisterDto registerDto) {
         return ResponseEntity.ok(authApplicationService.register(registerDto));
     }
 
     @PostMapping("/login")
     public ResponseEntity<LoginUserResponseDto> login(
-            @RequestBody LoginUserRequestDto loginUserRequestDto
+            @Valid @RequestBody LoginUserRequestDto loginUserRequestDto
     ) {
         return ResponseEntity.ok(authApplicationService.login(loginUserRequestDto));
     }
@@ -32,7 +33,7 @@ public class AuthController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<Void> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordDto resetPasswordDto) {
         authApplicationService.resetPassword(resetPasswordDto);
         return ResponseEntity.ok().build();
     }

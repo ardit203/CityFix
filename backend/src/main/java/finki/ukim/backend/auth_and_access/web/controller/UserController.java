@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,7 +58,7 @@ public class UserController {
     @PutMapping("/{id}/account")
     public ResponseEntity<DisplayUserDto> updateAccount(
             @PathVariable Long id,
-            @RequestBody UpdateMyAccountDto updateMyAccountDto
+            @Valid @RequestBody UpdateMyAccountDto updateMyAccountDto
     ) {
         return ResponseEntity.ok(userApplicationService.updateAccount(id, updateMyAccountDto));
     }
@@ -65,7 +66,7 @@ public class UserController {
     @PutMapping("/{id}/profile")
     public ResponseEntity<DisplayUserDto> updateProfile(
             @PathVariable Long id,
-            @RequestBody UpdateMyProfileDto updateMyProfileDto
+            @Valid @RequestBody UpdateMyProfileDto updateMyProfileDto
     ) {
         return ResponseEntity.ok(userApplicationService.updateProfile(id, updateMyProfileDto));
     }
@@ -73,7 +74,7 @@ public class UserController {
     @PutMapping("/{id}/password")
     public ResponseEntity<DisplayUserDto> changePassword(
             @PathVariable Long id,
-            @RequestBody ChangePasswordDto changePasswordDto
+            @Valid @RequestBody ChangePasswordDto changePasswordDto
     ) {
         return ResponseEntity.ok(userApplicationService.changePassword(id, changePasswordDto));
     }
@@ -122,7 +123,7 @@ public class UserController {
     @PutMapping("/{id}/admin")
     public ResponseEntity<DisplayUserDto> adminUpdate(
             @PathVariable Long id,
-            @RequestBody AdminUpdateUserDto adminUpdateUserDto
+            @Valid @RequestBody AdminUpdateUserDto adminUpdateUserDto
     ) {
         return ResponseEntity.ok(userApplicationService.adminUpdate(id, adminUpdateUserDto));
     }

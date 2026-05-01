@@ -1,4 +1,4 @@
-package finki.ukim.backend.administration.web;
+package finki.ukim.backend.administration.web.controller;
 
 import finki.ukim.backend.administration.model.dto.CreateStaffDto;
 import finki.ukim.backend.administration.model.dto.DisplayBasicStaffDto;
@@ -10,6 +10,7 @@ import finki.ukim.backend.auth_and_access.model.dto.DisplayUserPageableDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -88,12 +89,12 @@ public class StaffController {
     }
 
     @PostMapping
-    public ResponseEntity<DisplayStaffDto> create(@RequestBody CreateStaffDto createStaffDto, @AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<DisplayStaffDto> create(@Valid @RequestBody CreateStaffDto createStaffDto, @AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok(staffApplicationService.create(currentUser, createStaffDto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DisplayBasicStaffDto> update(@PathVariable Long id, @RequestBody CreateStaffDto createStaffDto, @AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<DisplayBasicStaffDto> update(@PathVariable Long id, @Valid @RequestBody CreateStaffDto createStaffDto, @AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok(staffApplicationService.update(id, currentUser, createStaffDto));
     }
 

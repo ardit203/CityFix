@@ -1,10 +1,11 @@
-package finki.ukim.backend.administration.web;
+package finki.ukim.backend.administration.web.controller;
 
 import finki.ukim.backend.administration.model.dto.CreateDepartmentDto;
 import finki.ukim.backend.administration.model.dto.DisplayDepartmentDto;
 import finki.ukim.backend.administration.service.application.DepartmentApplicationService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,12 +52,12 @@ public class DepartmentController {
     }
 
     @PostMapping
-    public ResponseEntity<DisplayDepartmentDto> create(@RequestBody CreateDepartmentDto createDepartmentDto) {
+    public ResponseEntity<DisplayDepartmentDto> create(@Valid @RequestBody CreateDepartmentDto createDepartmentDto) {
         return ResponseEntity.ok(departmentApplicationService.create(createDepartmentDto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DisplayDepartmentDto> update(@PathVariable Long id, @RequestBody CreateDepartmentDto createDepartmentDto) {
+    public ResponseEntity<DisplayDepartmentDto> update(@PathVariable Long id, @Valid @RequestBody CreateDepartmentDto createDepartmentDto) {
         return ResponseEntity.ok(departmentApplicationService.update(id, createDepartmentDto));
     }
 

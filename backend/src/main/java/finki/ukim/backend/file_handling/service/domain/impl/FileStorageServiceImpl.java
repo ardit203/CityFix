@@ -164,8 +164,28 @@ public class FileStorageServiceImpl implements FileStorageService {
             throw new FileErrorException("File URL cannot be null or blank");
         }
 
-        String fileName = extractFileName(fileUrl);
+        String normalizedUrl = fileUrl.trim().replace("\\", "/");
+        String defaultUrl = FileConstants.DEFAULT_URL.replace("\\", "/");
+        
+        String relativePath;
+        if (normalizedUrl.startsWith(defaultUrl)) {
+            relativePath = normalizedUrl.substring(defaultUrl.length());
+            // Remove leading slashes that might be present due to how getBaseUrl is constructed
+            while (relativePath.startsWith("/")) {
+                relativePath = relativePath.substring(1);
+            }
+        } else {
+            relativePath = extractFileName(normalizedUrl);
+        }
 
+        Path exactPath = FileConstants.ROOT.resolve(relativePath).normalize();
+        
+        if (Files.exists(exactPath) && Files.isRegularFile(exactPath)) {
+            return exactPath;
+        }
+
+        // Fallback for any legacy URLs that don't match the new deterministic path calculation
+        String fileName = extractFileName(fileUrl);
         try (Stream<Path> stream = Files.walk(FileConstants.ROOT)) {
             return stream
                     .filter(Files::isRegularFile)

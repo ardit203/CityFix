@@ -7,17 +7,38 @@ import finki.ukim.backend.auth_and_access.model.enums.Role;
 
 import java.time.LocalDate;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+
 public record RegisterDto(
+        @NotBlank(message = "Username is required")
         String username,
+        
+        @NotBlank(message = "Email is required")
+        @Email(message = "Invalid email format")
         String email,
+        
+        @NotBlank(message = "Password is required")
         String password,
+        
+        @NotBlank(message = "Confirm password is required")
         String confirmPassword,
 
+        @NotBlank(message = "Name is required")
         String name,
+        
+        @NotBlank(message = "Surname is required")
         String surname,
+        
+        @Valid
         AddressDto address,
+        
         LocalDate dateOfBirth,
         Gender gender,
+        
+        @Pattern(regexp = "^\\+?[1-9]\\d{7,14}$", message = "Phone number must be valid and contain 8 to 15 digits, optionally starting with '+'")
         String phoneNumber
 ) {
     public User toUser() {
