@@ -6,6 +6,7 @@ import finki.ukim.backend.administration.model.dto.DisplayStaffDto;
 import finki.ukim.backend.administration.model.dto.DisplayStaffPageableDto;
 import finki.ukim.backend.administration.service.application.StaffApplicationService;
 import finki.ukim.backend.auth_and_access.model.domain.User;
+import finki.ukim.backend.auth_and_access.model.dto.DisplayUserPageableDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,11 @@ public class StaffController {
     @GetMapping
     public ResponseEntity<List<DisplayBasicStaffDto>> findAll(@AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok(staffApplicationService.findAll(currentUser));
+    }
+
+    @GetMapping("/available-for-staff")
+    public ResponseEntity<List<DisplayUserPageableDto>> findUsersAvailableForStaff(@AuthenticationPrincipal User currentUser) {
+        return ResponseEntity.ok(staffApplicationService.findUsersAvailableForStaff(currentUser));
     }
 
     @GetMapping("/paged")

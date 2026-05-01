@@ -7,13 +7,9 @@ public interface UserPageableProjection {
 
     String getUsername();
 
-    String getEmail();
-
     Role getRole();
 
     String getName();
 
     String getSurname();
-
-    String getProfilePictureUrl();
 }

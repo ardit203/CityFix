@@ -51,14 +51,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
                 select
                     u.id as id,
                     u.username as username,
-                    u.email as email,
                     u.role as role,
                     p.name as name,
-                    p.surname as surname,
-                    f.fileUrl as profilePictureUrl
+                    p.surname as surname
                 from User u
                 left join u.profile p
-                left join p.profilePicture f
                 where (:id is null or u.id = :id)
                   and (:username is null or lower(u.username) like lower(concat('%', :username, '%')))
                   and (:email is null or lower(u.email) like lower(concat('%', :email, '%')))

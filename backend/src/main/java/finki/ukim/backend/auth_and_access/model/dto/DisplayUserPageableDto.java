@@ -8,21 +8,17 @@ import java.util.List;
 public record DisplayUserPageableDto(
         Long id,
         String username,
-        String email,
         Role role,
         String name,
-        String surname,
-        String profilePictureUrl
+        String surname
 ) {
     public static DisplayUserPageableDto from(UserPageableProjection projection) {
         return new DisplayUserPageableDto(
                 projection.getId(),
                 projection.getUsername(),
-                projection.getEmail(),
                 projection.getRole(),
                 projection.getName(),
-                projection.getSurname(),
-                projection.getProfilePictureUrl()
+                projection.getSurname()
         );
     }
 

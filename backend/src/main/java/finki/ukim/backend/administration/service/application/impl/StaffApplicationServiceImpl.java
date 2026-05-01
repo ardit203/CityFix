@@ -12,6 +12,7 @@ import finki.ukim.backend.administration.service.domain.DepartmentService;
 import finki.ukim.backend.administration.service.domain.MunicipalityService;
 import finki.ukim.backend.administration.service.domain.StaffService;
 import finki.ukim.backend.auth_and_access.model.domain.User;
+import finki.ukim.backend.auth_and_access.model.dto.DisplayUserPageableDto;
 import finki.ukim.backend.auth_and_access.model.exception.UserNotFoundException;
 import finki.ukim.backend.auth_and_access.service.domain.UserService;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,11 @@ public class StaffApplicationServiceImpl implements StaffApplicationService {
     @Override
     public List<DisplayStaffDto> findAllWithAll(User currentUser) {
         return DisplayStaffDto.from(staffService.findAllWithAll(currentUser));
+    }
+
+    @Override
+    public List<DisplayUserPageableDto> findUsersAvailableForStaff(User currentUser) {
+        return DisplayUserPageableDto.from(staffService.findUsersAvailableForStaff(currentUser));
     }
 
     @Override

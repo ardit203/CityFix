@@ -10,6 +10,7 @@ import finki.ukim.backend.administration.repository.StaffRepository;
 import finki.ukim.backend.administration.service.domain.StaffService;
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.enums.Role;
+import finki.ukim.backend.auth_and_access.model.projection.UserPageableProjection;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,12 +20,10 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class StaffServiceImpl implements StaffService {
-
     private final StaffRepository staffRepository;
 
     @Override
@@ -39,6 +38,21 @@ public class StaffServiceImpl implements StaffService {
         }
 
         throw new AccessDeniedException("You are not allowed to view staff.");
+    }
+
+    @Override
+    public List<UserPageableProjection> findUsersAvailableForStaff(User currentUser) {
+        List<Role> roles;
+
+        if (currentUser.getRole() == Role.ROLE_ADMINISTRATOR) {
+            roles = List.of(Role.ROLE_MANAGER, Role.ROLE_EMPLOYEE);
+        } else if (currentUser.getRole() == Role.ROLE_MANAGER) {
+            roles = List.of(Role.ROLE_EMPLOYEE);
+        } else {
+            throw new RuntimeException();
+        }
+
+        return staffRepository.findUsersWithRoleAndNotStaff(roles);
     }
 
     @Override

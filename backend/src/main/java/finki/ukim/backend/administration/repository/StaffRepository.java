@@ -1,15 +1,15 @@
 package finki.ukim.backend.administration.repository;
 
 import finki.ukim.backend.administration.model.domain.Staff;
-import finki.ukim.backend.administration.model.projection.CategoryPageableProjection;
 import finki.ukim.backend.administration.model.projection.StaffPageableProjection;
+import finki.ukim.backend.auth_and_access.model.enums.Role;
+import finki.ukim.backend.auth_and_access.model.projection.UserPageableProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -158,4 +158,23 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
                 where s.municipality.id = :municipalityId
             """)
     List<Staff> findAllWithAllByMunicipalityId(@Param("municipalityId") Long municipalityId);
+
+    @Query("""
+            select u.id as id,
+                    u.username as username,
+                    u.role as role,
+                    p.name as name,
+                    p.surname as surname
+            from User u
+            left join u.profile p
+            where u.role in :roles
+              and not exists (
+                  select s.id
+                  from Staff s
+                  where s.user.id = u.id
+              )
+            """)
+    List<UserPageableProjection> findUsersWithRoleAndNotStaff(
+            @Param("roles") List<Role> roles
+    );
 }

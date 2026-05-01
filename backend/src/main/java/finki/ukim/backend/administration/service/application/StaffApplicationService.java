@@ -6,6 +6,8 @@ import finki.ukim.backend.administration.model.dto.DisplayBasicStaffDto;
 import finki.ukim.backend.administration.model.dto.DisplayStaffDto;
 import finki.ukim.backend.administration.model.dto.DisplayStaffPageableDto;
 import finki.ukim.backend.auth_and_access.model.domain.User;
+import finki.ukim.backend.auth_and_access.model.dto.DisplayUserPageableDto;
+import finki.ukim.backend.auth_and_access.model.projection.UserPageableProjection;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -15,6 +17,8 @@ public interface StaffApplicationService {
     List<DisplayBasicStaffDto> findAll(User user);
 
     List<DisplayStaffDto> findAllWithAll(User user);
+
+    List<DisplayUserPageableDto> findUsersAvailableForStaff(User currentUser);
 
     Page<DisplayStaffPageableDto> findAll(
             User user,
