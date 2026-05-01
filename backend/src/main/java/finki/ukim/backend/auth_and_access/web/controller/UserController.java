@@ -29,7 +29,7 @@ public class UserController {
         return ResponseEntity.ok(userApplicationService.findAll());
     }
 
-    @GetMapping
+    @GetMapping("/paged")
     public ResponseEntity<Page<DisplayUserPageableDto>> findAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,

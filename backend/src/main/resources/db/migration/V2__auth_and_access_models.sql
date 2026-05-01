@@ -15,7 +15,7 @@ create table users
 
 create table user_profiles
 (
-    user_id         bigserial primary key,
+    user_id         bigint  primary key,
     name            varchar(255) not null,
     surname         varchar(255) not null,
     phone_number    varchar(255),
