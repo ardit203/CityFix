@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router";
 import authApi from "../../../service/authApi.js";
+import useSnackbar from "../../../../common/hooks/useSnackbar.js";
 
 const initialFormData = {
     name: "",
@@ -35,6 +36,7 @@ const RegisterPage = () => {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState(initialFormData);
+    const { showSnackbar } = useSnackbar();
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -77,14 +79,24 @@ const RegisterPage = () => {
             phoneNumber: formData.phoneNumber || null
         };
 
+        console.log(requestBody)
+
         authApi
             .register(requestBody)
             .then(() => {
-                console.log("The user is successfully registered.");
+                showSnackbar("User registered successfully.", "success");
                 setFormData(initialFormData);
                 navigate("/login");
             })
-            .catch((error) => console.log(error));
+            .catch((error) => {
+                const message =
+                    error.response?.data?.message ||
+                    error.response?.data?.error ||
+                    error.message ||
+                    "Failed to register user";
+
+                showSnackbar(message, "error");
+            });
     };
 
     return (

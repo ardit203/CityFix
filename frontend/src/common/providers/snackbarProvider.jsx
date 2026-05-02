@@ -1,5 +1,5 @@
 import { Alert, Snackbar } from "@mui/material";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import SnackbarContext from "../contexts/snackbarContext.js";
 
 const SnackbarProvider = ({ children }) => {
@@ -9,23 +9,27 @@ const SnackbarProvider = ({ children }) => {
         severity: "error"
     });
 
-    const showSnackbar = (message, severity = "error") => {
+    const showSnackbar = useCallback((message, severity = "error") => {
         setSnackbar({
             open: true,
             message,
             severity
         });
-    };
+    }, []);
 
-    const hideSnackbar = () => {
+    const hideSnackbar = useCallback(() => {
         setSnackbar((prev) => ({
             ...prev,
             open: false
         }));
-    };
+    }, []);
+
+    const value = useMemo(() => ({
+        showSnackbar
+    }), [showSnackbar]);
 
     return (
-        <SnackbarContext.Provider value={{ showSnackbar }}>
+        <SnackbarContext.Provider value={value}>
             {children}
 
             <Snackbar
@@ -41,7 +45,10 @@ const SnackbarProvider = ({ children }) => {
                     onClose={hideSnackbar}
                     severity={snackbar.severity}
                     variant="filled"
-                    sx={{ width: "100%" }}
+                    sx={{
+                        width: "100%",
+                        whiteSpace: "pre-line"
+                    }}
                 >
                     {snackbar.message}
                 </Alert>

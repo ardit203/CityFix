@@ -1,4 +1,4 @@
-import {useState} from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
     Button,
     Dialog,
@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import ConfirmDialogContext from "../contexts/confirmDialogContext.js";
 
-const ConfirmDialogProvider = ({children}) => {
+const ConfirmDialogProvider = ({ children }) => {
     const [dialog, setDialog] = useState({
         open: false,
         title: "",
@@ -19,12 +19,12 @@ const ConfirmDialogProvider = ({children}) => {
         resolve: null
     });
 
-    const confirm = ({
-                         title = "Are you sure?",
-                         message = "This action cannot be undone.",
-                         confirmText = "Confirm",
-                         cancelText = "Cancel"
-                     }) => {
+    const confirm = useCallback(({
+                                     title = "Are you sure?",
+                                     message = "This action cannot be undone.",
+                                     confirmText = "Confirm",
+                                     cancelText = "Cancel"
+                                 }) => {
         return new Promise((resolve) => {
             setDialog({
                 open: true,
@@ -35,34 +35,43 @@ const ConfirmDialogProvider = ({children}) => {
                 resolve
             });
         });
-    };
+    }, []);
 
-    const handleCancel = () => {
-        dialog.resolve(false);
+    const handleCancel = useCallback(() => {
+        setDialog((prev) => {
+            if (prev.resolve) {
+                prev.resolve(false);
+            }
 
-        setDialog((prev) => ({
-            ...prev,
-            open: false
-        }));
-    };
+            return {
+                ...prev,
+                open: false
+            };
+        });
+    }, []);
 
-    const handleConfirm = () => {
-        dialog.resolve(true);
+    const handleConfirm = useCallback(() => {
+        setDialog((prev) => {
+            if (prev.resolve) {
+                prev.resolve(true);
+            }
 
-        setDialog((prev) => ({
-            ...prev,
-            open: false
-        }));
-    };
+            return {
+                ...prev,
+                open: false
+            };
+        });
+    }, []);
+
+    const value = useMemo(() => ({
+        confirm
+    }), [confirm]);
 
     return (
-        <ConfirmDialogContext.Provider value={{confirm}}>
+        <ConfirmDialogContext.Provider value={value}>
             {children}
 
-            <Dialog
-                open={dialog.open}
-                onClose={handleCancel}
-            >
+            <Dialog open={dialog.open} onClose={handleCancel}>
                 <DialogTitle>
                     {dialog.title}
                 </DialogTitle>
