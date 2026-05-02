@@ -30,7 +30,7 @@ public class RequestAssignment extends BaseEntity {
     @JoinColumn(name = "assigned_by_user_id", nullable = false)
     private User assignedBy;
 
-    @Column(nullable = false)
+    @Column(name = "assigned_at", nullable = false)
     private LocalDateTime assignedAt;
 
     public RequestAssignment(

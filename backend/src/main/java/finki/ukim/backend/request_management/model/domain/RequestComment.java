@@ -26,7 +26,7 @@ public class RequestComment extends BaseAuditableEntity {
     @Column(nullable = false, length = 2000)
     private String content;
 
-    @Column(nullable = false)
+    @Column(name = "is_internal", nullable = false)
     private Boolean isInternal = false;
 
     public RequestComment(Request request, User author, String content, Boolean isInternal) {

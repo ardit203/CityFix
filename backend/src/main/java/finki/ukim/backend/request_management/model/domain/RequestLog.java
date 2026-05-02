@@ -35,7 +35,7 @@ public class RequestLog extends BaseEntity {
     private String newValue;
     private String note;
 
-    @Column(nullable = false)
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     public RequestLog(
