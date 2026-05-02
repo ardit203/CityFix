@@ -43,7 +43,7 @@ const ProductCard = ({ user }) => {
                     Info
                 </Button>
                 <Box>
-                    <Button startIcon={<EditIcon />} color='warning'>Edit</Button>
+                    <Button startIcon={<EditIcon />} onClick={() => navigate(`/users/${user.id}/edit`)} color='warning'>Edit</Button>
                     <Button startIcon={<DeleteIcon />} onClick={handleDelete} color='error'>Delete</Button>
                 </Box>
             </CardActions>

@@ -4,6 +4,7 @@ import Layout from "./common/ui/components/layout/Layout/Layout.jsx";
 import HomePage from "./common/ui/pages/HomePage/HomePage.jsx";
 import UsersPage from "./auth_and_access/ui/pages/UserPage/UsersPage.jsx";
 import UserDetailsPage from "./auth_and_access/ui/pages/UserDetailsPage/UserDetailsPage.jsx";
+import UserEditPage from "./auth_and_access/ui/pages/UserEditPage/UserEditPage.jsx";
 
 
 
@@ -15,6 +16,7 @@ function App() {
             <Route index element={<HomePage/>}/>
             <Route path='users' element={<UsersPage/>}/>
             <Route path='users/:id' element={<UserDetailsPage/>}/>
+              <Route path='users/:id/edit' element={<UserEditPage/>}/>
           </Route>
         </Routes>
       </BrowserRouter>
