@@ -10,7 +10,8 @@ import AuthenticationToggle
 
 const pages = [
     {path: '/', name: 'home'},
-    {path: '/users', name: 'users'}
+    {path: '/users', name: 'users'},
+    {path: '/profile', name: 'profile'}
 ];
 
 const Header = () => {
@@ -32,7 +33,7 @@ const Header = () => {
                     </IconButton>
 
                     <Typography variant='h6' component='div' sx={{mr: 3}}>
-                        E-SHOP
+                        CityFix
                     </Typography>
 
                     <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>

@@ -1,4 +1,3 @@
-import { useNavigate, useParams } from "react-router";
 import {
     Avatar,
     Box,
@@ -14,31 +13,22 @@ import {
     Typography
 } from "@mui/material";
 import {
-    ArrowBack,
+    Badge,
+    Cake,
+    Edit,
     Email,
+    Home,
+    Notifications,
     Person,
     Phone,
-    Badge,
-    Home,
-    Cake,
-    Notifications,
-    Wc,
-    Edit,
-    Delete
+    Wc
 } from "@mui/icons-material";
-import useUserDetails from "../../../hooks/useUserDetails.js";
-import useUserActions from "../../../hooks/useUserActions.js";
+import { useNavigate } from "react-router";
+import useProfile from "../../../hooks/useProfile.js";
 
-
-const UserDetailsPage = () => {
-    const { id } = useParams();
-    const { user, loading, error } = useUserDetails(id);
+const UserProfilePage = () => {
     const navigate = useNavigate();
-    const { deleteUser } = useUserActions();
-
-    const handleDelete = async () => {
-        await deleteUser(user);
-    };
+    const { profileUser: user, loading, error } = useProfile();
 
     if (loading) {
         return (
@@ -52,34 +42,12 @@ const UserDetailsPage = () => {
         return (
             <Box>
                 <Typography color="error">{error}</Typography>
-
-                <Button
-                    sx={{ mt: 2 }}
-                    variant="outlined"
-                    startIcon={<ArrowBack />}
-                    onClick={() => navigate("/users")}
-                >
-                    Back to Users
-                </Button>
             </Box>
         );
     }
 
     if (!user) {
-        return (
-            <Box>
-                <Typography>User not found.</Typography>
-
-                <Button
-                    sx={{ mt: 2 }}
-                    variant="outlined"
-                    startIcon={<ArrowBack />}
-                    onClick={() => navigate("/users")}
-                >
-                    Back to Users
-                </Button>
-            </Box>
-        );
+        return <Typography>Profile not found.</Typography>;
     }
 
     const profile = user.profile;
@@ -94,33 +62,17 @@ const UserDetailsPage = () => {
                 alignItems="center"
                 sx={{ mb: 3 }}
             >
+                <Typography variant="h4" fontWeight={600}>
+                    My Profile
+                </Typography>
+
                 <Button
-                    variant="outlined"
-                    startIcon={<ArrowBack />}
-                    onClick={() => navigate("/users")}
+                    variant="contained"
+                    startIcon={<Edit />}
+                    onClick={() => navigate("/profile/edit")}
                 >
-                    Back to Users
+                    Edit Profile
                 </Button>
-
-                <Stack direction="row" spacing={2}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        startIcon={<Edit />}
-                        onClick={() => navigate(`/users/${user.id}/edit`)}
-                    >
-                        Edit
-                    </Button>
-
-                    <Button
-                        variant="outlined"
-                        color="error"
-                        startIcon={<Delete />}
-                        onClick={handleDelete}
-                    >
-                        Delete
-                    </Button>
-                </Stack>
             </Stack>
 
             <Paper elevation={2} sx={{ p: 4, borderRadius: 4 }}>
@@ -207,13 +159,6 @@ const UserDetailsPage = () => {
                                                     Notifications: {user.notificationsEnabled ? "Enabled" : "Disabled"}
                                                 </Typography>
                                             </Stack>
-
-                                            <Stack direction="row" spacing={1} alignItems="center">
-                                                <Badge color="primary" />
-                                                <Typography>
-                                                    Account status: {user.locked ? "Locked" : "Unlocked"}
-                                                </Typography>
-                                            </Stack>
                                         </Stack>
                                     </CardContent>
                                 </Card>
@@ -293,4 +238,4 @@ const UserDetailsPage = () => {
     );
 };
 
-export default UserDetailsPage;
+export default UserProfilePage;

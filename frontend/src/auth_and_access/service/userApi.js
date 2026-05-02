@@ -22,6 +22,9 @@ const userApi = {
             }
         });
     },
+    findMe: async () => {
+        return await apiCall.get("/users/me");
+    },
     findById: async (id) => {
         return await apiCall.get(`/users/${id}`);
     },
