@@ -1,0 +1,15 @@
+.layout-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+}
+
+.outlet-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-top: 40px !important;
+    padding-bottom: 40px !important;
+}

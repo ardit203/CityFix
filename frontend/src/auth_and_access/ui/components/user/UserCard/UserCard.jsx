@@ -2,11 +2,31 @@ import { Box, Button, Card, CardActions, CardContent, Typography } from '@mui/ma
 import InfoIcon from '@mui/icons-material/Info';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useNavigate } from 'react-router';
+import useConfirmedAction from "../../../../../common/hooks/useConfirmedAction.js";
+import {useNavigate} from "react-router";
 
 
 const ProductCard = ({ user }) => {
     const navigate = useNavigate();
+    const { runConfirmedAction } = useConfirmedAction();
+
+
+    const handleDelete = () => {
+        runConfirmedAction({
+            confirmOptions: {
+                title: "Delete user?",
+                message: `Are you sure you want to delete ${user.username}? This action cannot be undone.`,
+                confirmText: "Delete",
+                cancelText: "Cancel"
+            },
+            action: async () => {
+                console.log("Delete user", user.id);
+                // await userApi.deleteById(user.id);
+            },
+            successMessage: "User deleted successfully",
+            navigateTo: "/users"
+        })
+    };
 
     return (
         <Card sx={{ maxWidth: 300 }}>
@@ -17,14 +37,14 @@ const ProductCard = ({ user }) => {
             </CardContent>
             <CardActions sx={{ justifyContent: 'space-between' }}>
                 <Button
-                    startIcon={<InfoIcon/>}
-                    onClick={() => navigate(`/products/${user.id}`)}
+                    startIcon={<InfoIcon />}
+                    onClick={() => navigate(`/users/${user.id}`)}
                 >
                     Info
                 </Button>
                 <Box>
-                    <Button startIcon={<EditIcon/>} color='warning'>Edit</Button>
-                    <Button startIcon={<DeleteIcon/>} color='error'>Delete</Button>
+                    <Button startIcon={<EditIcon />} color='warning'>Edit</Button>
+                    <Button startIcon={<DeleteIcon />} onClick={handleDelete} color='error'>Delete</Button>
                 </Box>
             </CardActions>
         </Card>

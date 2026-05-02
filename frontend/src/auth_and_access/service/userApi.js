@@ -22,6 +22,10 @@ const userApi = {
             }
         });
     },
+    findById: async (id) => {
+        return await apiCall.get(`/users/${id}`);
+    },
+
 };
 
 export default userApi;

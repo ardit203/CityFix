@@ -9,6 +9,7 @@ public record DisplayUserDto(
         String email,
         Role role,
         Boolean notificationsEnabled,
+        Boolean locked,
         DisplayUserProfileDto profile
 ) {
     public static DisplayUserDto from(User user) {
@@ -18,6 +19,7 @@ public record DisplayUserDto(
                 user.getEmail(),
                 user.getRole(),
                 user.getNotificationsEnabled(),
+                user.isLocked(),
                 DisplayUserProfileDto.from(user.getProfile())
         );
     }
