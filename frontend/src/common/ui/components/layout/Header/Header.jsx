@@ -3,12 +3,14 @@ import {
     AppBar, Box, Button, Drawer, IconButton, List, ListItem, ListItemButton, ListItemText, Toolbar, Typography
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Link } from 'react-router';
-import { useState } from 'react';
+import {Link} from 'react-router';
+import {useState} from 'react';
+import AuthenticationToggle
+    from "../../../../../auth_and_access/ui/components/auth/AuthenticationToggle/AuthenticationToggle.jsx";
 
 const pages = [
-    { path: '/', name: 'home' },
-    { path: '/users', name: 'users' }
+    {path: '/', name: 'home'},
+    {path: '/users', name: 'users'}
 ];
 
 const Header = () => {
@@ -23,32 +25,32 @@ const Header = () => {
                         edge='start'
                         color='inherit'
                         aria-label='menu'
-                        sx={{ mr: 2, display: { md: 'none' } }}
+                        sx={{mr: 2, display: {md: 'none'}}}
                         onClick={() => setDrawerOpen(true)}
                     >
                         <MenuIcon/>
                     </IconButton>
 
-                    <Typography variant='h6' component='div' sx={{ mr: 3 }}>
+                    <Typography variant='h6' component='div' sx={{mr: 3}}>
                         E-SHOP
                     </Typography>
 
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                    <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
                         {pages.map((page) => (
                             <Link key={page.name} to={page.path}>
-                                <Button sx={{ my: 2, color: 'white', display: 'block' }}>
+                                <Button sx={{my: 2, color: 'white', display: 'block'}}>
                                     {page.name}
                                 </Button>
                             </Link>
                         ))}
                     </Box>
 
-                    <Button color='inherit' sx={{ ml: 'auto' }}>Login</Button>
+                    <AuthenticationToggle/>
                 </Toolbar>
             </AppBar>
 
             <Drawer anchor='left' open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-                <Box sx={{ width: 240 }} role='presentation' onClick={() => setDrawerOpen(false)}>
+                <Box sx={{width: 240}} role='presentation' onClick={() => setDrawerOpen(false)}>
                     <List>
                         {pages.map((page) => (
                             <ListItem key={page.name} disablePadding>

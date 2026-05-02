@@ -25,7 +25,33 @@ const userApi = {
     findById: async (id) => {
         return await apiCall.get(`/users/${id}`);
     },
+    deleteById: async (id) => {
+        return await apiCall.delete(`/users/${id}`);
+    },
 
+    update: async (id, data) => {
+        return await apiCall.put(`/users/${id}/admin`, data);
+    },
+
+    lock: async (id, until) => {
+        return await apiCall.patch(`/users/${id}/lock`, null, {
+            params: {
+                until: until
+            }
+        });
+    },
+
+    unlock: async (id) => {
+        return await apiCall.patch(`/users/${id}/unlock`);
+    },
+
+    changeRole: async (id, role) => {
+        return await apiCall.patch(`/users/${id}/role`, null, {
+            params: {
+                role
+            }
+        });
+    },
 };
 
 export default userApi;

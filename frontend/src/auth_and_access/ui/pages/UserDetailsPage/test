@@ -1,9 +1,23 @@
-import { Box, Button, Stack, TextField, MenuItem } from "@mui/material";
-import { useEffect, useState } from "react";
+const handleUpdate = async (formData) => {
+        await updateUser(user, formData, fetchUser);
+    };
+
+    <UserAdminForm
+                    initialValues={user}
+                    submitLabel="Update User"
+                    onSubmit={handleUpdate}
+                />
+
+
+-------------------------------------------------------
+
+import { Box, Button, MenuItem, Stack, TextField } from "@mui/material";
+import { useState } from "react";
 
 const emptyUser = {
     username: "",
     email: "",
+    role: "",
     notificationsEnabled: true,
     profile: {
         name: "",
@@ -20,27 +34,7 @@ const emptyUser = {
 };
 
 const UserAdminForm = ({ initialValues = emptyUser, onSubmit, submitLabel = "Save" }) => {
-    const [formData, setFormData] = useState(emptyUser);
-
-    useEffect(() => {
-        setFormData({
-            username: initialValues?.username || "",
-            email: initialValues?.email || "",
-            notificationsEnabled: initialValues?.notificationsEnabled ?? true,
-            profile: {
-                name: initialValues?.profile?.name || "",
-                surname: initialValues?.profile?.surname || "",
-                phoneNumber: initialValues?.profile?.phoneNumber || "",
-                dateOfBirth: initialValues?.profile?.dateOfBirth || "",
-                gender: initialValues?.profile?.gender || "",
-                address: {
-                    street: initialValues?.profile?.address?.street || "",
-                    city: initialValues?.profile?.address?.city || "",
-                    postalCode: initialValues?.profile?.address?.postalCode || ""
-                }
-            }
-        });
-    }, [initialValues]);
+    const [formData, setFormData] = useState(initialValues);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -80,24 +74,7 @@ const UserAdminForm = ({ initialValues = emptyUser, onSubmit, submitLabel = "Sav
 
     const handleSubmit = (event) => {
         event.preventDefault();
-
-        const requestBody = {
-            username: formData.username,
-            email: formData.email,
-            notificationsEnabled: formData.notificationsEnabled,
-            name: formData.profile.name,
-            surname: formData.profile.surname,
-            address: {
-                street: formData.profile.address.street,
-                city: formData.profile.address.city,
-                postalCode: formData.profile.address.postalCode
-            },
-            dateOfBirth: formData.profile.dateOfBirth || null,
-            gender: formData.profile.gender || null,
-            phoneNumber: formData.profile.phoneNumber || null
-        };
-
-        onSubmit(requestBody);
+        onSubmit(formData);
     };
 
     return (
@@ -118,6 +95,20 @@ const UserAdminForm = ({ initialValues = emptyUser, onSubmit, submitLabel = "Sav
                     onChange={handleChange}
                     fullWidth
                 />
+
+                <TextField
+                    select
+                    label="Role"
+                    name="role"
+                    value={formData.role}
+                    onChange={handleChange}
+                    fullWidth
+                >
+                    <MenuItem value="ROLE_CITIZEN">Citizen</MenuItem>
+                    <MenuItem value="ROLE_EMPLOYEE">Employee</MenuItem>
+                    <MenuItem value="ROLE_MANAGER">Manager</MenuItem>
+                    <MenuItem value="ROLE_ADMINISTRATOR">Administrator</MenuItem>
+                </TextField>
 
                 <TextField
                     label="Name"
@@ -149,11 +140,7 @@ const UserAdminForm = ({ initialValues = emptyUser, onSubmit, submitLabel = "Sav
                     type="date"
                     value={formData.profile.dateOfBirth}
                     onChange={handleProfileChange}
-                    slotProps={{
-                        inputLabel: {
-                            shrink: true
-                        }
-                    }}
+                    InputLabelProps={{ shrink: true }}
                     fullWidth
                 />
 
@@ -165,7 +152,6 @@ const UserAdminForm = ({ initialValues = emptyUser, onSubmit, submitLabel = "Sav
                     onChange={handleProfileChange}
                     fullWidth
                 >
-                    <MenuItem value="">Not selected</MenuItem>
                     <MenuItem value="MALE">Male</MenuItem>
                     <MenuItem value="FEMALE">Female</MenuItem>
                     <MenuItem value="OTHER">Other</MenuItem>

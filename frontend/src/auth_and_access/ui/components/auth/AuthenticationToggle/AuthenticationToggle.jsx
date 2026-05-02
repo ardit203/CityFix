@@ -8,12 +8,12 @@ const AuthenticationToggle = () => {
     const navigate = useNavigate();
 
     const handleLogin = () => {
-        navigate("/");
+        navigate("/login");
     };
 
     const handleLogout = () => {
         logout();
-        navigate("/");
+        navigate("/login");
     };
 
     return (

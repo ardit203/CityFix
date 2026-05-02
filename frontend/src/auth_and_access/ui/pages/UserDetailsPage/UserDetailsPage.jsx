@@ -27,29 +27,17 @@ import {
     Delete
 } from "@mui/icons-material";
 import useUserDetails from "../../../hooks/useUserDetails.js";
-import useConfirmedAction from "../../../../common/hooks/useConfirmedAction.js";
+import useUserActions from "../../../hooks/useUserActions.js";
+
 
 const UserDetailsPage = () => {
     const { id } = useParams();
     const { user, loading, error } = useUserDetails(id);
     const navigate = useNavigate();
-    const { runConfirmedAction } = useConfirmedAction();
+    const { deleteUser } = useUserActions();
 
-    const handleDelete = () => {
-        runConfirmedAction({
-            confirmOptions: {
-                title: "Delete user?",
-                message: `Are you sure you want to delete ${user.username}? This action cannot be undone.`,
-                confirmText: "Delete",
-                cancelText: "Cancel"
-            },
-            action: async () => {
-                console.log("Delete user", user.id);
-                // await userApi.deleteById(user.id);
-            },
-            successMessage: "User deleted successfully",
-            navigateTo: "/users"
-        })
+    const handleDelete = async () => {
+        await deleteUser(user);
     };
 
     if (loading) {

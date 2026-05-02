@@ -2,30 +2,16 @@ import { Box, Button, Card, CardActions, CardContent, Typography } from '@mui/ma
 import InfoIcon from '@mui/icons-material/Info';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import useConfirmedAction from "../../../../../common/hooks/useConfirmedAction.js";
 import {useNavigate} from "react-router";
+import useUserActions from "../../../../hooks/useUserActions.js";
 
 
 const ProductCard = ({ user }) => {
     const navigate = useNavigate();
-    const { runConfirmedAction } = useConfirmedAction();
+    const { deleteUser } = useUserActions();
 
-
-    const handleDelete = () => {
-        runConfirmedAction({
-            confirmOptions: {
-                title: "Delete user?",
-                message: `Are you sure you want to delete ${user.username}? This action cannot be undone.`,
-                confirmText: "Delete",
-                cancelText: "Cancel"
-            },
-            action: async () => {
-                console.log("Delete user", user.id);
-                // await userApi.deleteById(user.id);
-            },
-            successMessage: "User deleted successfully",
-            navigateTo: "/users"
-        })
+    const handleDelete = async () => {
+        await deleteUser(user);
     };
 
     return (

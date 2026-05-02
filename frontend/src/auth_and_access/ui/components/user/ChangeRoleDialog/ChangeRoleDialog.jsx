@@ -8,16 +8,11 @@ import {
     TextField
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import useConfirmDialog from "../../../../../common/hooks/useConfirmDialog.js";
-import useSnackbar from "../../../../../common/hooks/useSnackbar.js";
-
-// import userApi from "../../../service/userApi.js";
+import useUserActions from "../../../../hooks/useUserActions.js";
 
 const ChangeUserRoleDialog = ({ open, onClose, user, onSuccess }) => {
     const [selectedRole, setSelectedRole] = useState("");
-
-    const { confirm } = useConfirmDialog();
-    const { showSnackbar } = useSnackbar();
+    const { changeRole } = useUserActions();
 
     useEffect(() => {
         if (user) {
@@ -26,38 +21,10 @@ const ChangeUserRoleDialog = ({ open, onClose, user, onSuccess }) => {
     }, [user]);
 
     const handleSubmit = async () => {
-        const confirmed = await confirm({
-            title: "Change user role?",
-            message: `Are you sure you want to change the role of ${user.username}?`,
-            confirmText: "Change Role",
-            cancelText: "Cancel"
-        });
+        const success = await changeRole(user, selectedRole, onSuccess);
 
-        if (!confirmed) {
-            return;
-        }
-
-        try {
-            console.log("Change role", user.id, selectedRole);
-
-            // later:
-            // await userApi.changeRole(user.id, selectedRole);
-
-            showSnackbar("User role changed successfully", "success");
-
-            if (onSuccess) {
-                onSuccess();
-            }
-
+        if (success) {
             onClose();
-        } catch (error) {
-            const message =
-                error.response?.data?.message ||
-                error.response?.data?.error ||
-                error.message ||
-                "Failed to change user role";
-
-            showSnackbar(message, "error");
         }
     };
 
