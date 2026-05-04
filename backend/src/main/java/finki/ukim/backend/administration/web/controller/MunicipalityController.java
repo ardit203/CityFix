@@ -7,13 +7,15 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/municipality")
+@RequestMapping("/api/municipalities")
+@PreAuthorize("hasRole('ADMINISTRATOR')")
 public class MunicipalityController {
     private final MunicipalityApplicationService municipalityApplicationService;
 
@@ -48,7 +50,7 @@ public class MunicipalityController {
         return ResponseEntity.ok(municipalityApplicationService.findById(id));
     }
 
-    @GetMapping("/code/{code}")
+    @GetMapping("/by-code/{code}")
     public ResponseEntity<DisplayMunicipalityDto> findByCode(@PathVariable String code) {
         return ResponseEntity.ok(municipalityApplicationService.findByCode(code));
     }

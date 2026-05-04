@@ -1,4 +1,7 @@
 package finki.ukim.backend.request_management.repository;
 
-public interface RequestCommentRepository {
+import finki.ukim.backend.request_management.model.domain.RequestComment;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface RequestCommentRepository extends JpaRepository<RequestComment, Long> {
 }

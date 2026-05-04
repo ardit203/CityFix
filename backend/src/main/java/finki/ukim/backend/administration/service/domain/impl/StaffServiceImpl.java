@@ -1,22 +1,19 @@
 package finki.ukim.backend.administration.service.domain.impl;
 
-import finki.ukim.backend.administration.model.domain.Municipality;
 import finki.ukim.backend.administration.model.domain.Staff;
-import finki.ukim.backend.administration.model.exception.CitizenCannotBeStaffException;
-import finki.ukim.backend.administration.model.exception.StaffNotFoundException;
-import finki.ukim.backend.administration.model.exception.UserIsNotStaffException;
+import finki.ukim.backend.administration.model.exception.*;
 import finki.ukim.backend.administration.model.projection.StaffPageableProjection;
 import finki.ukim.backend.administration.repository.StaffRepository;
 import finki.ukim.backend.administration.service.domain.StaffService;
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.enums.Role;
 import finki.ukim.backend.auth_and_access.model.projection.UserPageableProjection;
+import finki.ukim.backend.common.exception.ForbiddenException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,32 +21,37 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class StaffServiceImpl implements StaffService {
+
     private final StaffRepository staffRepository;
 
     @Override
     public List<Staff> findAll(User currentUser) {
-        if (currentUser.getRole() == Role.ROLE_ADMINISTRATOR) {
+        if (isAdmin(currentUser)) {
             return staffRepository.findAll();
         }
 
-        if (currentUser.getRole() == Role.ROLE_MANAGER) {
-            Municipality managerMunicipality = getManagerMunicipality(currentUser);
-            return staffRepository.findByMunicipalityId(managerMunicipality.getId());
+        if (isManager(currentUser)) {
+            Staff managerStaff = getManagerStaff(currentUser);
+
+            return staffRepository.findByMunicipality_IdAndDepartment_Id(
+                    managerStaff.getMunicipality().getId(),
+                    managerStaff.getDepartment().getId()
+            );
         }
 
-        throw new AccessDeniedException("You are not allowed to view staff.");
+        throw new InsufficientRoleException(currentUser.getUsername());
     }
 
     @Override
     public List<UserPageableProjection> findUsersAvailableForStaff(User currentUser) {
         List<Role> roles;
 
-        if (currentUser.getRole() == Role.ROLE_ADMINISTRATOR) {
+        if (isAdmin(currentUser)) {
             roles = List.of(Role.ROLE_MANAGER, Role.ROLE_EMPLOYEE);
-        } else if (currentUser.getRole() == Role.ROLE_MANAGER) {
+        } else if (isManager(currentUser)) {
             roles = List.of(Role.ROLE_EMPLOYEE);
         } else {
-            throw new RuntimeException();
+            throw new InsufficientRoleException(currentUser.getUsername());
         }
 
         return staffRepository.findUsersWithRoleAndNotStaff(roles);
@@ -57,16 +59,20 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public List<Staff> findAllWithAll(User currentUser) {
-        if (currentUser.getRole() == Role.ROLE_ADMINISTRATOR) {
+        if (isAdmin(currentUser)) {
             return staffRepository.findAllWithAll();
         }
 
-        if (currentUser.getRole() == Role.ROLE_MANAGER) {
-            Municipality managerMunicipality = getManagerMunicipality(currentUser);
-            return staffRepository.findAllWithAllByMunicipalityId(managerMunicipality.getId());
+        if (isManager(currentUser)) {
+            Staff managerStaff = getManagerStaff(currentUser);
+
+            return staffRepository.findAllWithAllByMunicipalityIdAndDepartmentId(
+                    managerStaff.getMunicipality().getId(),
+                    managerStaff.getDepartment().getId()
+            );
         }
 
-        throw new AccessDeniedException("You are not allowed to view staff.");
+        throw new InsufficientRoleException(currentUser.getUsername());
     }
 
     @Override
@@ -81,21 +87,10 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public Staff find(User currentUser, Long userId, Long departmentId, Long municipalityId) {
-        Long effectiveMunicipalityId = municipalityId;
-
-        if (currentUser.getRole() == Role.ROLE_MANAGER) {
-            effectiveMunicipalityId = getManagerMunicipality(currentUser).getId();
-        }
-
-        if (currentUser.getRole() != Role.ROLE_ADMINISTRATOR
-                && currentUser.getRole() != Role.ROLE_MANAGER) {
-            throw new AccessDeniedException("You are not allowed to search staff.");
-        }
-
+    public Staff find(Long userId, Long departmentId, Long municipalityId) {
         return staffRepository
-                .find(userId, departmentId, effectiveMunicipalityId)
-                .orElseThrow();
+                .find(userId, departmentId, municipalityId)
+                .orElseThrow(() -> new StaffNotFoundException(userId, departmentId, municipalityId));
     }
 
     @Override
@@ -109,66 +104,46 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public List<Staff> findByDepartmentId(User currentUser, Long departmentId) {
-        if (currentUser.getRole() == Role.ROLE_ADMINISTRATOR) {
-            return staffRepository.findByDepartmentId(departmentId);
-        }
-
-        if (currentUser.getRole() == Role.ROLE_MANAGER) {
-            Municipality managerMunicipality = getManagerMunicipality(currentUser);
-            return staffRepository.findByDepartmentIdAndMunicipalityId(
-                    departmentId,
-                    managerMunicipality.getId()
-            );
-        }
-
-        throw new AccessDeniedException("You are not allowed to view staff.");
+    public List<Staff> findByDepartmentId(Long departmentId) {
+        return staffRepository.findByDepartmentId(departmentId);
     }
 
     @Override
-    public List<Staff> findByMunicipalityId(User currentUser, Long municipalityId) {
-        if (currentUser.getRole() == Role.ROLE_ADMINISTRATOR) {
-            return staffRepository.findByMunicipalityId(municipalityId);
-        }
-
-        if (currentUser.getRole() == Role.ROLE_MANAGER) {
-            Municipality managerMunicipality = getManagerMunicipality(currentUser);
-            return staffRepository.findByMunicipalityId(managerMunicipality.getId());
-        }
-
-        throw new AccessDeniedException("You are not allowed to view staff.");
+    public List<Staff> findByMunicipalityId(Long municipalityId) {
+        return staffRepository.findByMunicipality_Id(municipalityId);
     }
 
     @Override
     public Staff create(User currentUser, Staff staff) {
-        if (currentUser.getRole() != Role.ROLE_ADMINISTRATOR) {
-            throw new AccessDeniedException("Only administrator can create staff.");
+        validateUserCanBeStaff(staff);
+
+        if (staffRepository.existsByUser_Id(staff.getUser().getId())) {
+            throw new UserIsAlreadyStaffException(staff.getUser().getId());
         }
 
-        if (staff.getUser().getRole() == Role.ROLE_CITIZEN) {
-            throw new CitizenCannotBeStaffException(staff.getUser().getUsername());
+        if (isAdmin(currentUser)) {
+            return staffRepository.save(staff);
         }
 
-        return staffRepository.save(staff);
+        if (isManager(currentUser)) {
+            Staff managerStaff = getManagerStaff(currentUser);
+
+            checkManagerCreateAccess(managerStaff, staff);
+
+            return staffRepository.save(staff);
+        }
+
+        throw new InsufficientRoleException(currentUser.getUsername());
     }
 
     @Override
-    public Staff update(Long id, User currentUser, Staff updatedStaff) {
-        Staff existingStaff = findById(id, currentUser);
-
-        if (currentUser.getRole() == Role.ROLE_MANAGER) {
-            Municipality managerMunicipality = getManagerMunicipality(currentUser);
-
-            if (updatedStaff.getMunicipality() != null
-                    && !updatedStaff.getMunicipality().getId().equals(managerMunicipality.getId())) {
-                throw new AccessDeniedException("Manager cannot move staff to another municipality.");
-            }
-        }
+    public Staff update(Long id, Staff updatedStaff) {
+        Staff existingStaff = staffRepository
+                .findStaffById(id)
+                .orElseThrow(() -> new StaffNotFoundException(id));
 
         if (updatedStaff.getUser() != null) {
-            if (updatedStaff.getUser().getRole() == Role.ROLE_CITIZEN) {
-                throw new CitizenCannotBeStaffException(updatedStaff.getUser().getUsername());
-            }
+            validateUserCanBeStaff(updatedStaff);
             existingStaff.setUser(updatedStaff.getUser());
         }
 
@@ -179,20 +154,31 @@ public class StaffServiceImpl implements StaffService {
         if (updatedStaff.getMunicipality() != null) {
             existingStaff.setMunicipality(updatedStaff.getMunicipality());
         }
-
         return staffRepository.save(existingStaff);
+
     }
 
     @Override
     public Staff deleteById(Long id, User currentUser) {
-        Staff staff = findById(id, currentUser);
+        Staff staff = staffRepository
+                .findStaffById(id)
+                .orElseThrow(() -> new StaffNotFoundException(id));
 
-        if (currentUser.getRole() != Role.ROLE_ADMINISTRATOR) {
-            throw new AccessDeniedException("Only administrator can delete staff.");
+        if (isAdmin(currentUser)) {
+            staffRepository.delete(staff);
+            return staff;
         }
 
-        staffRepository.delete(staff);
-        return staff;
+        if (isManager(currentUser)) {
+            Staff managerStaff = getManagerStaff(currentUser);
+
+            checkManagerStaffAccess(managerStaff, staff);
+
+            staffRepository.delete(staff);
+            return staff;
+        }
+
+        throw new InsufficientRoleException(currentUser.getUsername());
     }
 
     @Override
@@ -212,21 +198,26 @@ public class StaffServiceImpl implements StaffService {
         Pageable pageable = PageRequest.of(
                 page,
                 size,
-                Sort.by(sortBy).and(Sort.by("createdAt"))
+                Sort.by(sortBy)
         );
 
         Long effectiveMunicipalityId = municipalityId;
+        Long effectiveDepartmentId = departmentId;
 
-        if (currentUser.getRole() == Role.ROLE_MANAGER) {
-            effectiveMunicipalityId = getManagerMunicipality(currentUser).getId();
-        } else if (currentUser.getRole() != Role.ROLE_ADMINISTRATOR) {
-            throw new AccessDeniedException("You are not allowed to view staff.");
+        if (isManager(currentUser)) {
+            Staff managerStaff = getManagerStaff(currentUser);
+
+            effectiveMunicipalityId = managerStaff.getMunicipality().getId();
+            effectiveDepartmentId = managerStaff.getDepartment().getId();
+
+        } else if (!isAdmin(currentUser)) {
+            throw new InsufficientRoleException(currentUser.getUsername());
         }
 
         return staffRepository.findFiltered(
                 id,
                 userId,
-                departmentId,
+                effectiveDepartmentId,
                 effectiveMunicipalityId,
                 username,
                 municipalityCode,
@@ -235,26 +226,72 @@ public class StaffServiceImpl implements StaffService {
         );
     }
 
-    private Municipality getManagerMunicipality(User currentUser) {
-        Staff managerStaff = staffRepository.findByUserIdWithMunicipality(currentUser.getId())
-                .orElseThrow(() -> new UserIsNotStaffException(currentUser.getId()));
-
-        return managerStaff.getMunicipality();
+    private Staff getManagerStaff(User currentUser) {
+        return staffRepository.findByUserIdWithDepartmentAndMunicipality(currentUser.getId())
+                .orElseThrow(() -> new UserIsNotStaffException(currentUser.getUsername()));
     }
 
-    private void checkStaffAccess(User currentUser, Staff staff) {
-        if (currentUser.getRole() == Role.ROLE_ADMINISTRATOR) {
+    private void checkStaffAccess(User currentUser, Staff targetStaff) {
+        if (isAdmin(currentUser)) {
             return;
         }
 
-        if (currentUser.getRole() == Role.ROLE_MANAGER) {
-            Municipality managerMunicipality = getManagerMunicipality(currentUser);
-
-            if (staff.getMunicipality().getId().equals(managerMunicipality.getId())) {
-                return;
-            }
+        if (isManager(currentUser)) {
+            Staff managerStaff = getManagerStaff(currentUser);
+            checkManagerStaffAccess(managerStaff, targetStaff);
+            return;
         }
 
-        throw new AccessDeniedException("You are not allowed to access this staff member.");
+        throw new InsufficientRoleException(currentUser.getUsername());
+    }
+
+    private void checkManagerStaffAccess(Staff managerStaff, Staff targetStaff) {
+        if (managerStaff.getMunicipality() == null ||
+                managerStaff.getDepartment() == null ||
+                targetStaff.getMunicipality() == null ||
+                targetStaff.getDepartment() == null) {
+            throw new ForbiddenException("You are not allowed to access this staff member.");
+        }
+
+        boolean sameMunicipality = targetStaff.getMunicipality().getId()
+                .equals(managerStaff.getMunicipality().getId());
+
+        boolean sameDepartment = targetStaff.getDepartment().getId()
+                .equals(managerStaff.getDepartment().getId());
+
+        if (!sameMunicipality || !sameDepartment) {
+            throw new ForbiddenException("You are not allowed to access this staff member.");
+        }
+    }
+
+    private void checkManagerCreateAccess(Staff managerStaff, Staff staff) {
+        if (staff.getMunicipality() == null || staff.getDepartment() == null) {
+            throw new StaffOutsideManagerScopeException();
+        }
+
+        boolean sameMunicipality = staff.getMunicipality().getId()
+                .equals(managerStaff.getMunicipality().getId());
+
+        boolean sameDepartment = staff.getDepartment().getId()
+                .equals(managerStaff.getDepartment().getId());
+
+        if (!sameMunicipality || !sameDepartment) {
+            throw new StaffOutsideManagerScopeException();
+        }
+    }
+
+    private void validateUserCanBeStaff(Staff staff) {
+        if (staff.getUser() != null &&
+                staff.getUser().getRole() == Role.ROLE_CITIZEN) {
+            throw new CitizenCannotBeStaffException(staff.getUser().getUsername());
+        }
+    }
+
+    private boolean isAdmin(User currentUser) {
+        return currentUser.getRole() == Role.ROLE_ADMINISTRATOR;
+    }
+
+    private boolean isManager(User currentUser) {
+        return currentUser.getRole() == Role.ROLE_MANAGER;
     }
 }

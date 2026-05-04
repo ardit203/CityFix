@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -22,13 +23,15 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
             """)
     List<Staff> findAllWithAll();
 
-    @Query("""
-            select s from Staff s
-            join fetch s.user
-            join fetch s.department
-            join fetch s.municipality
-            where s.id = :id
-            """)
+
+    @EntityGraph(attributePaths = {"user", "department", "municipality"})
+//    @Query("""
+//            select s from Staff s
+//            join fetch s.user
+//            join fetch s.department
+//            join fetch s.municipality
+//            where s.id = :id
+//            """)
     Optional<Staff> findStaffById(@Param("id") Long id);
 
     /// //////////////////////////////////////////////////////////////////////////////////////
@@ -39,23 +42,6 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
             """)
     Optional<Staff> findByUserId(@Param("userId") Long userId);
 
-
-    @EntityGraph(attributePaths = {"municipality"})
-    @Query("""
-            select s from Staff s
-            where s.user.id = :userId
-            """)
-    Optional<Staff> findByUserIdWithMunicipality(@Param("userId") Long userId);
-
-    @Query("""
-            select s from Staff s
-                        join fetch s.user
-                        join fetch s.department
-                        join fetch s.municipality
-            where s.user.username = :username
-            """)
-    Optional<Staff> findByUsernameWithAll(@Param("username") String username);
-
     /// //////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -65,31 +51,11 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
             """)
     List<Staff> findByDepartmentId(@Param("departmentId") Long departmentId);
 
-    @Query("""
-            select s from Staff s
-                        join fetch s.user
-                        join fetch s.department
-                        join fetch s.municipality
-            where s.department.id = :departmentId
-            """)
-    List<Staff> findByDepartmentIdWithAll(@Param("departmentId") Long departmentId);
-
     /// //////////////////////////////////////////////////////////////////////////////////////
 
-    @Query("""
-            select s from Staff s
-            where s.municipality.id = :municipalityId
-            """)
-    List<Staff> findByMunicipalityId(@Param("municipalityId") Long municipalityId);
+    List<Staff> findByMunicipality_Id(Long municipalityId);
 
-    @Query("""
-            select s from Staff s
-                        join fetch s.user
-                        join fetch s.department
-                        join fetch s.municipality
-            where s.municipality.id = :municipalityId
-            """)
-    List<Staff> findByMunicipalityIdWithAll(@Param("municipalityId") Long municipalityId);
+    List<Staff> findByMunicipality_IdAndDepartment_Id(Long municipalityId, Long departmentId);
 
     /// ///////////////////////////////////////////////////////////////////////////////////
     @Query("""
@@ -149,15 +115,15 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
             Pageable pageable
     );
 
-
-    List<Staff> findByDepartmentIdAndMunicipalityId(Long departmentId, Long municipalityId);
-
     @EntityGraph(attributePaths = {"user", "department", "municipality"})
     @Query("""
                 select s from Staff s
                 where s.municipality.id = :municipalityId
             """)
-    List<Staff> findAllWithAllByMunicipalityId(@Param("municipalityId") Long municipalityId);
+    List<Staff> findAllWithAllByMunicipalityIdAndDepartmentId(
+            @Param("municipalityId") Long municipalityId,
+            @Param("departmentId") Long departmentId
+    );
 
     @Query("""
             select u.id as id,
@@ -177,4 +143,15 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
     List<UserPageableProjection> findUsersWithRoleAndNotStaff(
             @Param("roles") List<Role> roles
     );
+
+
+    @EntityGraph(attributePaths = {"department", "municipality"})
+    @Query("""
+            select s
+            from Staff s
+            where s.user.id = :userId
+            """)
+    Optional<Staff> findByUserIdWithDepartmentAndMunicipality(@Param("userId") Long userId);
+
+    boolean existsByUser_Id(Long userId);
 }

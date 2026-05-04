@@ -7,13 +7,15 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/department")
+@RequestMapping("/api/departments")
+@PreAuthorize("hasRole('ADMINISTRATOR')")
 public class DepartmentController {
     private final DepartmentApplicationService departmentApplicationService;
 
@@ -46,7 +48,7 @@ public class DepartmentController {
         return ResponseEntity.ok(departmentApplicationService.findById(id));
     }
 
-    @GetMapping("/name/{name}")
+    @GetMapping("/by-name/{name}")
     public ResponseEntity<DisplayDepartmentDto> findByName(@PathVariable String name) {
         return ResponseEntity.ok(departmentApplicationService.findByName(name));
     }

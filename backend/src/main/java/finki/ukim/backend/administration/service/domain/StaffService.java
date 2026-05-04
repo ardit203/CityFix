@@ -17,17 +17,17 @@ public interface StaffService {
 
     Staff findById(Long id, User currentUser);
 
-    Staff find(User currentUser, Long userId, Long departmentId, Long municipalityId);
+    Staff find(Long userId, Long departmentId, Long municipalityId);
 
     Staff findByUserId(User currentUser, Long userId);
 
-    List<Staff> findByDepartmentId(User currentUser, Long departmentId);
+    List<Staff> findByDepartmentId(Long departmentId);
 
-    List<Staff> findByMunicipalityId(User currentUser, Long municipalityId);
+    List<Staff> findByMunicipalityId(Long municipalityId);
 
     Staff create(User currentUser, Staff staff);
 
-    Staff update(Long id, User currentUser, Staff updatedStaff);
+    Staff update(Long id, Staff updatedStaff);
 
     Staff deleteById(Long id, User currentUser);
 

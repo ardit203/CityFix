@@ -36,17 +36,17 @@ public interface StaffApplicationService {
 
     DisplayStaffDto findById(Long id, User user);
 
-    DisplayStaffDto find(User user, CreateStaffDto createStaffDto);
+    DisplayStaffDto find(CreateStaffDto createStaffDto);
 
     DisplayStaffDto findByUserId(User user, Long userId);
 
-    List<DisplayBasicStaffDto> findByDepartmentId(User user, Long departmentId);
+    List<DisplayBasicStaffDto> findByDepartmentId(Long departmentId);
 
-    List<DisplayBasicStaffDto> findByMunicipalityId(User user, Long municipalityId);
+    List<DisplayBasicStaffDto> findByMunicipalityId(Long municipalityId);
 
     DisplayStaffDto create(User user, CreateStaffDto createStaffDto);
 
-    DisplayBasicStaffDto update(Long id, User user, CreateStaffDto createStaffDto);
+    DisplayBasicStaffDto update(Long id, CreateStaffDto createStaffDto);
 
     DisplayBasicStaffDto deleteById(Long id, User user);
 }

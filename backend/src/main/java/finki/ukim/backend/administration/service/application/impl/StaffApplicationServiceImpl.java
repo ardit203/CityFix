@@ -70,9 +70,9 @@ public class StaffApplicationServiceImpl implements StaffApplicationService {
     }
 
     @Override
-    public DisplayStaffDto find(User currentUser, CreateStaffDto createStaffDto) {
+    public DisplayStaffDto find(CreateStaffDto createStaffDto) {
         return DisplayStaffDto.from(
-                staffService.find(currentUser, createStaffDto.userId(), createStaffDto.departmentId(), createStaffDto.municipalityId())
+                staffService.find(createStaffDto.userId(), createStaffDto.departmentId(), createStaffDto.municipalityId())
         );
     }
 
@@ -83,13 +83,13 @@ public class StaffApplicationServiceImpl implements StaffApplicationService {
 
 
     @Override
-    public List<DisplayBasicStaffDto> findByDepartmentId(User currentUser, Long departmentId) {
-        return DisplayBasicStaffDto.from(staffService.findByDepartmentId(currentUser, departmentId));
+    public List<DisplayBasicStaffDto> findByDepartmentId(Long departmentId) {
+        return DisplayBasicStaffDto.from(staffService.findByDepartmentId(departmentId));
     }
 
     @Override
-    public List<DisplayBasicStaffDto> findByMunicipalityId(User currentUser, Long municipalityId) {
-        return DisplayBasicStaffDto.from(staffService.findByMunicipalityId(currentUser, municipalityId));
+    public List<DisplayBasicStaffDto> findByMunicipalityId(Long municipalityId) {
+        return DisplayBasicStaffDto.from(staffService.findByMunicipalityId(municipalityId));
     }
 
     @Override
@@ -104,14 +104,14 @@ public class StaffApplicationServiceImpl implements StaffApplicationService {
     }
 
     @Override
-    public DisplayBasicStaffDto update(Long id, User currentUser, CreateStaffDto createStaffDto) {
+    public DisplayBasicStaffDto update(Long id, CreateStaffDto createStaffDto) {
         User user = userService.findById(createStaffDto.userId());
 
         Department department = departmentService.findById(createStaffDto.departmentId());
 
         Municipality municipality = municipalityService.findById(createStaffDto.municipalityId());
 
-        return DisplayBasicStaffDto.from(staffService.update(id, currentUser, createStaffDto.toStaff(user, department, municipality)));
+        return DisplayBasicStaffDto.from(staffService.update(id, createStaffDto.toStaff(user, department, municipality)));
     }
 
     @Override

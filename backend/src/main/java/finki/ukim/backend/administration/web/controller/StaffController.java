@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,11 +26,6 @@ public class StaffController {
     @GetMapping
     public ResponseEntity<List<DisplayBasicStaffDto>> findAll(@AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok(staffApplicationService.findAll(currentUser));
-    }
-
-    @GetMapping("/available-for-staff")
-    public ResponseEntity<List<DisplayUserPageableDto>> findUsersAvailableForStaff(@AuthenticationPrincipal User currentUser) {
-        return ResponseEntity.ok(staffApplicationService.findUsersAvailableForStaff(currentUser));
     }
 
     @GetMapping("/paged")
@@ -63,6 +59,7 @@ public class StaffController {
         );
     }
 
+
     @GetMapping("/detailed")
     public ResponseEntity<List<DisplayStaffDto>> findAllWithAll(@AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok(staffApplicationService.findAllWithAll(currentUser));
@@ -73,19 +70,26 @@ public class StaffController {
         return ResponseEntity.ok(staffApplicationService.findById(id, currentUser));
     }
 
-    @GetMapping("/userId/{userId}")
+    @GetMapping("/by-user/{userId}")
     public ResponseEntity<DisplayStaffDto> findByUserId(@PathVariable Long userId, @AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok(staffApplicationService.findByUserId(currentUser, userId));
     }
 
-    @GetMapping("/department/{departmentId}")
-    public ResponseEntity<List<DisplayBasicStaffDto>> findByDepartmentId(@PathVariable Long departmentId, @AuthenticationPrincipal User currentUser) {
-        return ResponseEntity.ok(staffApplicationService.findByDepartmentId(currentUser, departmentId));
+    @GetMapping("/by-department/{departmentId}")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public ResponseEntity<List<DisplayBasicStaffDto>> findByDepartmentId(@PathVariable Long departmentId) {
+        return ResponseEntity.ok(staffApplicationService.findByDepartmentId(departmentId));
     }
 
-    @GetMapping("/municipality/{municipalityId}")
-    public ResponseEntity<List<DisplayBasicStaffDto>> findByMunicipalityId(@PathVariable Long municipalityId, @AuthenticationPrincipal User currentUser) {
-        return ResponseEntity.ok(staffApplicationService.findByMunicipalityId(currentUser, municipalityId));
+    @GetMapping("/by-municipality/{municipalityId}")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public ResponseEntity<List<DisplayBasicStaffDto>> findByMunicipalityId(@PathVariable Long municipalityId) {
+        return ResponseEntity.ok(staffApplicationService.findByMunicipalityId(municipalityId));
+    }
+
+    @GetMapping("/available-users")
+    public ResponseEntity<List<DisplayUserPageableDto>> findUsersAvailableForStaff(@AuthenticationPrincipal User currentUser) {
+        return ResponseEntity.ok(staffApplicationService.findUsersAvailableForStaff(currentUser));
     }
 
     @PostMapping
@@ -94,9 +98,11 @@ public class StaffController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DisplayBasicStaffDto> update(@PathVariable Long id, @Valid @RequestBody CreateStaffDto createStaffDto, @AuthenticationPrincipal User currentUser) {
-        return ResponseEntity.ok(staffApplicationService.update(id, currentUser, createStaffDto));
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public ResponseEntity<DisplayBasicStaffDto> update(@PathVariable Long id, @Valid @RequestBody CreateStaffDto createStaffDto) {
+        return ResponseEntity.ok(staffApplicationService.update(id, createStaffDto));
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<DisplayBasicStaffDto> delete(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {

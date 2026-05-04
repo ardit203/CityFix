@@ -9,13 +9,15 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/category")
+@RequestMapping("/api/categories")
+@PreAuthorize("hasRole('ADMINISTRATOR')")
 public class CategoryController {
     private final CategoryApplicationService categoryApplicationService;
 
@@ -50,12 +52,12 @@ public class CategoryController {
         return ResponseEntity.ok(categoryApplicationService.findById(id));
     }
 
-    @GetMapping("/name/{name}")
+    @GetMapping("/by-name/{name}")
     public ResponseEntity<DisplayBasicCategoryDto> findByName(@PathVariable String name) {
         return ResponseEntity.ok(categoryApplicationService.findByName(name));
     }
 
-    @GetMapping("/department/{departmentId}")
+    @GetMapping("/by-department/{departmentId}")
     public ResponseEntity<List<DisplayCategoryDto>> findByDepartmentId(@PathVariable Long departmentId) {
         return ResponseEntity.ok(categoryApplicationService.findByDepartmentId(departmentId));
     }
