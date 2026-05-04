@@ -25,11 +25,11 @@ import java.io.IOException;
 @Component
 @AllArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
+
     private final JwtHelper jwtHelper;
     private final UserService userService;
     private final HandlerExceptionResolver handlerExceptionResolver;
     private final JwtProperties jwtProperties;
-
 
     @Override
     protected void doFilterInternal(
@@ -37,7 +37,9 @@ public class JwtFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
+
         String headerValue = request.getHeader(jwtProperties.getHeader());
+
         if (headerValue == null || !headerValue.startsWith(jwtProperties.getTokenPrefix())) {
             filterChain.doFilter(request, response);
             return;
@@ -46,31 +48,40 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = headerValue.substring(jwtProperties.getTokenPrefix().length());
 
         try {
-            String username = jwtHelper.extractUsername(token);
+            Long userId = jwtHelper.extractUserId(token);
+
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            if (username == null || authentication != null) {
+
+            if (userId == null || authentication != null) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
             User user;
+
             try {
-                user = userService.findByUsername(username);
+                user = userService.findById(userId);
             } catch (UserNotFoundException e) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
             if (!jwtHelper.isExpired(token)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        user,
-                        null,
-                        user.getAuthorities()
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(
+                                user,
+                                null,
+                                user.getAuthorities()
+                        );
+
+                authToken.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
                 );
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
-        } catch (JwtException jwtException) {
+
+        } catch (JwtException | NumberFormatException jwtException) {
             handlerExceptionResolver.resolveException(
                     request,
                     response,

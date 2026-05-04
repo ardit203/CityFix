@@ -6,6 +6,7 @@ import {
 } from "@mui/material";
 import useSnackbar from "../../../../../common/hooks/useSnackbar.js";
 import useConfirmDialog from "../../../../../common/hooks/useConfirmDialog.js";
+import userApi from "../../../../service/userApi.js";
 // import userApi from "../../../../service/userApi.js";
 
 const initialFormData = {
@@ -51,7 +52,7 @@ const ChangePasswordForm = () => {
         try {
             console.log("Change password", formData);
 
-            // await userApi.changeMyPassword(formData);
+            await userApi.changeMyPassword(formData);
 
             showSnackbar("Password changed successfully", "success");
             setFormData(initialFormData);

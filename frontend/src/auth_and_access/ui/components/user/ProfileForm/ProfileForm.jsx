@@ -7,6 +7,7 @@ import {
 } from "@mui/material";
 import useSnackbar from "../../../../../common/hooks/useSnackbar.js";
 import useConfirmDialog from "../../../../../common/hooks/useConfirmDialog.js";
+import userApi from "../../../../service/userApi.js";
 // import userApi from "../../../../service/userApi.js";
 
 const ProfileSettingsForm = ({ user, onSuccess }) => {
@@ -82,7 +83,7 @@ const ProfileSettingsForm = ({ user, onSuccess }) => {
         try {
             console.log("Update profile", formData);
 
-            // await userApi.updateMyProfile(formData);
+            await userApi.updateMyProfile(formData);
 
             showSnackbar("Profile updated successfully", "success");
 

@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import useSnackbar from "../../../../../common/hooks/useSnackbar.js";
 import useConfirmDialog from "../../../../../common/hooks/useConfirmDialog.js";
+import userApi from "../../../../service/userApi.js";
 // import userApi from "../../../../service/userApi.js";
 
 const ProfilePictureForm = ({ user, onSuccess }) => {
@@ -17,6 +18,8 @@ const ProfilePictureForm = ({ user, onSuccess }) => {
     const { showSnackbar } = useSnackbar();
 
     const profile = user?.profile;
+
+    console.log(user)
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
@@ -40,12 +43,9 @@ const ProfilePictureForm = ({ user, onSuccess }) => {
         }
 
         try {
-            const formData = new FormData();
-            formData.append("file", file);
+            console.log("Upload profile picture", file);
 
-            console.log("Upload profile picture", formData);
-
-            // await userApi.updateMyProfilePicture(formData);
+            await userApi.updateMyProfilePicture(file);
 
             showSnackbar("Profile picture updated successfully", "success");
             setFile(null);
@@ -79,7 +79,7 @@ const ProfilePictureForm = ({ user, onSuccess }) => {
         try {
             console.log("Delete profile picture");
 
-            // await userApi.deleteMyProfilePicture();
+            await userApi.deleteMyProfilePicture();
 
             showSnackbar("Profile picture deleted successfully", "success");
 

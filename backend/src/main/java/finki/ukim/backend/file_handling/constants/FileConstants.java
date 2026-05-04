@@ -28,6 +28,6 @@ public class FileConstants {
     }
 
     public static String getBaseUrl(String directory) {
-        return DEFAULT_URL + "/" + directory + "/";
+        return UPLOAD_DIR + "/" + directory + "/";
     }
 }

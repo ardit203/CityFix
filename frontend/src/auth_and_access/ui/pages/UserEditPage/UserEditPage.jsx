@@ -80,9 +80,9 @@ const UserEditPage = () => {
                 <Button
                     variant="outlined"
                     startIcon={<ArrowBack />}
-                    onClick={() => navigate("/users")}
+                    onClick={() => navigate(`/users/${user.id}`)}
                 >
-                    Back to Users
+                    Back to User
                 </Button>
 
                 <Stack direction="row" spacing={2}>

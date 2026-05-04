@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/municipalities")
-@PreAuthorize("hasRole('ADMINISTRATOR')")
+//@PreAuthorize("hasRole('ADMINISTRATOR')")
 public class MunicipalityController {
     private final MunicipalityApplicationService municipalityApplicationService;
 

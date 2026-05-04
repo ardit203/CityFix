@@ -66,6 +66,14 @@ const UsersPage = () => {
         setFilters(newFilters);
         fetchUsers(newFilters);
     };
+    if (loading) {
+        return (
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
+
 
     return (
         <Box>
@@ -125,26 +133,15 @@ const UsersPage = () => {
                     Clear
                 </Button>
             </Box>
+            <UserGrid users={users}/>
 
-            {loading && (
-                <Box className="progress-box">
-                    <CircularProgress/>
-                </Box>
-            )}
-
-            {!loading && (
-                <>
-                    <UserGrid users={users}/>
-
-                    <Box sx={{display: "flex", justifyContent: "center", mt: 3}}>
-                        <Pagination
-                            count={pagination.totalPages}
-                            page={pagination.page + 1}
-                            onChange={handlePageChange}
-                        />
-                    </Box>
-                </>
-            )}
+            <Box sx={{display: "flex", justifyContent: "center", mt: 3}}>
+                <Pagination
+                    count={pagination.totalPages}
+                    page={pagination.page + 1}
+                    onChange={handlePageChange}
+                />
+            </Box>
         </Box>
     );
 };

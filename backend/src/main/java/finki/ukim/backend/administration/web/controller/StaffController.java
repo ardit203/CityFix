@@ -76,13 +76,13 @@ public class StaffController {
     }
 
     @GetMapping("/by-department/{departmentId}")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+//    @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<List<DisplayBasicStaffDto>> findByDepartmentId(@PathVariable Long departmentId) {
         return ResponseEntity.ok(staffApplicationService.findByDepartmentId(departmentId));
     }
 
     @GetMapping("/by-municipality/{municipalityId}")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+//    @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<List<DisplayBasicStaffDto>> findByMunicipalityId(@PathVariable Long municipalityId) {
         return ResponseEntity.ok(staffApplicationService.findByMunicipalityId(municipalityId));
     }
@@ -98,7 +98,7 @@ public class StaffController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+//    @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<DisplayBasicStaffDto> update(@PathVariable Long id, @Valid @RequestBody CreateStaffDto createStaffDto) {
         return ResponseEntity.ok(staffApplicationService.update(id, createStaffDto));
     }
