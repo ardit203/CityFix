@@ -64,7 +64,7 @@ const UsersPage = () => {
         };
 
         setFilters(newFilters);
-        fetchUsers(newFilters);
+        void fetchUsers(newFilters);
     };
     if (loading) {
         return (
@@ -133,7 +133,7 @@ const UsersPage = () => {
                     Clear
                 </Button>
             </Box>
-            <UserGrid users={users}/>
+            <UserGrid users={users} onDelete={() => fetchUsers(filters)}/>
 
             <Box sx={{display: "flex", justifyContent: "center", mt: 3}}>
                 <Pagination

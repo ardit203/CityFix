@@ -6,95 +6,32 @@ import {
     Stack,
     Typography
 } from "@mui/material";
-import useSnackbar from "../../../../../common/hooks/useSnackbar.js";
-import useConfirmDialog from "../../../../../common/hooks/useConfirmDialog.js";
-import userApi from "../../../../service/userApi.js";
-// import userApi from "../../../../service/userApi.js";
+import useProfileActions from "../../../../hooks/useProfileActions.js";
 
 const ProfilePictureForm = ({ user, onSuccess }) => {
     const [file, setFile] = useState(null);
 
-    const { confirm } = useConfirmDialog();
-    const { showSnackbar } = useSnackbar();
+    const {
+        updateMyProfilePicture,
+        deleteMyProfilePicture
+    } = useProfileActions();
 
     const profile = user?.profile;
-
-    console.log(user)
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
     };
 
     const handleUpload = async () => {
-        if (!file) {
-            showSnackbar("Please select a file first", "error");
-            return;
-        }
+        const success = await updateMyProfilePicture(file, onSuccess);
 
-        const confirmed = await confirm({
-            title: "Update profile picture?",
-            message: "Are you sure you want to update your profile picture?",
-            confirmText: "Upload",
-            cancelText: "Cancel"
-        });
-
-        if (!confirmed) {
-            return;
-        }
-
-        try {
-            console.log("Upload profile picture", file);
-
-            await userApi.updateMyProfilePicture(file);
-
-            showSnackbar("Profile picture updated successfully", "success");
+        if (success) {
             setFile(null);
-
-            if (onSuccess) {
-                onSuccess();
-            }
-        } catch (error) {
-            const message =
-                error.response?.data?.message ||
-                error.response?.data?.error ||
-                error.message ||
-                "Failed to update profile picture";
-
-            showSnackbar(message, "error");
         }
     };
 
     const handleDelete = async () => {
-        const confirmed = await confirm({
-            title: "Delete profile picture?",
-            message: "Are you sure you want to delete your profile picture?",
-            confirmText: "Delete",
-            cancelText: "Cancel"
-        });
-
-        if (!confirmed) {
-            return;
-        }
-
-        try {
-            console.log("Delete profile picture");
-
-            await userApi.deleteMyProfilePicture();
-
-            showSnackbar("Profile picture deleted successfully", "success");
-
-            if (onSuccess) {
-                onSuccess();
-            }
-        } catch (error) {
-            const message =
-                error.response?.data?.message ||
-                error.response?.data?.error ||
-                error.message ||
-                "Failed to delete profile picture";
-
-            showSnackbar(message, "error");
-        }
+        await deleteMyProfilePicture(onSuccess);
     };
 
     return (
@@ -147,6 +84,7 @@ const ProfilePictureForm = ({ user, onSuccess }) => {
                     variant="outlined"
                     color="error"
                     onClick={handleDelete}
+                    disabled={!profile?.profilePictureUrl}
                 >
                     Delete Picture
                 </Button>

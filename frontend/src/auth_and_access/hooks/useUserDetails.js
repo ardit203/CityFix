@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import userApi from "../service/userApi.js";
+import { useCallback, useEffect, useState } from "react";
 import useSnackbar from "../../common/hooks/useSnackbar.js";
+import userService from "../services/userService.js";
 
 const useUserDetails = (id) => {
     const [user, setUser] = useState(null);
@@ -9,7 +9,7 @@ const useUserDetails = (id) => {
 
     const { showSnackbar } = useSnackbar();
 
-    useEffect(() => {
+    const fetchUser = useCallback(async () => {
         if (!id) {
             setLoading(false);
             return;
@@ -18,31 +18,38 @@ const useUserDetails = (id) => {
         setLoading(true);
         setError(null);
 
-        userApi
-            .findById(id)
-            .then((response) => {
-                setUser(response.data);
-                console.log(response.data)
-            })
-            .catch((error) => {
-                const message =
-                    error.response?.data?.message ||
-                    error.response?.data?.error ||
-                    error.message ||
-                    "Something went wrong";
+        try {
+            const response = await userService.findById(id);
+            setUser(response.data);
+        } catch (error) {
+            const message =
+                error.response?.data?.message ||
+                error.response?.data?.error ||
+                error.message ||
+                "Something went wrong";
 
-                setError(message);
-                showSnackbar(message, "error");
-            })
-            .finally(() => {
-                setLoading(false);
-            });
+            setError(message);
+            showSnackbar(message, "error");
+        } finally {
+            setLoading(false);
+        }
     }, [id, showSnackbar]);
+
+    const updateUserInState = useCallback((updatedUser) => {
+        setUser(updatedUser);
+    }, []);
+
+    useEffect(() => {
+        void fetchUser();
+    }, [fetchUser]);
 
     return {
         user,
         loading,
-        error
+        error,
+        fetchUser,
+        setUser,
+        updateUserInState
     };
 };
 

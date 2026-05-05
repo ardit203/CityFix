@@ -1,6 +1,6 @@
 import apiCall from "../../common/axios/axios.js";
 
-const authApi = {
+const authService = {
     register: async (data) => {
         return await apiCall.post("/auth/register", data);
     },
@@ -9,4 +9,4 @@ const authApi = {
     },
 };
 
-export default authApi;
+export default authService;

@@ -22,7 +22,7 @@ const ForgotPasswordPage = () => {
         setLoading(true);
 
         try {
-            // await authApi.requestPasswordReset({
+            // await authService.requestPasswordReset({
             //     email
             // });
 

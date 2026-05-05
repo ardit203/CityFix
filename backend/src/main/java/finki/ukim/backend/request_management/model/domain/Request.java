@@ -54,4 +54,12 @@ public class Request extends BaseAuditableEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Department department;
+
+    public Request(String title, String description, User user, Municipality municipality, RequestLocation requestLocation) {
+        this.title = title;
+        this.description = description;
+        this.user = user;
+        this.municipality = municipality;
+        this.location = requestLocation;
+    }
 }

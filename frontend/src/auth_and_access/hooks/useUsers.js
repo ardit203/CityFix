@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
-import userApi from "../service/userApi.js";
+import {useCallback, useEffect, useState} from "react";
+import userService from "../services/userService.js";
 import useSnackbar from "../../common/hooks/useSnackbar.js";
 
 const useUsers = () => {
     const [users, setUsers] = useState([]);
 
-    const { showSnackbar } = useSnackbar();
+    const {showSnackbar} = useSnackbar();
 
     const [pagination, setPagination] = useState({
         totalPages: 0,
@@ -19,45 +19,42 @@ const useUsers = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const fetchUsers = useCallback((filters = {}) => {
+    const fetchUsers = useCallback(async (filters = {}) => {
         setLoading(true);
         setError(null);
 
-        userApi
-            .findAll(filters)
-            .then((response) => {
-                const data = response.data;
+        try {
+            const response = await userService.findAll(filters)
+            setUsers(response.data.content);
 
-                setUsers(data.content);
-
-                setPagination({
-                    totalPages: data.totalPages,
-                    totalElements: data.totalElements,
-                    page: data.number,
-                    size: data.size,
-                    first: data.first,
-                    last: data.last
-                });
-
-                console.log("Content: ", response.data.content)
-            })
-            .catch((error) => {
-                const message =
-                    error.response?.data?.message ||
-                    error.response?.data?.error ||
-                    error.message ||
-                    "Something went wrong";
-
-                showSnackbar(message, "error");
-                setError(message);
-            })
-            .finally(() => {
-                setLoading(false);
+            setPagination({
+                totalPages: response.data.totalPages,
+                totalElements: response.data.totalElements,
+                page: response.data.number,
+                size: response.data.size,
+                first: response.data.first,
+                last: response.data.last
             });
+        } catch (error) {
+            const message =
+                error.response?.data?.message ||
+                error.response?.data?.error ||
+                error.message ||
+                "Something went wrong";
+
+            showSnackbar(message, "error");
+            setError(message);
+        } finally {
+            setLoading(false);
+        }
     }, [showSnackbar]);
 
+    const removeUserFromState = useCallback((id) => {
+        setUsers((prev) => prev.filter((user) => user.id !== id));
+    }, []);
+
     useEffect(() => {
-        fetchUsers();
+        void fetchUsers();
     }, [fetchUsers]);
 
     return {
@@ -65,7 +62,8 @@ const useUsers = () => {
         pagination,
         loading,
         error,
-        fetchUsers
+        fetchUsers,
+        removeUserFromState
     };
 };
 

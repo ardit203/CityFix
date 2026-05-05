@@ -12,7 +12,7 @@ import {
     FormControl
 } from "@mui/material";
 import { useNavigate } from "react-router";
-import authApi from "../../../service/authApi.js";
+import authService from "../../../services/authService.js";
 import useSnackbar from "../../../../common/hooks/useSnackbar.js";
 
 const initialFormData = {
@@ -81,7 +81,7 @@ const RegisterPage = () => {
 
         console.log(requestBody)
 
-        authApi
+        authService
             .register(requestBody)
             .then(() => {
                 showSnackbar("User registered successfully.", "success");

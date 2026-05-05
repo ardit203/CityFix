@@ -27,17 +27,15 @@ import {
     Delete
 } from "@mui/icons-material";
 import useUserDetails from "../../../hooks/useUserDetails.js";
-import useUserActions from "../../../hooks/useUserActions.js";
 
 
 const UserDetailsPage = () => {
     const { id } = useParams();
-    const { user, loading, error } = useUserDetails(id);
+    const { user, loading, error, deleteUser } = useUserDetails(id);
     const navigate = useNavigate();
-    const { deleteUser } = useUserActions();
 
     const handleDelete = async () => {
-        await deleteUser(user);
+        await deleteUser();
     };
 
     if (loading) {

@@ -64,7 +64,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public Page<Department> findAll(int page, int size, String sortBy, Long id, String text) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).and(Sort.by("createdAt")));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return departmentRepository.findFiltered(id, text, pageable);
     }
 }

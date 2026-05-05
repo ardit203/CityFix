@@ -7,14 +7,12 @@ import {
     TextField
 } from "@mui/material";
 import { useState } from "react";
-import useUserActions from "../../../../hooks/useUserActions.js";
 
-const LockUserDialog = ({ open, onClose, user, onSuccess }) => {
+const LockUserDialog = ({ open, onClose, onSubmit}) => {
     const [lockedUntil, setLockedUntil] = useState("");
-    const { lockUser } = useUserActions();
 
     const handleSubmit = async () => {
-        const success = await lockUser(user, lockedUntil, onSuccess);
+        const success = await onSubmit(lockedUntil);
 
         if (success) {
             setLockedUntil("");

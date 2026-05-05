@@ -11,7 +11,8 @@ import AuthenticationToggle
 const pages = [
     {path: '/', name: 'home'},
     {path: '/users', name: 'users'},
-    {path: '/profile', name: 'profile'}
+    {path: '/profile', name: 'profile'},
+    {path: '/departments', name: 'departments'}
 ];
 
 const Header = () => {

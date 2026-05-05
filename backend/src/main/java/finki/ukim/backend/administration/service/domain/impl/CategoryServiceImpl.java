@@ -72,7 +72,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Page<CategoryPageableProjection> findAll(int page, int size, String sortBy, Long id, String text, Long departmentId) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).and(Sort.by("createdAt")));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return categoryRepository.findFiltered(id, text, departmentId, pageable);
     }
 }

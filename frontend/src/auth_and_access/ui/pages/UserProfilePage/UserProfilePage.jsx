@@ -28,7 +28,7 @@ import useProfile from "../../../hooks/useProfile.js";
 
 const UserProfilePage = () => {
     const navigate = useNavigate();
-    const { profileUser: user, loading, error } = useProfile();
+    const { user, loading, error } = useProfile();
 
     if (loading) {
         return (

@@ -11,6 +11,10 @@ import ForgotPasswordPage from "./auth_and_access/ui/pages/ForgotPasswordPage/Fo
 import ResetPasswordPage from "./auth_and_access/ui/pages/ResetPasswordPage/ResetPasswordPage.jsx";
 import UserProfilePage from "./auth_and_access/ui/pages/UserProfilePage/UserProfilePage.jsx";
 import ProfileSettingsPage from "./auth_and_access/ui/pages/ProfileSettingsPage/ProfileSettingsPage.jsx";
+import DepartmentsPage from "./administration/ui/pages/DepartmentPage/DepartmentsPage.jsx";
+import DepartmentDetailsPage from "./administration/ui/pages/DepartmentPage/DepartmentDetailsPage.jsx";
+import DepartmentCreatePage from "./administration/ui/pages/DepartmentPage/DepartmentCreatePage.jsx";
+import DepartmentEditPage from "./administration/ui/pages/DepartmentPage/DepartmentEditPage.jsx";
 
 
 function App() {
@@ -28,6 +32,10 @@ function App() {
                     <Route path='users/:id/edit' element={<UserEditPage/>}/>
                     <Route path="/profile" element={<UserProfilePage />} />
                     <Route path="/profile/edit" element={<ProfileSettingsPage />} />
+                    <Route path='departments' element={<DepartmentsPage/>}/>
+                    <Route path='departments/:id' element={<DepartmentDetailsPage/>}/>
+                    <Route path="/departments/create" element={<DepartmentCreatePage />} />
+                    <Route path="/departments/:id/edit" element={<DepartmentEditPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>

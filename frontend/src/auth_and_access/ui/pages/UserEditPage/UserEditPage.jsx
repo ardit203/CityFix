@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import {useState} from "react";
+import {useNavigate, useParams} from "react-router";
 import {
     Box,
     Button,
@@ -22,28 +22,37 @@ import useUserActions from "../../../hooks/useUserActions.js";
 
 
 const UserEditPage = () => {
-    const { id } = useParams();
+    const {id} = useParams();
     const navigate = useNavigate();
 
-    const { user, loading, error, fetchUser } = useUserDetails(id);
+    const {user, loading, error, updateUserInState} = useUserDetails(id);
+
+    const {unlockUser, updateUser, lockUser, changeRole} = useUserActions();
 
     const [roleDialogOpen, setRoleDialogOpen] = useState(false);
     const [lockDialogOpen, setLockDialogOpen] = useState(false);
-    const { updateUser, unlockUser } = useUserActions();
 
-
-    const handleUpdate = async (formData) => {
-        await updateUser(user, formData, fetchUser);
-    };
 
     const handleUnlock = async () => {
-        await unlockUser(user, fetchUser);
+        return await unlockUser(user, updateUserInState);
+    };
+
+    const handleUpdate = async (requestBody) => {
+        await updateUser(user, requestBody, updateUserInState);
+    }
+
+    const handleLock = async (until) => {
+        return await lockUser(user,until, updateUserInState);
+    };
+
+    const handleChangeRole = async (role) => {
+        return await changeRole(user, role, updateUserInState);
     };
 
     if (loading) {
         return (
-            <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
-                <CircularProgress />
+            <Box sx={{display: "flex", justifyContent: "center", mt: 5}}>
+                <CircularProgress/>
             </Box>
         );
     }
@@ -54,9 +63,9 @@ const UserEditPage = () => {
                 <Typography color="error">{error}</Typography>
 
                 <Button
-                    sx={{ mt: 2 }}
+                    sx={{mt: 2}}
                     variant="outlined"
-                    startIcon={<ArrowBack />}
+                    startIcon={<ArrowBack/>}
                     onClick={() => navigate("/users")}
                 >
                     Back to Users
@@ -75,11 +84,11 @@ const UserEditPage = () => {
                 direction="row"
                 justifyContent="space-between"
                 alignItems="center"
-                sx={{ mb: 3 }}
+                sx={{mb: 3}}
             >
                 <Button
                     variant="outlined"
-                    startIcon={<ArrowBack />}
+                    startIcon={<ArrowBack/>}
                     onClick={() => navigate(`/users/${user.id}`)}
                 >
                     Back to User
@@ -89,7 +98,7 @@ const UserEditPage = () => {
                     <Button
                         variant="contained"
                         color="primary"
-                        startIcon={<AdminPanelSettings />}
+                        startIcon={<AdminPanelSettings/>}
                         onClick={() => setRoleDialogOpen(true)}
                     >
                         Change Role
@@ -98,7 +107,7 @@ const UserEditPage = () => {
                     <Button
                         variant="outlined"
                         color={user.locked ? "success" : "warning"}
-                        startIcon={user.locked ? <LockOpen /> : <Lock />}
+                        startIcon={user.locked ? <LockOpen/> : <Lock/>}
                         onClick={user.locked ? handleUnlock : () => setLockDialogOpen(true)}
                     >
                         {user.locked ? "Unlock" : "Lock"}
@@ -116,14 +125,13 @@ const UserEditPage = () => {
                 open={roleDialogOpen}
                 onClose={() => setRoleDialogOpen(false)}
                 user={user}
-                onSuccess={fetchUser}
+                onSubmit={handleChangeRole}
             />
 
             <LockUserDialog
                 open={lockDialogOpen}
                 onClose={() => setLockDialogOpen(false)}
-                user={user}
-                onSuccess={fetchUser}
+                onSubmit={handleLock}
             />
         </>
     );

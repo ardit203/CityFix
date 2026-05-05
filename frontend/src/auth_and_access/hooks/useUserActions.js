@@ -1,17 +1,22 @@
-import {useNavigate} from "react-router";
-import useConfirmDialog from "../../common/hooks/useConfirmDialog.js";
+import { useCallback } from "react";
+import { useNavigate } from "react-router";
 import useSnackbar from "../../common/hooks/useSnackbar.js";
-import userApi from "../service/userApi.js";
+import useConfirmDialog from "../../common/hooks/useConfirmDialog.js";
+import userService from "../services/userService.js";
 
 const useUserActions = () => {
     const navigate = useNavigate();
-    const {confirm} = useConfirmDialog();
-    const {showSnackbar} = useSnackbar();
+    const { showSnackbar } = useSnackbar();
+    const { confirm } = useConfirmDialog();
 
-    const updateUser = async (user, formData, onSuccess) => {
+    const updateUser = useCallback(async (user, formData, onSuccess = null) => {
+        if (!user) {
+            return false;
+        }
+
         const confirmed = await confirm({
             title: "Update user?",
-            message: `Are you sure you want to update ${user.username}?`,
+            message: "Are you sure you want to update user?",
             confirmText: "Update",
             cancelText: "Cancel"
         });
@@ -21,14 +26,12 @@ const useUserActions = () => {
         }
 
         try {
-            console.log("Update user", user.id, formData);
-
-            await userApi.update(user.id, formData);
+            const response = await userService.update(user.id, formData);
 
             showSnackbar("User updated successfully", "success");
 
             if (onSuccess) {
-                onSuccess();
+                onSuccess(response.data);
             }
 
             return true;
@@ -43,9 +46,13 @@ const useUserActions = () => {
 
             return false;
         }
-    };
+    }, [confirm, showSnackbar]);
 
-    const deleteUser = async (user) => {
+    const deleteUser = useCallback(async (user, onSuccess = null) => {
+        if (!user) {
+            return false;
+        }
+
         const confirmed = await confirm({
             title: "Delete user?",
             message: `Are you sure you want to delete ${user.username}? This action cannot be undone.`,
@@ -58,13 +65,15 @@ const useUserActions = () => {
         }
 
         try {
-            console.log("Delete user", user.id);
-
-            await userApi.deleteById(user.id);
+            await userService.deleteById(user.id);
 
             showSnackbar("User deleted successfully", "success");
 
-            navigate("/users");
+            if (onSuccess) {
+                onSuccess(user);
+            } else {
+                navigate("/users");
+            }
 
             return true;
         } catch (error) {
@@ -78,9 +87,13 @@ const useUserActions = () => {
 
             return false;
         }
-    };
+    }, [confirm, navigate, showSnackbar]);
 
-    const changeRole = async (user, role, onSuccess) => {
+    const changeRole = useCallback(async (user, role, onSuccess = null) => {
+        if (!user) {
+            return false;
+        }
+
         const confirmed = await confirm({
             title: "Change user role?",
             message: `Are you sure you want to change the role of ${user.username}?`,
@@ -93,14 +106,12 @@ const useUserActions = () => {
         }
 
         try {
-            console.log("Change role", user.id, role);
-
-            await userApi.changeRole(user.id, role);
+            const response = await userService.changeRole(user.id, role);
 
             showSnackbar("User role changed successfully", "success");
 
             if (onSuccess) {
-                onSuccess();
+                onSuccess(response.data);
             }
 
             return true;
@@ -115,9 +126,13 @@ const useUserActions = () => {
 
             return false;
         }
-    };
+    }, [confirm, showSnackbar]);
 
-    const lockUser = async (user, lockedUntil, onSuccess) => {
+    const lockUser = useCallback(async (user, lockedUntil, onSuccess = null) => {
+        if (!user) {
+            return false;
+        }
+
         const confirmed = await confirm({
             title: "Lock user account?",
             message: `Are you sure you want to lock ${user.username} until ${lockedUntil}?`,
@@ -130,14 +145,12 @@ const useUserActions = () => {
         }
 
         try {
-            console.log("Lock user", user.id, lockedUntil);
-
-            await userApi.lock(user.id, lockedUntil);
+            const response = await userService.lock(user.id, lockedUntil);
 
             showSnackbar("User locked successfully", "success");
 
             if (onSuccess) {
-                onSuccess();
+                onSuccess(response.data);
             }
 
             return true;
@@ -149,11 +162,16 @@ const useUserActions = () => {
                 "Failed to lock user";
 
             showSnackbar(message, "error");
+
             return false;
         }
-    };
+    }, [confirm, showSnackbar]);
 
-    const unlockUser = async (user, onSuccess) => {
+    const unlockUser = useCallback(async (user, onSuccess = null) => {
+        if (!user) {
+            return false;
+        }
+
         const confirmed = await confirm({
             title: "Unlock user account?",
             message: `Are you sure you want to unlock ${user.username}?`,
@@ -166,14 +184,12 @@ const useUserActions = () => {
         }
 
         try {
-            console.log("Unlock user", user.id);
-
-            await userApi.unlock(user.id);
+            const response = await userService.unlock(user.id);
 
             showSnackbar("User unlocked successfully", "success");
 
             if (onSuccess) {
-                onSuccess();
+                onSuccess(response.data);
             }
 
             return true;
@@ -188,24 +204,14 @@ const useUserActions = () => {
 
             return false;
         }
-    };
-
-    const goToEdit = (userId) => {
-        navigate(`/users/${userId}/edit`);
-    };
-
-    const goToDetails = (userId) => {
-        navigate(`/users/${userId}`);
-    };
+    }, [confirm, showSnackbar]);
 
     return {
         updateUser,
         deleteUser,
         changeRole,
         lockUser,
-        unlockUser,
-        goToEdit,
-        goToDetails
+        unlockUser
     };
 };
 

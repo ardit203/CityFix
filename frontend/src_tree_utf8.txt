@@ -1,0 +1,172 @@
+﻿Folder PATH listing for volume Ardit
+Volume serial number is 90A9-5A61
+D:\FACULTY\8TH SEMESTER\ICT PROJECT MANGEMENT\PROJECT\CITYFIX\FRONTEND\SRC
+ª   App.css
+ª   App.jsx
+ª   index.css
+ª   main.jsx
+ª   
++---administration
+ª   +---hooks
+ª   ª       useCategories.js
+ª   ª       useCategoryDetails.js
+ª   ª       
+ª   +---service
+ª   ª       categoryApi.js
+ª   ª       departmentApi.js
+ª   ª       municipalityApi.js
+ª   ª       staffApi.js
+ª   ª       
+ª   +---ui
++---auth_and_access
+ª   +---contexts
+ª   ª       authContext.js
+ª   ª       
+ª   +---hooks
+ª   ª       useAuth.js
+ª   ª       useProfile.js
+ª   ª       useProfileActions.js
+ª   ª       useUserActions.js
+ª   ª       useUserDetails.js
+ª   ª       useUsers.js
+ª   ª       
+ª   +---providers
+ª   ª       authProvider.jsx
+ª   ª       
+ª   +---services
+ª   ª       authService.js
+ª   ª       userService.js
+ª   ª       
+ª   +---ui
+ª       +---components
+ª       ª   +---auth
+ª       ª   ª   +---AuthenticationToggle
+ª       ª   ª           AuthenticationToggle.jsx
+ª       ª   ª           
+ª       ª   +---user
+ª       ª       +---AccountForm
+ª       ª       ª       AccountForm.jsx
+ª       ª       ª       
+ª       ª       +---ChangeRoleDialog
+ª       ª       ª       ChangeRoleDialog.jsx
+ª       ª       ª       
+ª       ª       +---LockUserDialog
+ª       ª       ª       LockUserDialog.jsx
+ª       ª       ª       
+ª       ª       +---ProfileForm
+ª       ª       ª       ProfileForm.jsx
+ª       ª       ª       
+ª       ª       +---ProfilePictureForm
+ª       ª       ª       ProfilePictureFrom.jsx
+ª       ª       ª       
+ª       ª       +---SecurityForm
+ª       ª       ª       SecurityForm.jsx
+ª       ª       ª       
+ª       ª       +---UserAdminForm
+ª       ª       ª       UserAdminForm.jsx
+ª       ª       ª       
+ª       ª       +---UserCard
+ª       ª       ª       UserCard.jsx
+ª       ª       ª       
+ª       ª       +---UserGrid
+ª       ª               UserGrid.jsx
+ª       ª               
+ª       +---pages
+ª           +---ForgotPasswordPage
+ª           ª       ForgotPassword.jsx
+ª           ª       
+ª           +---LoginPage
+ª           ª       LoginPage.jsx
+ª           ª       
+ª           +---ProfileSettingsPage
+ª           ª       ProfileSettingsPage.jsx
+ª           ª       
+ª           +---RegistrationPage
+ª           ª       RegistrationPage.jsx
+ª           ª       
+ª           +---ResetPasswordPage
+ª           ª       ResetPasswordPage.jsx
+ª           ª       
+ª           +---UserDetailsPage
+ª           ª       UserDetailsPage.jsx
+ª           ª       
+ª           +---UserEditPage
+ª           ª       UserEditPage.jsx
+ª           ª       
+ª           +---UserPage
+ª           ª       UsersPage.jsx
+ª           ª       
+ª           +---UserProfilePage
+ª                   UserProfilePage.jsx
+ª                   
++---common
+ª   +---axios
+ª   ª       axios.js
+ª   ª       
+ª   +---contexts
+ª   ª       confirmDialogContext.js
+ª   ª       snackbarContext.js
+ª   ª       
+ª   +---hooks
+ª   ª       useConfirmDialog.js
+ª   ª       useSnackbar.js
+ª   ª       
+ª   +---providers
+ª   ª       confirmDialogProvider.jsx
+ª   ª       snackbarProvider.jsx
+ª   ª       
+ª   +---theme
+ª   +---ui
+ª       +---components
+ª       ª   +---form
+ª       ª   +---layout
+ª       ª       +---Header
+ª       ª       ª       Header.css
+ª       ª       ª       Header.jsx
+ª       ª       ª       
+ª       ª       +---Layout
+ª       ª               Layout.css
+ª       ª               Layout.jsx
+ª       ª               
+ª       +---pages
+ª           +---HomePage
+ª                   HomePage.jsx
+ª                   
++---design
+    ª   index.css
+    ª   index.html
+    ª   main.jsx
+    ª   
+    +---auth_and_access
+    ª   +---ui
+    ª       +---components
+    ª       ª   +---auth
+    ª       ª   ª   +---AuthenticationToggle
+    ª       ª   ª           AuthenticationToggle.jsx
+    ª       ª   ª           
+    ª       ª   +---user
+    ª       ª       +---UserCard
+    ª       ª               UserCard.jsx
+    ª       ª               
+    ª       +---pages
+    ª           +---UserPage
+    ª                   UsersPage.jsx
+    ª                   
+    +---common
+        +---theme
+        ª       theme.js
+        ª       
+        +---ui
+            +---components
+            ª   +---layout
+            ª       +---Header
+            ª       ª       Header.css
+            ª       ª       Header.jsx
+            ª       ª       
+            ª       +---Layout
+            ª               Layout.css
+            ª               
+            +---pages
+                +---HomePage
+                        HomePage.jsx
+                        

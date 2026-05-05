@@ -6,10 +6,7 @@ import {
     Switch,
     TextField
 } from "@mui/material";
-import useSnackbar from "../../../../../common/hooks/useSnackbar.js";
-import useConfirmDialog from "../../../../../common/hooks/useConfirmDialog.js";
-import userApi from "../../../../service/userApi.js";
-// import userApi from "../../../../service/userApi.js";
+import useProfileActions from "../../../../hooks/useProfileActions.js";
 
 const AccountSettingsForm = ({ user, onSuccess }) => {
     const [formData, setFormData] = useState({
@@ -18,8 +15,7 @@ const AccountSettingsForm = ({ user, onSuccess }) => {
         notificationsEnabled: true
     });
 
-    const { confirm } = useConfirmDialog();
-    const { showSnackbar } = useSnackbar();
+    const { updateMyAccount } = useProfileActions();
 
     useEffect(() => {
         if (user) {
@@ -50,36 +46,7 @@ const AccountSettingsForm = ({ user, onSuccess }) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const confirmed = await confirm({
-            title: "Update account?",
-            message: "Are you sure you want to update your account information?",
-            confirmText: "Update",
-            cancelText: "Cancel"
-        });
-
-        if (!confirmed) {
-            return;
-        }
-
-        try {
-            console.log("Update account", formData);
-
-            await userApi.updateMyAccount(formData);
-
-            showSnackbar("Account updated successfully", "success");
-
-            if (onSuccess) {
-                onSuccess();
-            }
-        } catch (error) {
-            const message =
-                error.response?.data?.message ||
-                error.response?.data?.error ||
-                error.message ||
-                "Failed to update account";
-
-            showSnackbar(message, "error");
-        }
+        await updateMyAccount(formData, onSuccess);
     };
 
     return (

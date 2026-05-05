@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router";
 import useAuth from "../../../hooks/useAuth.js";
-import authApi from "../../../service/authApi.js";
+import authService from "../../../services/authService.js";
 
 const initialFormData = {
     username: "",
@@ -35,7 +35,7 @@ const LoginPage = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        authApi
+        authService
             .login(formData)
             .then((response) => {
                 console.log("The user is successfully logged in.");

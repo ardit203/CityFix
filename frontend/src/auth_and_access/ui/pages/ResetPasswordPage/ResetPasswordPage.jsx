@@ -8,7 +8,7 @@ import {
     Typography
 } from "@mui/material";
 import { useNavigate, useSearchParams } from "react-router";
-import authApi from "../../../service/authApi.js";
+import authService from "../../../services/authService.js";
 import useSnackbar from "../../../../common/hooks/useSnackbar.js";
 
 const initialFormData = {
@@ -51,7 +51,7 @@ const ResetPasswordPage = () => {
         setLoading(true);
 
         try {
-            // await authApi.resetPassword({
+            // await authService.resetPassword({
             //     token,
             //     newPassword: formData.newPassword,
             //     confirmPassword: formData.confirmPassword

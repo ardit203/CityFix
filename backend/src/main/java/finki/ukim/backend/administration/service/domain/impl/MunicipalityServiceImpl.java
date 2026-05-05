@@ -63,7 +63,7 @@ public class MunicipalityServiceImpl implements MunicipalityService {
 
     @Override
     public Page<Municipality> findAll(int page, int size, String sortBy, Long id, String code, String name) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).and(Sort.by("createdAt")));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return municipalityRepository.findFiltered(id, code, name, pageable);
     }
 }

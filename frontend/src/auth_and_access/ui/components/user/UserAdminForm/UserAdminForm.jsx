@@ -1,5 +1,7 @@
-import { Box, Button, Stack, TextField, MenuItem } from "@mui/material";
-import { useEffect, useState } from "react";
+import {Box, Button, Stack, TextField, MenuItem} from "@mui/material";
+import {useEffect, useState} from "react";
+import useUserDetails from "../../../../hooks/useUserDetails.js";
+import useUserActions from "../../../../hooks/useUserActions.js";
 
 const emptyUser = {
     username: "",
@@ -19,7 +21,7 @@ const emptyUser = {
     }
 };
 
-const UserAdminForm = ({ initialValues = emptyUser, onSubmit, submitLabel = "Save" }) => {
+const UserAdminForm = ({initialValues = emptyUser, submitLabel = "Save", onSubmit}) => {
     const [formData, setFormData] = useState(emptyUser);
 
     useEffect(() => {
@@ -43,7 +45,7 @@ const UserAdminForm = ({ initialValues = emptyUser, onSubmit, submitLabel = "Sav
     }, [initialValues]);
 
     const handleChange = (event) => {
-        const { name, value } = event.target;
+        const {name, value} = event.target;
 
         setFormData((prev) => ({
             ...prev,
@@ -52,7 +54,7 @@ const UserAdminForm = ({ initialValues = emptyUser, onSubmit, submitLabel = "Sav
     };
 
     const handleProfileChange = (event) => {
-        const { name, value } = event.target;
+        const {name, value} = event.target;
 
         setFormData((prev) => ({
             ...prev,
@@ -64,7 +66,7 @@ const UserAdminForm = ({ initialValues = emptyUser, onSubmit, submitLabel = "Sav
     };
 
     const handleAddressChange = (event) => {
-        const { name, value } = event.target;
+        const {name, value} = event.target;
 
         setFormData((prev) => ({
             ...prev,
@@ -78,7 +80,7 @@ const UserAdminForm = ({ initialValues = emptyUser, onSubmit, submitLabel = "Sav
         }));
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         const requestBody = {
@@ -97,7 +99,7 @@ const UserAdminForm = ({ initialValues = emptyUser, onSubmit, submitLabel = "Sav
             phoneNumber: formData.profile.phoneNumber || null
         };
 
-        onSubmit(requestBody);
+        await onSubmit(requestBody);
     };
 
     return (

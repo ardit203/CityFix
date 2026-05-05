@@ -8,11 +8,9 @@ import {
     TextField
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import useUserActions from "../../../../hooks/useUserActions.js";
 
-const ChangeUserRoleDialog = ({ open, onClose, user, onSuccess }) => {
+const ChangeUserRoleDialog = ({ open, onClose, user, onSubmit}) => {
     const [selectedRole, setSelectedRole] = useState("");
-    const { changeRole } = useUserActions();
 
     useEffect(() => {
         if (user) {
@@ -21,8 +19,7 @@ const ChangeUserRoleDialog = ({ open, onClose, user, onSuccess }) => {
     }, [user]);
 
     const handleSubmit = async () => {
-        const success = await changeRole(user, selectedRole, onSuccess);
-
+        const success = await onSubmit(selectedRole);
         if (success) {
             onClose();
         }

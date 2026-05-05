@@ -17,7 +17,12 @@ import ProfilePictureForm from "../../components/user/ProfilePictureForm/Profile
 const ProfileSettingsPage = () => {
     const [activeTab, setActiveTab] = useState(0);
 
-    const { profileUser: user, loading, error, fetchProfile } = useProfile();
+    const {
+        user,
+        loading,
+        error,
+        updateProfileUserInState
+    } = useProfile();
 
     const handleTabChange = (event, newValue) => {
         setActiveTab(newValue);
@@ -63,14 +68,14 @@ const ProfileSettingsPage = () => {
                     {activeTab === 0 && (
                         <AccountSettingsForm
                             user={user}
-                            onSuccess={fetchProfile}
+                            onSuccess={updateProfileUserInState}
                         />
                     )}
 
                     {activeTab === 1 && (
                         <ProfileSettingsForm
                             user={user}
-                            onSuccess={fetchProfile}
+                            onSuccess={updateProfileUserInState}
                         />
                     )}
 
@@ -81,7 +86,7 @@ const ProfileSettingsPage = () => {
                     {activeTab === 3 && (
                         <ProfilePictureForm
                             user={user}
-                            onSuccess={fetchProfile}
+                            onSuccess={updateProfileUserInState}
                         />
                     )}
                 </Box>

@@ -14,14 +14,14 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     Optional<Department> findByName(String name);
 
     @Query("""
-                select d from Department d
-                where (:id is null or d.id = :id)
-                  and (
-                      :text is null
-                      or lower(d.name) like lower(concat('%', :text, '%'))
-                      or lower(d.description) like lower(concat('%', :text, '%'))
-                  )
-            """)
+        select d from Department d
+        where (:id is null or d.id = :id)
+          and (
+              :text is null
+              or lower(d.name) like lower(concat('%', cast(:text as string), '%'))
+              or lower(d.description) like lower(concat('%', cast(:text as string), '%'))
+          )
+        """)
     Page<Department> findFiltered(
             @Param("id") Long id,
             @Param("text") String text,

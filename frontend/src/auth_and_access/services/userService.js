@@ -1,6 +1,6 @@
 import apiCall from "../../common/axios/axios.js";
 
-const userApi = {
+const userService = {
     // Admin: paged/filterable users
     findAll: async ({
                         page = 0,
@@ -72,22 +72,22 @@ const userApi = {
         });
     },
 
-    // Self-service: update own account
+    // Self-services: update own account
     updateMyAccount: async (data) => {
         return await apiCall.patch("/users/me/account", data);
     },
 
-    // Self-service: update own profile
+    // Self-services: update own profile
     updateMyProfile: async (data) => {
         return await apiCall.patch("/users/me/profile", data);
     },
 
-    // Self-service: change own password
+    // Self-services: change own password
     changeMyPassword: async (data) => {
         return await apiCall.patch("/users/me/password", data);
     },
 
-    // Self-service: update own profile picture
+    // Self-services: update own profile picture
     updateMyProfilePicture: async (file) => {
         const formData = new FormData();
         formData.append("file", file);
@@ -99,10 +99,10 @@ const userApi = {
         });
     },
 
-    // Self-service: delete own profile picture
+    // Self-services: delete own profile picture
     deleteMyProfilePicture: async () => {
         return await apiCall.delete("/users/me/profile-picture");
     }
 };
 
-export default userApi;
+export default userService;

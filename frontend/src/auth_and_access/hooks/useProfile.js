@@ -1,21 +1,22 @@
 import { useCallback, useEffect, useState } from "react";
-import userApi from "../service/userApi.js";
+import userService from "../services/userService.js";
 import useSnackbar from "../../common/hooks/useSnackbar.js";
 
 const useProfile = () => {
-    const [profileUser, setProfileUser] = useState(null);
+    const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
     const { showSnackbar } = useSnackbar();
 
     const fetchProfile = useCallback(() => {
         setLoading(true);
         setError(null);
 
-        userApi
+        userService
             .findMe()
             .then((response) => {
-                setProfileUser(response.data);
+                setUser(response.data);
             })
             .catch((error) => {
                 const message =
@@ -32,15 +33,20 @@ const useProfile = () => {
             });
     }, [showSnackbar]);
 
+    const updateProfileUserInState = useCallback((updatedUser) => {
+        setUser(updatedUser);
+    }, []);
+
     useEffect(() => {
         fetchProfile();
     }, [fetchProfile]);
 
     return {
-        profileUser,
+        user,
         loading,
         error,
-        fetchProfile
+        fetchProfile,
+        updateProfileUserInState
     };
 };
 

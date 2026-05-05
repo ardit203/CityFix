@@ -9,7 +9,7 @@ CREATE TABLE requests
 
     latitude        NUMERIC(10, 7),
     longitude       NUMERIC(10, 7),
-    address_text    VARCHAR(255),
+--     address_text    VARCHAR(255),
 
     summary         VARCHAR(2000),
 

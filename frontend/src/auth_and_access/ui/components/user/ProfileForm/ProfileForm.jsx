@@ -5,10 +5,7 @@ import {
     Stack,
     TextField
 } from "@mui/material";
-import useSnackbar from "../../../../../common/hooks/useSnackbar.js";
-import useConfirmDialog from "../../../../../common/hooks/useConfirmDialog.js";
-import userApi from "../../../../service/userApi.js";
-// import userApi from "../../../../service/userApi.js";
+import useProfileActions from "../../../../hooks/useProfileActions.js";
 
 const ProfileSettingsForm = ({ user, onSuccess }) => {
     const [formData, setFormData] = useState({
@@ -24,8 +21,7 @@ const ProfileSettingsForm = ({ user, onSuccess }) => {
         }
     });
 
-    const { confirm } = useConfirmDialog();
-    const { showSnackbar } = useSnackbar();
+    const { updateMyProfile } = useProfileActions();
 
     useEffect(() => {
         const profile = user?.profile;
@@ -69,36 +65,7 @@ const ProfileSettingsForm = ({ user, onSuccess }) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const confirmed = await confirm({
-            title: "Update profile?",
-            message: "Are you sure you want to update your profile information?",
-            confirmText: "Update",
-            cancelText: "Cancel"
-        });
-
-        if (!confirmed) {
-            return;
-        }
-
-        try {
-            console.log("Update profile", formData);
-
-            await userApi.updateMyProfile(formData);
-
-            showSnackbar("Profile updated successfully", "success");
-
-            if (onSuccess) {
-                onSuccess();
-            }
-        } catch (error) {
-            const message =
-                error.response?.data?.message ||
-                error.response?.data?.error ||
-                error.message ||
-                "Failed to update profile";
-
-            showSnackbar(message, "error");
-        }
+        await updateMyProfile(formData, onSuccess);
     };
 
     return (

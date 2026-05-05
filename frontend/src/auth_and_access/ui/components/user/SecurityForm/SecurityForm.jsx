@@ -4,10 +4,7 @@ import {
     Stack,
     TextField
 } from "@mui/material";
-import useSnackbar from "../../../../../common/hooks/useSnackbar.js";
-import useConfirmDialog from "../../../../../common/hooks/useConfirmDialog.js";
-import userApi from "../../../../service/userApi.js";
-// import userApi from "../../../../service/userApi.js";
+import useProfileActions from "../../../../hooks/useProfileActions.js";
 
 const initialFormData = {
     currentPassword: "",
@@ -18,8 +15,7 @@ const initialFormData = {
 const ChangePasswordForm = () => {
     const [formData, setFormData] = useState(initialFormData);
 
-    const { confirm } = useConfirmDialog();
-    const { showSnackbar } = useSnackbar();
+    const { changeMyPassword } = useProfileActions();
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -33,37 +29,10 @@ const ChangePasswordForm = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (formData.newPassword !== formData.confirmNewPassword) {
-            showSnackbar("New passwords do not match", "error");
-            return;
-        }
+        const success = await changeMyPassword(formData);
 
-        const confirmed = await confirm({
-            title: "Change password?",
-            message: "Are you sure you want to change your password?",
-            confirmText: "Change Password",
-            cancelText: "Cancel"
-        });
-
-        if (!confirmed) {
-            return;
-        }
-
-        try {
-            console.log("Change password", formData);
-
-            await userApi.changeMyPassword(formData);
-
-            showSnackbar("Password changed successfully", "success");
+        if (success) {
             setFormData(initialFormData);
-        } catch (error) {
-            const message =
-                error.response?.data?.message ||
-                error.response?.data?.error ||
-                error.message ||
-                "Failed to change password";
-
-            showSnackbar(message, "error");
         }
     };
 
