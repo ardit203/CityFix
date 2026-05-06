@@ -1,14 +1,14 @@
 import axios from 'axios';
 
 
-const apiCall = axios.create({
+const axiosInstance = axios.create({
     baseURL: 'http://localhost:8080/api',
     headers: {
         'Content-Type': 'application/json'
     }
 });
 
-apiCall.interceptors.request.use(
+axiosInstance.interceptors.request.use(
     (config) => {
         const jwtToken = localStorage.getItem("token");
         if (jwtToken) {
@@ -26,4 +26,4 @@ apiCall.interceptors.request.use(
     },
 );
 
-export default apiCall;
+export default axiosInstance;

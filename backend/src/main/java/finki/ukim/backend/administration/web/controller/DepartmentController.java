@@ -31,8 +31,8 @@ public class DepartmentController {
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(required = false) Long id,
             @RequestParam(required = false) String text
-    ) {
-        return ResponseEntity.ok(
+    ) throws InterruptedException {
+        ResponseEntity<Page<DisplayDepartmentDto>> dto = ResponseEntity.ok(
                 departmentApplicationService.findAll(
                         page,
                         size,
@@ -41,6 +41,8 @@ public class DepartmentController {
                         text
                 )
         );
+
+        return dto;
     }
 
     @GetMapping("/{id}")

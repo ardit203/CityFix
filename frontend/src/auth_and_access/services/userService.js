@@ -1,4 +1,4 @@
-import apiCall from "../../common/axios/axios.js";
+import axiosInstance from "../../common/axios/axios.js";
 
 const userService = {
     // Admin: paged/filterable users
@@ -11,7 +11,7 @@ const userService = {
                         email = null,
                         role = null
                     }) => {
-        return await apiCall.get("/admin/users/paged", {
+        return await axiosInstance.get("/admin/users/paged", {
             params: {
                 page,
                 size,
@@ -26,32 +26,32 @@ const userService = {
 
     // Admin: basic users list
     findAllBasic: async () => {
-        return await apiCall.get("/admin/users");
+        return await axiosInstance.get("/admin/users");
     },
 
     // Current logged-in user
     findMe: async () => {
-        return await apiCall.get("/users/me");
+        return await axiosInstance.get("/users/me");
     },
 
     // Admin: find user by id
     findById: async (id) => {
-        return await apiCall.get(`/admin/users/${id}`);
+        return await axiosInstance.get(`/admin/users/${id}`);
     },
 
     // Admin: delete user
     deleteById: async (id) => {
-        return await apiCall.delete(`/admin/users/${id}`);
+        return await axiosInstance.delete(`/admin/users/${id}`);
     },
 
     // Admin: update user
     update: async (id, data) => {
-        return await apiCall.patch(`/admin/users/${id}`, data);
+        return await axiosInstance.patch(`/admin/users/${id}`, data);
     },
 
     // Admin: lock user
     lock: async (id, until) => {
-        return await apiCall.patch(`/admin/users/${id}/lock`, null, {
+        return await axiosInstance.patch(`/admin/users/${id}/lock`, null, {
             params: {
                 until
             }
@@ -60,12 +60,12 @@ const userService = {
 
     // Admin: unlock user
     unlock: async (id) => {
-        return await apiCall.patch(`/admin/users/${id}/unlock`);
+        return await axiosInstance.patch(`/admin/users/${id}/unlock`);
     },
 
     // Admin: change user role
     changeRole: async (id, role) => {
-        return await apiCall.patch(`/admin/users/${id}/role`, null, {
+        return await axiosInstance.patch(`/admin/users/${id}/role`, null, {
             params: {
                 role
             }
@@ -74,17 +74,17 @@ const userService = {
 
     // Self-services: update own account
     updateMyAccount: async (data) => {
-        return await apiCall.patch("/users/me/account", data);
+        return await axiosInstance.patch("/users/me/account", data);
     },
 
     // Self-services: update own profile
     updateMyProfile: async (data) => {
-        return await apiCall.patch("/users/me/profile", data);
+        return await axiosInstance.patch("/users/me/profile", data);
     },
 
     // Self-services: change own password
     changeMyPassword: async (data) => {
-        return await apiCall.patch("/users/me/password", data);
+        return await axiosInstance.patch("/users/me/password", data);
     },
 
     // Self-services: update own profile picture
@@ -92,7 +92,7 @@ const userService = {
         const formData = new FormData();
         formData.append("file", file);
 
-        return await apiCall.patch("/users/me/profile-picture", formData, {
+        return await axiosInstance.patch("/users/me/profile-picture", formData, {
             headers: {
                 "Content-Type": "multipart/form-data"
             }
@@ -101,7 +101,7 @@ const userService = {
 
     // Self-services: delete own profile picture
     deleteMyProfilePicture: async () => {
-        return await apiCall.delete("/users/me/profile-picture");
+        return await axiosInstance.delete("/users/me/profile-picture");
     }
 };
 

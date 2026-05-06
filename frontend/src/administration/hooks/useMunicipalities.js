@@ -1,19 +1,19 @@
 import {useCallback, useEffect, useState} from "react";
 import usePaginationState from "../../common/hooks/usePaginationState.js";
 import useAsyncState from "../../common/hooks/useAsyncState.js";
-import departmentService from "../service/departmentService.js";
+import municipalityService from "../service/municipalityService.js";
 
 
-const useDepartments = ({paged = true, fetchOnMount = true} = {}) => {
-    const [departments, setDepartments] = useState([]);
+const useMunicipalities = ({paged = true, fetchOnMount = true} = {}) => {
+    const [municipalities, setMunicipalities] = useState([]);
     const {loading, error, handleError, startAsync, finishAsync} = useAsyncState();
     const {pagination, updatePagination} = usePaginationState();
 
-    const fetchDepartmentsPaged = useCallback(async (filters = {}) => {
+    const fetchMunicipalitiesPaged = useCallback(async (filters = {}) => {
         startAsync();
         try {
-            const response = await departmentService.findAllPaged(filters);
-            setDepartments(response.data.content);
+            const response = await municipalityService.findAllPaged(filters);
+            setMunicipalities(response.data.content);
             updatePagination(response.data);
         } catch (error) {
             handleError(error);
@@ -22,11 +22,11 @@ const useDepartments = ({paged = true, fetchOnMount = true} = {}) => {
         }
     }, [startAsync, finishAsync, handleError, updatePagination]);
 
-    const fetchDepartmentsAll = useCallback(async () => {
+    const fetchMunicipalitiesAll = useCallback(async () => {
         startAsync();
         try {
-            const response = await departmentService.findAll();
-            setDepartments(response.data);
+            const response = await municipalityService.findAll();
+            setMunicipalities(response.data);
         } catch (error) {
             handleError(error);
         } finally {
@@ -37,21 +37,21 @@ const useDepartments = ({paged = true, fetchOnMount = true} = {}) => {
     useEffect(() => {
         if (fetchOnMount) {
             if (paged) {
-                void fetchDepartmentsPaged();
+                void fetchMunicipalitiesPaged();
             } else {
-                void fetchDepartmentsAll();
+                void fetchMunicipalitiesAll();
             }
         }
-    }, [fetchOnMount, paged, fetchDepartmentsPaged, fetchDepartmentsAll]);
+    }, [fetchOnMount, paged, fetchMunicipalitiesPaged, fetchMunicipalitiesAll]);
 
     return {
-        departments,
+        municipalities,
         pagination,
         loading,
         error,
-        fetchDepartmentsPaged,
-        fetchDepartmentsAll
+        fetchMunicipalitiesPaged,
+        fetchMunicipalitiesAll
     };
 };
 
-export default useDepartments;
+export default useMunicipalities;

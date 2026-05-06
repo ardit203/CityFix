@@ -1,11 +1,11 @@
-import apiCall from "../../common/axios/axios.js";
+import axiosInstance from "../../common/axios/axios.js";
 
 const authService = {
     register: async (data) => {
-        return await apiCall.post("/auth/register", data);
+        return await axiosInstance.post("/auth/register", data);
     },
     login: async (data) => {
-        return await apiCall.post("/auth/login", data);
+        return await axiosInstance.post("/auth/login", data);
     },
 };
 

@@ -37,7 +37,11 @@ public class JwtFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
         String headerValue = request.getHeader(jwtProperties.getHeader());
 
         if (headerValue == null || !headerValue.startsWith(jwtProperties.getTokenPrefix())) {

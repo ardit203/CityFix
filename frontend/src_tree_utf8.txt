@@ -14,7 +14,7 @@ D:\FACULTY\8TH SEMESTER\ICT PROJECT MANGEMENT\PROJECT\CITYFIX\FRONTEND\SRC
 ª   +---service
 ª   ª       categoryApi.js
 ª   ª       departmentApi.js
-ª   ª       municipalityApi.js
+ª   ª       municipalityService.js
 ª   ª       staffApi.js
 ª   ª       
 ª   +---ui
