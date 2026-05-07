@@ -2,7 +2,7 @@ import axiosInstance from "../../common/axios/axios.js";
 
 const userService = {
     // Admin: paged/filterable users
-    findAll: async ({
+    findAllPaged: async ({
                         page = 0,
                         size = 10,
                         sortBy = "id",
@@ -11,7 +11,7 @@ const userService = {
                         email = null,
                         role = null
                     }) => {
-        return await axiosInstance.get("/admin/users/paged", {
+        return await axiosInstance.get("/users/paged", {
             params: {
                 page,
                 size,
@@ -25,8 +25,8 @@ const userService = {
     },
 
     // Admin: basic users list
-    findAllBasic: async () => {
-        return await axiosInstance.get("/admin/users");
+    findAll: async () => {
+        return await axiosInstance.get("/users");
     },
 
     // Current logged-in user
@@ -36,22 +36,22 @@ const userService = {
 
     // Admin: find user by id
     findById: async (id) => {
-        return await axiosInstance.get(`/admin/users/${id}`);
+        return await axiosInstance.get(`/users/${id}`);
     },
 
     // Admin: delete user
     deleteById: async (id) => {
-        return await axiosInstance.delete(`/admin/users/${id}`);
+        return await axiosInstance.delete(`/users/${id}`);
     },
 
     // Admin: update user
     update: async (id, data) => {
-        return await axiosInstance.patch(`/admin/users/${id}`, data);
+        return await axiosInstance.patch(`/users/${id}`, data);
     },
 
     // Admin: lock user
     lock: async (id, until) => {
-        return await axiosInstance.patch(`/admin/users/${id}/lock`, null, {
+        return await axiosInstance.patch(`/users/${id}/lock`, null, {
             params: {
                 until
             }
@@ -60,12 +60,12 @@ const userService = {
 
     // Admin: unlock user
     unlock: async (id) => {
-        return await axiosInstance.patch(`/admin/users/${id}/unlock`);
+        return await axiosInstance.patch(`/users/${id}/unlock`);
     },
 
     // Admin: change user role
     changeRole: async (id, role) => {
-        return await axiosInstance.patch(`/admin/users/${id}/role`, null, {
+        return await axiosInstance.patch(`/users/${id}/role`, null, {
             params: {
                 role
             }

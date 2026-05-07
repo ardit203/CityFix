@@ -5,14 +5,16 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import {Link} from 'react-router';
 import {useState} from 'react';
-// import AuthenticationToggle
-//     from "../../../../../auth_and_access/ui/components/auth/AuthenticationToggle/AuthenticationToggle.jsx";
+import AuthenticationToggle from "../../../../../auth_and_access/ui/components/auth/AuthenticationToggle.jsx";
 
 const pages = [
     {path: '/', name: 'home'},
     {path: '/users', name: 'users'},
     {path: '/profile', name: 'profile'},
-    {path: '/departments', name: 'departments'}
+    {path: '/departments', name: 'departments'},
+    {path: '/municipalities', name: 'municipalities'},
+    {path: '/categories', name: 'categories'},
+    {path: '/staff', name: 'staff'}
 ];
 
 const Header = () => {
@@ -47,7 +49,7 @@ const Header = () => {
                         ))}
                     </Box>
 
-                    {/*<AuthenticationToggle/>*/}
+                    <AuthenticationToggle/>
                 </Toolbar>
             </AppBar>
 

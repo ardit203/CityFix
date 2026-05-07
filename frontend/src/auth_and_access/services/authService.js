@@ -7,6 +7,14 @@ const authService = {
     login: async (data) => {
         return await axiosInstance.post("/auth/login", data);
     },
+    requestPasswordReset: async (email) => {
+        return await axiosInstance.post("/auth/forgot-password", null, {
+            params: { email }
+        });
+    },
+    resetPassword: async (data) => {
+        return await axiosInstance.post("/auth/reset-password", data);
+    }
 };
 
 export default authService;

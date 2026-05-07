@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import {Box, TextField} from "@mui/material";
 import {useNavigate} from "react-router";
-import useDepartments from "../../../hooks/useDepartments.js";
+import useDepartments from "../../../hooks/department/useDepartments.js";
 import DepartmentGrid from "../../components/department/DepartmentGrid.jsx";
 import useFilters from "../../../../common/hooks/useFilters.js";
 import FilterBar from "../../../../common/ui/components/FilterBar.jsx";
 import LoadingBar from "../../../../common/ui/components/LoadingBar.jsx";
 import AdminTable from "../../../../common/ui/components/AdminTable.jsx";
-import useDepartmentActions from "../../../hooks/useDepartmentActions.js";
+import useDepartmentActions from "../../../hooks/department/useDepartmentActions.js";
 import PaginatedDataView from "../../../../common/ui/components/PaginatedDataView.jsx";
 import SortControls from "../../../../common/ui/components/SortControls.jsx";
 import {
@@ -20,8 +20,6 @@ const DepartmentsPage = () => {
     const navigate = useNavigate();
     const {departments, loading, pagination, fetchDepartmentsPaged} = useDepartments();
     const {deleteDepartment} = useDepartmentActions();
-
-    // The state to track Table vs Grid
     const [viewMode, setViewMode] = useState('table');
 
     const {
@@ -39,6 +37,7 @@ const DepartmentsPage = () => {
             setViewMode(nextView);
         }
     };
+    console.log(departments)
 
     return (
         <Box>
@@ -62,7 +61,6 @@ const DepartmentsPage = () => {
 
             <LoadingBar loading={loading}/>
 
-            {/* Look at how incredibly clean this is! */}
             <PaginatedDataView
                 loading={loading}
                 data={departments}
@@ -72,7 +70,6 @@ const DepartmentsPage = () => {
                 emptyMessage="No departments found."
                 emptySubMessage="Try clearing your filters or creating a new department."
             >
-                {/* We just drop the Table or Grid right here */}
                 {viewMode === 'table' ? (
                     <AdminTable
                         data={departments}

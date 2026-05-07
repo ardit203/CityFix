@@ -38,21 +38,23 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findByDepartmentId(@Param("departmentId") Long departmentId);
 
     @Query("""
-                select c.id as id,
-                       c.name as name,
-                       c.department.id as departmentId,
-                       c.department.name as departmentName
-                from Category c
-                where (:id is null or c.id = :id)
-                  and (
-                      :text is null
-                      or lower(c.name) like lower(concat('%', :text, '%'))
-                      or lower(c.description) like lower(concat('%', :text, '%'))
-                  )
-                  and (:departmentId is null or c.department.id = :departmentId)
-            """)
-    Page<CategoryPageableProjection> findFiltered(@Param("id") Long id,
-                                                  @Param("text") String text,
-                                                  @Param("departmentId") Long departmentId,
-                                                  Pageable pageable);
+        select c.id as id,
+               c.name as name,
+               c.department.id as departmentId,
+               c.department.name as departmentName
+        from Category c
+        where (:id is null or c.id = :id)
+          and (
+              cast(:text as string) is null
+              or lower(c.name) like lower(concat('%', cast(:text as string), '%'))
+              or lower(c.description) like lower(concat('%', cast(:text as string), '%'))
+          )
+          and (:departmentId is null or c.department.id = :departmentId)
+        """)
+    Page<CategoryPageableProjection> findFiltered(
+            @Param("id") Long id,
+            @Param("text") String text,
+            @Param("departmentId") Long departmentId,
+            Pageable pageable
+    );
 }

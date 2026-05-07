@@ -2,10 +2,8 @@ import React from "react";
 import { useNavigate, useParams } from "react-router";
 import {
     Box,
-    Button,
     Card,
     CardContent,
-    CircularProgress,
     Divider,
     Grid,
     Paper,
@@ -13,28 +11,18 @@ import {
     Typography
 } from "@mui/material";
 import {
-    ArrowBack,
-    Delete,
-    Edit,
     Business,
     Description,
     Badge
 } from "@mui/icons-material";
-
-// Import your brand new hooks!
-
-import useDepartmentActions from "../../../hooks/useDepartmentActions.js";
-// Import your UI abstractions!
-import EmptyState from "../../../../common/ui/components/EmptyState.jsx";
-import useDepartmentDetails from "../../../hooks/useDepartmentsDetails.js";
+import useDepartmentActions from "../../../hooks/department/useDepartmentActions.js";
+import useDepartmentDetails from "../../../hooks/department/useDepartmentsDetails.js";
 import AsyncDataView from "../../../../common/ui/components/AsyncDataView.jsx";
 import ActionBar from "../../../../common/ui/components/ActionBar.jsx";
 
 const DepartmentDetailsPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-
-    // ... hooks ...
     const { department, loading, error } = useDepartmentDetails(id);
     const { deleteDepartment } = useDepartmentActions();
 
@@ -44,7 +32,6 @@ const DepartmentDetailsPage = () => {
         });
     };
 
-    // 1. THE FIX: Let AsyncDataView handle all the bad states as an early return!
     if (loading || error || !department) {
         return (
             <AsyncDataView
@@ -57,8 +44,6 @@ const DepartmentDetailsPage = () => {
         );
     }
 
-    // 2. If we make it to this line, we GUARANTEE department exists!
-    // You don't even need to wrap your UI in AsyncDataView anymore.
     return (
         <Box>
             <ActionBar
@@ -82,7 +67,6 @@ const DepartmentDetailsPage = () => {
 
                             <Box>
                                 <Typography variant="h4" fontWeight={600}>
-                                    {/* This is now 100% safe! */}
                                     {department.name}
                                 </Typography>
 

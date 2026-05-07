@@ -1,11 +1,10 @@
-// Import your formatters!
 import {renderTruncatedText} from "../../../../common/utils/tableFormatters.jsx";
 
 export const initialDepartmentFilters = {
     page: 0,
     size: 10,
     sortBy: "id",
-    sortDir: "asc", // Added this so it has a default!
+    sortDir: "asc",
     id: "",
     text: ""
 };
@@ -19,5 +18,4 @@ export const departmentColumns = [
 export const departmentSortOptions = [
     {value: 'id', label: 'ID'},
     {value: 'name', label: 'Department Name'},
-    {value: 'createdAt', label: 'Date Created'}
 ];

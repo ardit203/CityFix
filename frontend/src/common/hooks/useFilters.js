@@ -1,15 +1,15 @@
-import {useState, useCallback} from "react";
+import { useState, useCallback } from "react";
 
 const useFilters = (initialFilters, fetchFunction) => {
     const [filters, setFilters] = useState(initialFilters);
 
     const handleFilterChange = useCallback((event) => {
-        const {name, value} = event.target;
-        setFilters((prev) => ({...prev, [name]: value}));
+        const { name, value } = event.target;
+        setFilters((prev) => ({ ...prev, [name]: value }));
     }, []);
 
     const handleSearch = useCallback(() => {
-        const newFilters = {...filters, page: 0}; // Reset to page 0 on new search
+        const newFilters = { ...filters, page: 0 }; // Reset to page 0 on new search
         setFilters(newFilters);
         void fetchFunction(newFilters);
     }, [filters, fetchFunction]);
@@ -20,7 +20,7 @@ const useFilters = (initialFilters, fetchFunction) => {
     }, [initialFilters, fetchFunction]);
 
     const handlePageChange = useCallback((event, value) => {
-        const newFilters = {...filters, page: value - 1}; // MUI Pagination is 1-indexed, Spring Boot is 0-indexed
+        const newFilters = { ...filters, page: value - 1 }; // MUI Pagination is 1-indexed, Spring Boot is 0-indexed
         setFilters(newFilters);
         void fetchFunction(newFilters);
     }, [filters, fetchFunction]);

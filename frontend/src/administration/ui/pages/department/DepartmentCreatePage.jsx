@@ -2,13 +2,11 @@ import React from "react";
 import {useNavigate} from "react-router";
 import {
     Box,
-    Button,
-    Stack,
     Typography
 } from "@mui/material";
 import DepartmentForm from "../../components/department/DepartmentForm.jsx";
 import ActionBar from "../../../../common/ui/components/ActionBar.jsx";
-import useDepartmentActions from "../../../hooks/useDepartmentActions.js";
+import useDepartmentActions from "../../../hooks/department/useDepartmentActions.js";
 
 const DepartmentCreatePage = () => {
     const navigate = useNavigate();

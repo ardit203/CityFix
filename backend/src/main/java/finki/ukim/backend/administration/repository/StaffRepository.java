@@ -74,36 +74,36 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
 
 
     @Query("""
-                select s.id as id,
-                       p.name as name,
-                       p.surname as surname,
-                       u.email as email,
-                       u.username as username,
-                       d.name as departmentName,
-                       m.name as municipalityName,
-                       m.code as municipalityCode
-                from Staff s
-                join s.user u
-                join u.profile p
-                join s.department d
-                join s.municipality m
-                where (:id is null or s.id = :id)
-                  and (:userId is null or u.id = :userId)
-                  and (:departmentId is null or d.id = :departmentId)
-                  and (:municipalityId is null or m.id = :municipalityId)
-                  and (
-                        :username is null
-                        or lower(u.username) like lower(concat('%', :username, '%'))
-                      )
-                  and (
-                        :municipalityCode is null
-                        or lower(m.code) like lower(concat('%', :municipalityCode, '%'))
-                      )
-                  and (
-                        :municipalityName is null
-                        or lower(m.name) like lower(concat('%', :municipalityName, '%'))
-                      )
-            """)
+        select s.id as id,
+               p.name as name,
+               p.surname as surname,
+               u.email as email,
+               u.username as username,
+               d.name as departmentName,
+               m.name as municipalityName,
+               m.code as municipalityCode
+        from Staff s
+        join s.user u
+        join u.profile p
+        join s.department d
+        join s.municipality m
+        where (:id is null or s.id = :id)
+          and (:userId is null or u.id = :userId)
+          and (:departmentId is null or d.id = :departmentId)
+          and (:municipalityId is null or m.id = :municipalityId)
+          and (
+                cast(:username as string) is null
+                or lower(u.username) like lower(concat('%', cast(:username as string), '%'))
+              )
+          and (
+                cast(:municipalityCode as string) is null
+                or lower(m.code) like lower(concat('%', cast(:municipalityCode as string), '%'))
+              )
+          and (
+                cast(:municipalityName as string) is null
+                or lower(m.name) like lower(concat('%', cast(:municipalityName as string), '%'))
+              )
+        """)
     Page<StaffPageableProjection> findFiltered(
             @Param("id") Long id,
             @Param("userId") Long userId,

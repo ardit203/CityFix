@@ -129,63 +129,63 @@ CREATE TABLE request_logs
 );
 
 
-CREATE INDEX idx_requests_user_id
-    ON requests (user_id);
-
-CREATE INDEX idx_requests_municipality_id
-    ON requests (municipality_id);
-
-CREATE INDEX idx_requests_category_id
-    ON requests (category_id);
-
-CREATE INDEX idx_requests_department_id
-    ON requests (department_id);
-
-CREATE INDEX idx_requests_status
-    ON requests (status);
-
-CREATE INDEX idx_requests_priority
-    ON requests (priority);
-
-CREATE INDEX idx_requests_routing_status
-    ON requests (routing_status);
-
-
-CREATE INDEX idx_request_assignments_request_id
-    ON request_assignments (request_id);
-
-CREATE INDEX idx_request_assignments_employee_user_id
-    ON request_assignments (employee_user_id);
-
-CREATE INDEX idx_request_assignments_assigned_by_user_id
-    ON request_assignments (assigned_by_user_id);
-
-
-CREATE INDEX idx_request_comments_request_id
-    ON request_comments (request_id);
-
-CREATE INDEX idx_request_comments_author_id
-    ON request_comments (author_id);
-
-CREATE INDEX idx_request_comments_is_internal
-    ON request_comments (is_internal);
-
-
-CREATE INDEX idx_request_files_request_id
-    ON request_files (request_id);
-
-CREATE INDEX idx_request_files_file_id
-    ON request_files (file_id);
-
-
-CREATE INDEX idx_request_logs_request_id
-    ON request_logs (request_id);
-
-CREATE INDEX idx_request_logs_action_by_user_id
-    ON request_logs (action_by_user_id);
-
-CREATE INDEX idx_request_logs_action
-    ON request_logs (action);
-
-CREATE INDEX idx_request_logs_created_at
-    ON request_logs (created_at);
+-- CREATE INDEX idx_requests_user_id
+--     ON requests (user_id);
+--
+-- CREATE INDEX idx_requests_municipality_id
+--     ON requests (municipality_id);
+--
+-- CREATE INDEX idx_requests_category_id
+--     ON requests (category_id);
+--
+-- CREATE INDEX idx_requests_department_id
+--     ON requests (department_id);
+--
+-- CREATE INDEX idx_requests_status
+--     ON requests (status);
+--
+-- CREATE INDEX idx_requests_priority
+--     ON requests (priority);
+--
+-- CREATE INDEX idx_requests_routing_status
+--     ON requests (routing_status);
+--
+--
+-- CREATE INDEX idx_request_assignments_request_id
+--     ON request_assignments (request_id);
+--
+-- CREATE INDEX idx_request_assignments_employee_user_id
+--     ON request_assignments (employee_user_id);
+--
+-- CREATE INDEX idx_request_assignments_assigned_by_user_id
+--     ON request_assignments (assigned_by_user_id);
+--
+--
+-- CREATE INDEX idx_request_comments_request_id
+--     ON request_comments (request_id);
+--
+-- CREATE INDEX idx_request_comments_author_id
+--     ON request_comments (author_id);
+--
+-- CREATE INDEX idx_request_comments_is_internal
+--     ON request_comments (is_internal);
+--
+--
+-- CREATE INDEX idx_request_files_request_id
+--     ON request_files (request_id);
+--
+-- CREATE INDEX idx_request_files_file_id
+--     ON request_files (file_id);
+--
+--
+-- CREATE INDEX idx_request_logs_request_id
+--     ON request_logs (request_id);
+--
+-- CREATE INDEX idx_request_logs_action_by_user_id
+--     ON request_logs (action_by_user_id);
+--
+-- CREATE INDEX idx_request_logs_action
+--     ON request_logs (action);
+--
+-- CREATE INDEX idx_request_logs_created_at
+--     ON request_logs (created_at);
