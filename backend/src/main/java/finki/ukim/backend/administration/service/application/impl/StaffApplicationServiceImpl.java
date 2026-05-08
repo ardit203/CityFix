@@ -110,4 +110,9 @@ public class StaffApplicationServiceImpl implements StaffApplicationService {
     public DisplayBasicStaffDto deleteById(Long id, User currentUser) {
         return DisplayBasicStaffDto.from(staffService.deleteById(id, currentUser));
     }
+
+    @Override
+    public void deleteAllById(List<Long> ids, User currentUser) {
+        staffService.deleteAllById(ids, currentUser);
+    }
 }

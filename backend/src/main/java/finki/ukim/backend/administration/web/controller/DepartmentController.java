@@ -60,4 +60,10 @@ public class DepartmentController {
     public ResponseEntity<DisplayDepartmentDto> delete(@PathVariable Long id) {
         return ResponseEntity.ok(departmentApplicationService.deleteById(id));
     }
+
+    @DeleteMapping("/bulk")
+    public ResponseEntity<Void> deleteBulk(@RequestBody List<Long> ids) {
+        departmentApplicationService.deleteAllById(ids);
+        return ResponseEntity.noContent().build();
+    }
 }

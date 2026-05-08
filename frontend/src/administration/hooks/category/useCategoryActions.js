@@ -32,7 +32,16 @@ const useCategoryActions = () => {
         });
     }, [executeAction]);
 
-    return {createCategory, deleteCategory, updateCategory, isExecuting};
+    const deleteCategoriesBulk = useCallback(async (ids, onSuccess) => {
+        return executeAction({
+            confirmDialog: { title: "Delete Multiple Categories?", message: `Are you sure you want to delete these ${ids.length} categories? This action cannot be undone.` },
+            successMessage: "Categories deleted successfully!",
+            actionFn: () => categoryService.bulkDelete(ids),
+            onSuccess: onSuccess
+        });
+    }, [executeAction]);
+
+    return {createCategory, deleteCategory, updateCategory, deleteCategoriesBulk, isExecuting};
 };
 
 export default useCategoryActions;

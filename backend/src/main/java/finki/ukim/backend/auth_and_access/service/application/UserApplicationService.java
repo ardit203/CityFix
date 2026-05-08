@@ -28,6 +28,8 @@ public interface UserApplicationService {
 
     DisplayUserDto deleteById(Long id);
 
+    void deleteAllById(List<Long> ids);
+
     DisplayUserDto changeRole(Long id, Role role);
 
     DisplayUserDto lock(Long id, LocalDateTime until);

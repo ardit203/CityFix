@@ -50,6 +50,11 @@ const userService = {
         return await axiosInstance.delete(`/users/${id}`);
     },
 
+    // Admin: bulk delete users
+    bulkDelete: async (ids) => {
+        return await axiosInstance.delete('/users/bulk', { data: ids });
+    },
+
     // Admin: update user
     update: async (id, data) => {
         const safeData = mapToAdminUpdateUserDto(data);

@@ -49,6 +49,11 @@ public class DepartmentApplicationServiceImpl implements DepartmentApplicationSe
     }
 
     @Override
+    public void deleteAllById(List<Long> ids) {
+        departmentService.deleteAllById(ids);
+    }
+
+    @Override
     public Page<DisplayDepartmentDto> findAll(DepartmentFilterDto departmentFilterDto) {
         return departmentService
                 .findAll(departmentFilterDto)

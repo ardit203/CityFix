@@ -50,6 +50,11 @@ public class MunicipalityApplicationServiceImpl implements MunicipalityApplicati
     }
 
     @Override
+    public void deleteAllById(List<Long> ids) {
+        municipalityService.deleteAllById(ids);
+    }
+
+    @Override
     public Page<DisplayMunicipalityDto> findAll(MunicipalityFilterDto municipalityFilterDto) {
         return municipalityService
                 .findAll(municipalityFilterDto)

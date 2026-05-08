@@ -22,5 +22,7 @@ public interface DepartmentService {
 
     Department deleteById(Long id);
 
+    void deleteAllById(List<Long> ids);
+
     Page<Department> findAll(DepartmentFilterDto departmentFilterDto);
 }

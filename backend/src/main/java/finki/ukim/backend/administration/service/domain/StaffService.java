@@ -32,6 +32,8 @@ public interface StaffService {
 
     Staff deleteById(Long id, User currentUser);
 
+    void deleteAllById(List<Long> ids, User currentUser);
+
     Page<StaffPageableProjection> findAll(
             User user,
             StaffFilterDto staffFilterDto

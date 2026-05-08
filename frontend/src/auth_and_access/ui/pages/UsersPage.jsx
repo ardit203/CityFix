@@ -20,7 +20,7 @@ import UserGrid from "../components/user/UserGrid.jsx";
 const UsersPage = () => {
     const navigate = useNavigate();
     const {users, loading, pagination, fetchUsersPaged} = useUsers();
-    const {deleteUser} = useUserActions();
+    const {deleteUser, deleteUsersBulk} = useUserActions();
     const [viewMode, setViewMode] = useState('table');
 
     const {
@@ -97,7 +97,7 @@ const UsersPage = () => {
                             await deleteUser(user.id, () => fetchUsersPaged(filters));
                         }}
                         onBulkDelete={async (selectedIds) => {
-                            console.log("Deleting multiple IDs:", selectedIds);
+                            await deleteUsersBulk(selectedIds, () => fetchUsersPaged(filters));
                         }}
                     />
                 ) : (

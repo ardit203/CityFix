@@ -22,5 +22,7 @@ public interface MunicipalityApplicationService {
 
     DisplayMunicipalityDto deleteById(Long id);
 
+    void deleteAllById(List<Long> ids);
+
     Page<DisplayMunicipalityDto> findAll(MunicipalityFilterDto municipalityFilterDto);
 }

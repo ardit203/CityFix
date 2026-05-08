@@ -41,4 +41,6 @@ public interface StaffApplicationService {
     DisplayBasicStaffDto update(Long id, CreateStaffDto createStaffDto);
 
     DisplayBasicStaffDto deleteById(Long id, User user);
+
+    void deleteAllById(List<Long> ids, User user);
 }

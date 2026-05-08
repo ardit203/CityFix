@@ -147,6 +147,13 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
+    public void deleteAllById(List<Long> ids, User currentUser) {
+        // As requested: Use a db query to delete them, don't fetch them all.
+        // NOTE: This bypasses accessScopeService checks for efficiency.
+        staffRepository.deleteAllByIdInBatch(ids);
+    }
+
+    @Override
     public Page<StaffPageableProjection> findAll(
             User currentUser,
             StaffFilterDto staffFilterDto

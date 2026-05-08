@@ -31,7 +31,16 @@ const useDepartmentActions = () => {
         });
     }, [executeAction]);
 
-    return {createDepartment, deleteDepartment, updateDepartment, isExecuting};
+    const deleteDepartmentsBulk = useCallback(async (ids, onSuccess) => {
+        return executeAction({
+            confirmDialog: { title: "Delete Multiple Departments?", message: `Are you sure you want to delete these ${ids.length} departments? This action cannot be undone.` },
+            successMessage: "Departments deleted successfully!",
+            actionFn: () => departmentService.bulkDelete(ids),
+            onSuccess: onSuccess
+        });
+    }, [executeAction]);
+
+    return {createDepartment, deleteDepartment, updateDepartment, deleteDepartmentsBulk, isExecuting};
 };
 
 export default useDepartmentActions;

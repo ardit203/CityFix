@@ -245,6 +245,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void deleteAllById(List<Long> ids) {
+        userRepository.deleteAllByIdInBatch(ids);
+    }
+
+    @Override
     public User changeRole(Long id, Role role) {
         User existing = findById(id);
         existing.setRole(role);

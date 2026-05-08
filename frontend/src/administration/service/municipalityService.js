@@ -50,6 +50,10 @@ const municipalityService = {
 
     deleteById: async (id) => {
         return await axiosInstance.delete(`/municipalities/${id}`);
+    },
+
+    bulkDelete: async (ids) => {
+        return await axiosInstance.delete('/municipalities/bulk', { data: ids });
     }
 };
 

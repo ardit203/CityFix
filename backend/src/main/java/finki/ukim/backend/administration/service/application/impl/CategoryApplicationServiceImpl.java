@@ -63,6 +63,11 @@ public class CategoryApplicationServiceImpl implements CategoryApplicationServic
     }
 
     @Override
+    public void deleteAllById(List<Long> ids) {
+        categoryService.deleteAllById(ids);
+    }
+
+    @Override
     public Page<DisplayCategoryPageableDto> findAll(CategoryFilterDto categoryFilterDto) {
         return categoryService
                 .findAll(categoryFilterDto)

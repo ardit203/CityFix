@@ -77,6 +77,11 @@ public class UserApplicationServiceImpl implements UserApplicationService {
     }
 
     @Override
+    public void deleteAllById(List<Long> ids) {
+        userService.deleteAllById(ids);
+    }
+
+    @Override
     public DisplayUserDto changeRole(Long id, Role role) {
         return DisplayUserDto.from(userService.changeRole(id, role));
     }

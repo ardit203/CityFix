@@ -31,7 +31,16 @@ const useStaffActions = () => {
         });
     }, [executeAction]);
 
-    return {createStaff, deleteStaff, updateStaff, isExecuting};
+    const deleteStaffBulk = useCallback(async (ids, onSuccess) => {
+        return executeAction({
+            confirmDialog: { title: "Delete Multiple Staff Members?", message: `Are you sure you want to delete these ${ids.length} staff members? This action cannot be undone.` },
+            successMessage: "Staff deleted successfully!",
+            actionFn: () => staffService.bulkDelete(ids),
+            onSuccess: onSuccess
+        });
+    }, [executeAction]);
+
+    return {createStaff, deleteStaff, updateStaff, deleteStaffBulk, isExecuting};
 };
 
 export default useStaffActions;

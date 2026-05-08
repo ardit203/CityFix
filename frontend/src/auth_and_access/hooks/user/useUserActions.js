@@ -53,7 +53,16 @@ const useUserActions = () => {
         });
     }, [executeAction]);
 
-    return {deleteUser, updateUser, lockUser, unlockUser, changeRole, isExecuting};
+    const deleteUsersBulk = useCallback(async (ids, onSuccess) => {
+        return executeAction({
+            confirmDialog: { title: "Delete Multiple Users?", message: `Are you sure you want to delete these ${ids.length} users? This action cannot be undone.` },
+            successMessage: "Users deleted successfully!",
+            actionFn: () => userService.bulkDelete(ids),
+            onSuccess: onSuccess
+        });
+    }, [executeAction]);
+
+    return {deleteUser, updateUser, lockUser, unlockUser, changeRole, deleteUsersBulk, isExecuting};
 };
 
 export default useUserActions;

@@ -32,7 +32,16 @@ const useMunicipalityActions = () => {
         });
     }, [executeAction]);
 
-    return {createMunicipality, deleteMunicipality, updateMunicipality, isExecuting};
+    const deleteMunicipalitiesBulk = useCallback(async (ids, onSuccess) => {
+        return executeAction({
+            confirmDialog: { title: "Delete Multiple Municipalities?", message: `Are you sure you want to delete these ${ids.length} municipalities? This action cannot be undone.` },
+            successMessage: "Municipalities deleted successfully!",
+            actionFn: () => municipalityService.bulkDelete(ids),
+            onSuccess: onSuccess
+        });
+    }, [executeAction]);
+
+    return {createMunicipality, deleteMunicipality, updateMunicipality, deleteMunicipalitiesBulk, isExecuting};
 };
 
 export default useMunicipalityActions;

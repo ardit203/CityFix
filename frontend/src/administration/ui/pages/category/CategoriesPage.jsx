@@ -30,7 +30,7 @@ const CategoriesPage = () => {
     const navigate = useNavigate();
     const {categories, loading, pagination, fetchCategoriesPaged} = useCategories();
     const { departments, loading: loadingDepartments } = useDepartments({ paged: false });
-    const {deleteCategory} = useCategoryActions();
+    const {deleteCategory, deleteCategoriesBulk} = useCategoryActions();
     const [viewMode, setViewMode] = useState('table');
 
     const {
@@ -121,7 +121,7 @@ const CategoriesPage = () => {
                             await deleteCategory(category.id, () => fetchCategoriesPaged(filters));
                         }}
                         onBulkDelete={async (selectedIds) => {
-                            console.log("Deleting multiple IDs:", selectedIds);
+                            await deleteCategoriesBulk(selectedIds, () => fetchCategoriesPaged(filters));
                         }}
                     />
                 ) : (

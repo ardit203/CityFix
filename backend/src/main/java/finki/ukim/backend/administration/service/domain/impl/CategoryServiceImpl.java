@@ -72,6 +72,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public void deleteAllById(List<Long> ids) {
+        categoryRepository.deleteAllByIdInBatch(ids);
+    }
+
+    @Override
     public Page<CategoryPageableProjection> findAll(CategoryFilterDto categoryFilterDto) {
         categoryFilterDto.normalizeTextFields();
         Pageable pageable = categoryFilterDto.toPageable();

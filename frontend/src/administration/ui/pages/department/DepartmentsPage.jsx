@@ -19,7 +19,7 @@ import { emptyDepartmentFilter } from "../../../dtos/filterDto.js";
 const DepartmentsPage = () => {
     const navigate = useNavigate();
     const {departments, loading, pagination, fetchDepartmentsPaged} = useDepartments();
-    const {deleteDepartment} = useDepartmentActions();
+    const {deleteDepartment, deleteDepartmentsBulk} = useDepartmentActions();
     const [viewMode, setViewMode] = useState('table');
 
     const {
@@ -80,7 +80,7 @@ const DepartmentsPage = () => {
                             await deleteDepartment(department.id, () => fetchDepartmentsPaged(filters));
                         }}
                         onBulkDelete={async (selectedIds) => {
-                            console.log("Deleting multiple IDs:", selectedIds);
+                            await deleteDepartmentsBulk(selectedIds, () => fetchDepartmentsPaged(filters));
                         }}
                     />
                 ) : (

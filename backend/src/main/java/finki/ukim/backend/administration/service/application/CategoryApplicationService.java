@@ -26,5 +26,7 @@ public interface CategoryApplicationService {
 
     DisplayBasicCategoryDto deleteById(Long id);
 
+    void deleteAllById(List<Long> ids);
+
     Page<DisplayCategoryPageableDto> findAll(CategoryFilterDto categoryFilterDto);
 }

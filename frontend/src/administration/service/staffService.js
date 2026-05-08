@@ -75,6 +75,10 @@ const staffService = {
 
     deleteById: async (id) => {
         return await axiosInstance.delete(`/staff/${id}`);
+    },
+
+    bulkDelete: async (ids) => {
+        return await axiosInstance.delete('/staff/bulk', { data: ids });
     }
 };
 

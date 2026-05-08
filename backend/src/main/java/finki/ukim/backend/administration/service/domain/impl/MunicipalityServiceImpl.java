@@ -63,6 +63,11 @@ public class MunicipalityServiceImpl implements MunicipalityService {
     }
 
     @Override
+    public void deleteAllById(List<Long> ids) {
+        municipalityRepository.deleteAllByIdInBatch(ids);
+    }
+
+    @Override
     public Page<Municipality> findAll(MunicipalityFilterDto municipalityFilterDto) {
         municipalityFilterDto.normalizeTextFields();
         Pageable pageable = municipalityFilterDto.toPageable();

@@ -32,6 +32,8 @@ public interface UserService extends UserDetailsService {
 
     User deleteById(Long id);
 
+    void deleteAllById(List<Long> ids);
+
     User changeRole(Long id, Role role);
 
     User lock(Long id, LocalDateTime until);

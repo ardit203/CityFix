@@ -44,6 +44,10 @@ const departmentService = {
 
     deleteById: async (id) => {
         return await axiosInstance.delete(`/departments/${id}`);
+    },
+
+    bulkDelete: async (ids) => {
+        return await axiosInstance.delete('/departments/bulk', { data: ids });
     }
 };
 

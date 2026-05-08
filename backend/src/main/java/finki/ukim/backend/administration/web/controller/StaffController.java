@@ -91,4 +91,10 @@ public class StaffController {
     public ResponseEntity<DisplayBasicStaffDto> delete(@PathVariable Long id, @AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok(staffApplicationService.deleteById(id, currentUser));
     }
+
+    @DeleteMapping("/bulk")
+    public ResponseEntity<Void> deleteBulk(@RequestBody List<Long> ids, @AuthenticationPrincipal User currentUser) {
+        staffApplicationService.deleteAllById(ids, currentUser);
+        return ResponseEntity.noContent().build();
+    }
 }

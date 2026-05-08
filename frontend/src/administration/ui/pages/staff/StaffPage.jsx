@@ -24,7 +24,7 @@ const StaffPage = () => {
     const {staff, loading, pagination, fetchStaffPaged} = useStaff();
     const { departments, loading: loadingDepartments } = useDepartments({ paged: false });
     const { municipalities, loading: loadingMunicipalities } = useMunicipalities({ paged: false });
-    const {deleteStaff} = useStaffActions();
+    const {deleteStaff, deleteStaffBulk} = useStaffActions();
     const [viewMode, setViewMode] = useState('table');
 
     console.log(staff)
@@ -151,7 +151,7 @@ const StaffPage = () => {
                             await deleteStaff(staff.id, () => fetchStaffPaged(filters));
                         }}
                         onBulkDelete={async (selectedIds) => {
-                            console.log("Deleting multiple IDs:", selectedIds);
+                            await deleteStaffBulk(selectedIds, () => fetchStaffPaged(filters));
                         }}
                     />
                 ) : (

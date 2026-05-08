@@ -93,6 +93,13 @@ public class UserController {
         return ResponseEntity.ok(userApplicationService.deleteById(id));
     }
 
+    @DeleteMapping("/bulk")
+    public ResponseEntity<Void> deleteBulk(@RequestBody List<Long> ids) {
+        userApplicationService.deleteAllById(ids);
+        return ResponseEntity.noContent().build();
+    }
+
+
     @PatchMapping("/{id}/role")
     public ResponseEntity<DisplayUserDto> changeRole(
             @PathVariable Long id,

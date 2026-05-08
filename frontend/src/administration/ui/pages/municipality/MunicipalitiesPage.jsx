@@ -19,7 +19,7 @@ import MunicipalityGrid from "../../components/municipality/MunicipalityGrid.jsx
 const MunicipalitiesPage = () => {
     const navigate = useNavigate();
     const {municipalities, loading, pagination, fetchMunicipalitiesPaged} = useMunicipalities();
-    const {deleteMunicipality} = useMunicipalityActions();
+    const {deleteMunicipality, deleteMunicipalitiesBulk} = useMunicipalityActions();
     const [viewMode, setViewMode] = useState('table');
 
     const {
@@ -80,7 +80,7 @@ const MunicipalitiesPage = () => {
                             await deleteMunicipality(municipality.id, () => fetchMunicipalitiesPaged(filters));
                         }}
                         onBulkDelete={async (selectedIds) => {
-                            console.log("Deleting multiple IDs:", selectedIds);
+                            await deleteMunicipalitiesBulk(selectedIds, () => fetchMunicipalitiesPaged(filters));
                         }}
                     />
                 ) : (

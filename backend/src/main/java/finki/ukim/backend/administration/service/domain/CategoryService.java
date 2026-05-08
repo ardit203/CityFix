@@ -22,5 +22,7 @@ public interface CategoryService {
 
     Category deleteById(Long id);
 
+    void deleteAllById(List<Long> ids);
+
     Page<CategoryPageableProjection> findAll(CategoryFilterDto categoryFilterDto);
 }

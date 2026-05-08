@@ -67,4 +67,10 @@ public class CategoryController {
     public ResponseEntity<DisplayBasicCategoryDto> delete(@PathVariable Long id) {
         return ResponseEntity.ok(categoryApplicationService.deleteById(id));
     }
+
+    @DeleteMapping("/bulk")
+    public ResponseEntity<Void> deleteBulk(@RequestBody List<Long> ids) {
+        categoryApplicationService.deleteAllById(ids);
+        return ResponseEntity.noContent().build();
+    }
 }

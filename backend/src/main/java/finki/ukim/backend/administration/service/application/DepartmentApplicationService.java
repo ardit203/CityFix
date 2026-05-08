@@ -22,5 +22,7 @@ public interface DepartmentApplicationService {
 
     DisplayDepartmentDto deleteById(Long id);
 
+    void deleteAllById(List<Long> ids);
+
     Page<DisplayDepartmentDto> findAll(DepartmentFilterDto departmentFilterDto);
 }

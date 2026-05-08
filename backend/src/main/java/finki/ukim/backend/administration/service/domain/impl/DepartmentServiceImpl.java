@@ -64,6 +64,11 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
+    public void deleteAllById(List<Long> ids) {
+        departmentRepository.deleteAllByIdInBatch(ids);
+    }
+
+    @Override
     public Page<Department> findAll(DepartmentFilterDto departmentFilterDto) {
         departmentFilterDto.normalizeTextFields();
         Pageable pageable = departmentFilterDto.toPageable();
