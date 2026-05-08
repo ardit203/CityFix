@@ -1,7 +1,6 @@
 package finki.ukim.backend.administration.repository;
 
 import finki.ukim.backend.administration.model.domain.Department;
-import finki.ukim.backend.administration.model.projection.CategoryPageableProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -15,9 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    @EntityGraph(attributePaths = {
-            "profile",
-    })
+    @EntityGraph(attributePaths = {"profile"})
     @Query("select u from User u where u.id = :id")
     Optional<User> findByIdWithProfile(@Param("id") Long id);
 
@@ -42,7 +40,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
             select
                     u.id as id,
                     u.username as username,
-                    u.email as email
+                    u.email as email,
+                    u.role as role
             from User as u
             """)
     List<UserWithIdUsernameAndEmail> findAllWithIdUsernameAndEmail();

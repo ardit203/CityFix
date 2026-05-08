@@ -11,12 +11,9 @@ import finki.ukim.backend.auth_and_access.model.dto.accessScope.StaffScope;
 import finki.ukim.backend.auth_and_access.model.dto.accessScope.StaffScopeFilters;
 import finki.ukim.backend.auth_and_access.model.projection.UserPageableProjection;
 import finki.ukim.backend.auth_and_access.service.domain.AccessScopeService;
-import finki.ukim.backend.common.helper.FilterUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -100,7 +97,7 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public List<Staff> findByDepartmentId(Long departmentId) {
-        return staffRepository.findByDepartmentId(departmentId);
+        return staffRepository.findByDepartment_Id(departmentId);
     }
 
     @Override

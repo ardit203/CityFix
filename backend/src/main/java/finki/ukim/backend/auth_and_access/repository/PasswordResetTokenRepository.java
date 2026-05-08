@@ -12,10 +12,6 @@ import java.util.Optional;
 
 public interface PasswordResetTokenRepository extends JpaRepository<PasswordResetToken, Long> {
     Optional<PasswordResetToken> findByTokenHash(String tokenHash);
-
-    List<PasswordResetToken> findAllByUser_Id(Long userId);
-
-    @EntityGraph(value = "password-reset-token-entity-graph", type = EntityGraph.EntityGraphType.FETCH)
     List<PasswordResetToken> findByUserId(Long userId);
 
     @Query("""
@@ -35,15 +31,12 @@ public interface PasswordResetTokenRepository extends JpaRepository<PasswordRese
            """)
     List<PasswordResetToken> findAllInactiveTokens();
 
+    @EntityGraph(attributePaths = {"user"})
     @Query("""
             select pt from PasswordResetToken pt
-            join fetch pt.user
             where pt.tokenHash = :tokenHash
             """)
     Optional<PasswordResetToken> findByTokenHashWithUser(@Param("tokenHash") String tokenHash);
-
-
-    /// ////
 
     @Query("""
             select pt from PasswordResetToken pt

@@ -1,6 +1,7 @@
 package finki.ukim.backend.auth_and_access.model.dto;
 
 import finki.ukim.backend.auth_and_access.model.domain.User;
+import finki.ukim.backend.auth_and_access.model.enums.Role;
 import finki.ukim.backend.auth_and_access.model.projection.UserWithIdUsernameAndEmail;
 
 import java.util.List;
@@ -8,13 +9,15 @@ import java.util.List;
 public record DisplayUserBasicDto(
         Long id,
         String username,
-        String email
+        String email,
+        Role role
 ) {
     public static DisplayUserBasicDto from(User user) {
         return new DisplayUserBasicDto(
                 user.getId(),
                 user.getUsername(),
-                user.getEmail()
+                user.getEmail(),
+                user.getRole()
         );
     }
 
@@ -32,7 +35,8 @@ public record DisplayUserBasicDto(
                         u -> new DisplayUserBasicDto(
                                 u.getId(),
                                 u.getUsername(),
-                                u.getEmail()
+                                u.getEmail(),
+                                u.getRole()
                         )
                 )
                 .toList();

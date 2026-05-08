@@ -3,7 +3,6 @@ package finki.ukim.backend.auth_and_access.service.application.impl;
 import finki.ukim.backend.auth_and_access.model.dto.*;
 import finki.ukim.backend.auth_and_access.model.dto.filter.UserFilterDto;
 import finki.ukim.backend.auth_and_access.model.enums.Role;
-import finki.ukim.backend.auth_and_access.model.projection.UserWithIdUsernameAndEmail;
 import finki.ukim.backend.auth_and_access.service.application.UserApplicationService;
 import finki.ukim.backend.auth_and_access.service.domain.UserService;
 import lombok.AllArgsConstructor;

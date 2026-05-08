@@ -3,7 +3,6 @@ package finki.ukim.backend.auth_and_access.service.application;
 import finki.ukim.backend.auth_and_access.model.dto.*;
 import finki.ukim.backend.auth_and_access.model.dto.filter.UserFilterDto;
 import finki.ukim.backend.auth_and_access.model.enums.Role;
-import finki.ukim.backend.auth_and_access.model.projection.UserWithIdUsernameAndEmail;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
