@@ -75,6 +75,7 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
                    p.surname as surname,
                    u.email as email,
                    u.username as username,
+                   u.role as role,
                    d.name as departmentName,
                    m.name as municipalityName,
                    m.code as municipalityCode

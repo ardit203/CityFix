@@ -23,6 +23,8 @@ const StaffPage = () => {
     const {deleteStaff} = useStaffActions();
     const [viewMode, setViewMode] = useState('table');
 
+    console.log(staff)
+
     const {
         filters,
         handleFilterChange,

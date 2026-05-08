@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import {
     Business,
-    Description,
+    Code,
     Badge
 } from "@mui/icons-material";
 import AsyncDataView from "../../../../common/ui/components/AsyncDataView.jsx";
@@ -101,23 +101,13 @@ const MunicipalityDetailsPage = () => {
                                                     Name: {municipality.name}
                                                 </Typography>
                                             </Stack>
-                                        </Stack>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
 
-                            <Grid size={{ xs: 12, md: 6 }}>
-                                <Card variant="outlined">
-                                    <CardContent>
-                                        <Typography variant="h6" sx={{ mb: 2 }}>
-                                            Code
-                                        </Typography>
-
-                                        <Stack direction="row" spacing={1} alignItems="flex-start">
-                                            <Description color="primary" />
-                                            <Typography>
-                                                {municipality.code}
-                                            </Typography>
+                                            <Stack direction="row" spacing={1} alignItems="center">
+                                                <Code color="primary" />
+                                                <Typography>
+                                                    Code: {municipality.code}
+                                                </Typography>
+                                            </Stack>
                                         </Stack>
                                     </CardContent>
                                 </Card>

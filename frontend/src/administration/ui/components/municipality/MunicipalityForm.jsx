@@ -51,8 +51,6 @@ const MunicipalityForm = ({
                             value={formData.code}
                             onChange={handleChange}
                             fullWidth
-                            multiline
-                            minRows={4}
                             error={!!errors.code}
                             helperText={errors.code}
                         />

@@ -17,6 +17,7 @@ export const staffColumns = [
     {id: 'name', label: 'Name'},
     {id: 'surname', label: 'Surname'},
     {id: 'username', label: 'Username'},
+    {id: 'role', label: 'Role'},
     {id: 'departmentName', label: 'Department'},
     {id: 'municipalityCode', label: 'Municipality'},
 ];

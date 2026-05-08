@@ -1,5 +1,7 @@
 package finki.ukim.backend.administration.model.projection;
 
+import finki.ukim.backend.auth_and_access.model.enums.Role;
+
 public interface StaffPageableProjection {
     Long getId();
 
@@ -10,6 +12,8 @@ public interface StaffPageableProjection {
     String getEmail();
 
     String getUsername();
+
+    Role getRole();
 
     String getDepartmentName();
 
