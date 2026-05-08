@@ -15,7 +15,8 @@ import {
 // Adjust these paths to match your actual structure!
 import useUserDetails from "../../hooks/user/useUserDetails.js";
 import useUserActions from "../../hooks/user/useUserActions.js";
-import UserAdminForm from "../components/user/UserForm.jsx";
+import UserForm from "../components/user/UserForm.jsx";
+import { mapDisplayToAdminUpdateUserDto } from "../../dtos/userDto.js";
 import LockUserDialog from "../components/user/LockUserDialog.jsx";
 import ChangeUserRoleDialog from "../components/user/ChangeUserRoleDialog.jsx";
 
@@ -29,6 +30,9 @@ const UserEditPage = () => {
     const { unlockUser, updateUser, lockUser, changeRole } = useUserActions();
     const [roleDialogOpen, setRoleDialogOpen] = useState(false);
     const [lockDialogOpen, setLockDialogOpen] = useState(false);
+
+    console.log(user)
+    console.log(mapDisplayToAdminUpdateUserDto(user))
 
     const handleUnlock = async () => {
         return await unlockUser(id, fetchUser);
@@ -99,24 +103,28 @@ const UserEditPage = () => {
                 </Button>
             </ActionBar>
 
-            <UserAdminForm
-                initialValues={user}
+            <UserForm
+                initialValues={mapDisplayToAdminUpdateUserDto(user)}
                 submitLabel="Update User"
                 onSubmit={handleUpdate}
             />
 
-            <ChangeUserRoleDialog
-                open={roleDialogOpen}
-                onClose={() => setRoleDialogOpen(false)}
-                user={user}
-                onSubmit={handleChangeRole}
-            />
+            {roleDialogOpen && (
+                <ChangeUserRoleDialog
+                    open={roleDialogOpen}
+                    onClose={() => setRoleDialogOpen(false)}
+                    user={user}
+                    onSubmit={handleChangeRole}
+                />
+            )}
 
-            <LockUserDialog
-                open={lockDialogOpen}
-                onClose={() => setLockDialogOpen(false)}
-                onSubmit={handleLock}
-            />
+            {lockDialogOpen && (
+                <LockUserDialog
+                    open={lockDialogOpen}
+                    onClose={() => setLockDialogOpen(false)}
+                    onSubmit={handleLock}
+                />
+            )}
         </Box>
     );
 };

@@ -1,46 +1,51 @@
 import axiosInstance from "../../common/axios/axios.js";
+import {
+    mapToCreateMunicipalityDto,
+    mapToDisplayMunicipalityDto,
+    mapMunicipalityList
+} from "../dtos/municipalityDto.js";
 
 const municipalityService = {
     findAll: async () => {
-        return await axiosInstance.get("/municipalities");
+        const response = await axiosInstance.get("/municipalities");
+        response.data = mapMunicipalityList(response.data);
+        return response;
     },
 
-    findAllPaged: async ({
-                             page = 0,
-                             size = 10,
-                             sortBy = "id",
-                             sortDir = 'asc',
-                             id = null,
-                             code = null,
-                             name = null
-                         }) => {
-        return await axiosInstance.get("/municipalities/paged", {
-            params: {
-                page,
-                size,
-                sortBy,
-                sortDir,
-                id,
-                code,
-                name
-            }
+    findAllPaged: async (filters) => {
+        const response = await axiosInstance.get("/municipalities/paged", {
+            params: filters
         });
+        response.data.content = mapMunicipalityList(response.data.content);
+        return response;
     },
 
     findById: async (id) => {
-        return await axiosInstance.get(`/municipalities/${id}`);
+        const response = await axiosInstance.get(`/municipalities/${id}`);
+        response.data = mapToDisplayMunicipalityDto(response.data);
+        return response;
+    },
+
+    findByName: async (name) => {
+        const response = await axiosInstance.get(`/municipalities/by-name/${name}`);
+        response.data = mapToDisplayMunicipalityDto(response.data);
+        return response;
     },
 
     findByCode: async (code) => {
-        return await axiosInstance.get(`/municipalities/by-code/${code}`);
+        const response = await axiosInstance.get(`/municipalities/by-code/${code}`);
+        response.data = mapToDisplayMunicipalityDto(response.data);
+        return response;
     },
 
     create: async (data) => {
-        return await axiosInstance.post("/municipalities", data);
+        const safeData = mapToCreateMunicipalityDto(data);
+        return await axiosInstance.post("/municipalities", safeData);
     },
 
     update: async (id, data) => {
-        return await axiosInstance.put(`/municipalities/${id}`, data);
+        const safeData = mapToCreateMunicipalityDto(data);
+        return await axiosInstance.put(`/municipalities/${id}`, safeData);
     },
 
     deleteById: async (id) => {

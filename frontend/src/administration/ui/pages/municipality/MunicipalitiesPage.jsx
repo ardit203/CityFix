@@ -8,10 +8,10 @@ import AdminTable from "../../../../common/ui/components/AdminTable.jsx";
 import PaginatedDataView from "../../../../common/ui/components/PaginatedDataView.jsx";
 import SortControls from "../../../../common/ui/components/SortControls.jsx";
 import {
-    initialMunicipalityFilters,
     municipalityColumns,
     municipalitySortOptions
 } from "../../components/municipality/MunicipalityConfig.jsx";
+import { emptyMunicipalityFilter } from "../../../dtos/filterDto.js";
 import useMunicipalityActions from "../../../hooks/municipality/useMunicipalityActions.js";
 import useMunicipalities from "../../../hooks/municipality/useMunicipalities.js";
 import MunicipalityGrid from "../../components/municipality/MunicipalityGrid.jsx";
@@ -30,7 +30,7 @@ const MunicipalitiesPage = () => {
         handlePageChange,
         handleSizeChange,
         handleSortChange
-    } = useFilters(initialMunicipalityFilters, fetchMunicipalitiesPaged);
+    } = useFilters(emptyMunicipalityFilter, fetchMunicipalitiesPaged);
 
     const handleViewChange = (event, nextView) => {
         if (nextView !== null) {

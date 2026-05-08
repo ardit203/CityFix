@@ -7,11 +7,7 @@ import {
 import useForm from "../../../../common/hooks/useForm.js";
 import useDepartments from "../../../hooks/department/useDepartments.js";
 
-const initialFormData = {
-    name: "",
-    description: "",
-    departmentId: ""
-};
+import { emptyCreateCategoryDto } from "../../../dtos/categoryDto.js";
 
 const CategoryForm = ({
                           initialValues,
@@ -21,15 +17,11 @@ const CategoryForm = ({
     const [errors, setErrors] = useState({});
 
     const { departments, loading: loadingDepartments } = useDepartments({ paged: false });
-    const { formData, handleChange, resetForm, handleSubmit } = useForm(initialFormData);
+    const { formData, handleChange, resetForm, handleSubmit } = useForm(emptyCreateCategoryDto);
 
     useEffect(() => {
         if (initialValues) {
-            resetForm({
-                name: initialValues.name || "",
-                description: initialValues.description || "",
-                departmentId: initialValues.department?.id || initialValues.departmentId || ""
-            });
+            resetForm(initialValues);
         }
     }, [initialValues, resetForm]);
 
@@ -85,23 +77,29 @@ const CategoryForm = ({
                                 value={formData.departmentId}
                                 label="Department"
                                 onChange={handleChange}
-                                disabled={loadingDepartments} // Disable while fetching
+                                disabled={loadingDepartments}
                             >
                                 {loadingDepartments ? (
-                                    <MenuItem disabled>
-                                        <CircularProgress size={20} sx={{ mr: 2 }} /> Loading...
+                                    <MenuItem value={formData.departmentId || ""} disabled>
+                                        <CircularProgress size={20} sx={{mr: 2}}/> Loading departments...
                                     </MenuItem>
                                 ) : departments.length === 0 ? (
-                                    <MenuItem disabled>No departments available</MenuItem>
+                                    <MenuItem value={formData.departmentId || ""} disabled>No departments available</MenuItem>
                                 ) : (
-                                    departments.map((dep) => (
-                                        <MenuItem key={dep.id} value={dep.id}>
-                                            {dep.name}
-                                        </MenuItem>
-                                    ))
+                                    [
+                                        ...departments.map((dep) => (
+                                            <MenuItem key={dep.id} value={dep.id}>
+                                                {dep.name}
+                                            </MenuItem>
+                                        )),
+                                        formData.departmentId && !departments.some(d => d.id === formData.departmentId) ? (
+                                            <MenuItem key="fallback-dep" value={formData.departmentId} sx={{ display: 'none' }}>
+                                                Unknown Department ({formData.departmentId})
+                                            </MenuItem>
+                                        ) : null
+                                    ]
                                 )}
                             </Select>
-                            {/* Material UI requires the helper text to be added this way for Selects */}
                             {errors.departmentId && <FormHelperText>{errors.departmentId}</FormHelperText>}
                         </FormControl>
 

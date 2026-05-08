@@ -2,10 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Box, Button, Card, CardContent, Stack, TextField} from "@mui/material";
 import useForm from "../../../../common/hooks/useForm.js";
 
-const initialFormData = {
-    name: "",
-    code: ""
-};
+import { emptyCreateMunicipalityDto } from "../../../dtos/municipalityDto.js";
 
 const MunicipalityForm = ({
                               initialValues,
@@ -13,14 +10,11 @@ const MunicipalityForm = ({
                               onSubmit
                           }) => {
     const [errors, setErrors] = useState({});
-    const {formData, handleChange, resetForm, handleSubmit} = useForm(initialFormData);
+    const {formData, handleChange, resetForm, handleSubmit} = useForm(emptyCreateMunicipalityDto);
 
     useEffect(() => {
         if (initialValues) {
-            resetForm({
-                name: initialValues.name || "",
-                code: initialValues.code || ""
-            });
+            resetForm(initialValues);
         }
     }, [initialValues, resetForm]);
 

@@ -16,9 +16,7 @@ const ActionBar = ({
     return (
         <Stack
             direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-            sx={{ mb: 3 }}
+            sx={{ mb: 3, justifyContent: 'space-between', alignItems: 'center' }}
         >
             {/* 1. The Left Side (Back Buttons) */}
             <Stack direction="row" spacing={2}>
@@ -45,7 +43,7 @@ const ActionBar = ({
             </Stack>
 
             {/* 2. The Right Side (Action Buttons) */}
-            <Stack direction="row" spacing={2} alignItems="center">
+            <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
                 {children}
 
                 {onEdit && (

@@ -1,44 +1,45 @@
 import axiosInstance from "../../common/axios/axios.js";
+import {
+    mapToCreateDepartmentDto,
+    mapToDisplayDepartmentDto,
+    mapDepartmentList
+} from "../dtos/departmentDto.js";
 
 const departmentService = {
     findAll: async () => {
-        return await axiosInstance.get("/departments");
+        const response = await axiosInstance.get("/departments");
+        response.data = mapDepartmentList(response.data);
+        return response;
     },
 
-    findAllPaged: async ({
-                             page = 0,
-                             size = 10,
-                             sortBy = "id",
-                             sortDir = "asc",
-                             id = null,
-                             text = null
-                         }) => {
-        return await axiosInstance.get("/departments/paged", {
-            params: {
-                page,
-                size,
-                sortBy,
-                sortDir,
-                id,
-                text
-            }
+    findAllPaged: async (filters) => {
+        const response = await axiosInstance.get("/departments/paged", {
+            params: filters
         });
+        response.data.content = mapDepartmentList(response.data.content);
+        return response;
     },
 
     findById: async (id) => {
-        return await axiosInstance.get(`/departments/${id}`);
+        const response = await axiosInstance.get(`/departments/${id}`);
+        response.data = mapToDisplayDepartmentDto(response.data);
+        return response;
     },
 
     findByName: async (name) => {
-        return await axiosInstance.get(`/departments/by-name/${name}`);
+        const response = await axiosInstance.get(`/departments/by-name/${name}`);
+        response.data = mapToDisplayDepartmentDto(response.data);
+        return response;
     },
 
     create: async (data) => {
-        return await axiosInstance.post("/departments", data);
+        const safeData = mapToCreateDepartmentDto(data);
+        return await axiosInstance.post("/departments", safeData);
     },
 
     update: async (id, data) => {
-        return await axiosInstance.put(`/departments/${id}`, data);
+        const safeData = mapToCreateDepartmentDto(data);
+        return await axiosInstance.put(`/departments/${id}`, safeData);
     },
 
     deleteById: async (id) => {

@@ -84,10 +84,9 @@ const UserDetailsPage = () => {
             />
 
             <Paper elevation={2} sx={{ p: 4, borderRadius: 4 }}>
-                <Grid container spacing={4}>
-                    <Grid item xs={12}>
+                <Box>
                         
-                        <Stack direction="row" spacing={3} alignItems="center" sx={{ mb: 2 }}>
+                        <Stack direction="row" spacing={3} sx={{ alignItems: 'center', mb: 2 }}>
                             <Avatar 
                                 src={user.profile?.profilePictureUrl}
                                 sx={{ width: 80, height: 80, bgcolor: 'primary.main', fontSize: '2rem' }}
@@ -108,9 +107,9 @@ const UserDetailsPage = () => {
 
                         <Divider sx={{ mb: 3 }} />
 
-                        <Grid container spacing={2}>
+                        <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
                             {/* --- Basic Information --- */}
-                            <Grid item xs={12} md={6}>
+                            <Box sx={{ flex: 1 }}>
                                 <Card variant="outlined" sx={{ height: '100%' }}>
                                     <CardContent>
                                         <Typography variant="h6" sx={{ mb: 3 }}>
@@ -118,22 +117,22 @@ const UserDetailsPage = () => {
                                         </Typography>
 
                                         <Stack spacing={2.5}>
-                                            <Stack direction="row" spacing={1.5} alignItems="center">
+                                            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                                                 <Badge color="primary" />
                                                 <Typography>
                                                     ID: {user.id}
                                                 </Typography>
                                             </Stack>
 
-                                            <Stack direction="row" spacing={1.5} alignItems="center">
+                                            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                                                 <Email color="primary" />
                                                 <Typography>
                                                     Email: {user.email}
                                                 </Typography>
                                             </Stack>
 
-                                            <Stack direction="row" spacing={1.5} alignItems="center">
-                                                <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+                                                <Typography component="div" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                                     Role: 
                                                     <Chip 
                                                         icon={roleData.icon} 
@@ -145,8 +144,8 @@ const UserDetailsPage = () => {
                                                 </Typography>
                                             </Stack>
 
-                                            <Stack direction="row" spacing={1.5} alignItems="center">
-                                                <Typography sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+                                                <Typography component="div" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                                     Status: 
                                                     {user.locked ? (
                                                         <Chip icon={<Lock fontSize="small"/>} label="Locked" color="error" size="small" variant="filled" />
@@ -156,7 +155,7 @@ const UserDetailsPage = () => {
                                                 </Typography>
                                             </Stack>
 
-                                            <Stack direction="row" spacing={1.5} alignItems="center">
+                                            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                                                 {user.notificationsEnabled ? <NotificationsActive color="primary" /> : <NotificationsOff color="action" />}
                                                 <Typography>
                                                     Notifications: {user.notificationsEnabled ? "Enabled" : "Disabled"}
@@ -165,10 +164,10 @@ const UserDetailsPage = () => {
                                         </Stack>
                                     </CardContent>
                                 </Card>
-                            </Grid>
+                            </Box>
 
                             {/* --- Personal Details --- */}
-                            <Grid item xs={12} md={6}>
+                            <Box sx={{ flex: 1 }}>
                                 <Card variant="outlined" sx={{ height: '100%' }}>
                                     <CardContent>
                                         <Typography variant="h6" sx={{ mb: 3 }}>
@@ -176,28 +175,28 @@ const UserDetailsPage = () => {
                                         </Typography>
 
                                         <Stack spacing={2.5}>
-                                            <Stack direction="row" spacing={1.5} alignItems="center">
+                                            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                                                 <Phone color="primary" />
                                                 <Typography>
                                                     Phone: {user.profile?.phoneNumber || "N/A"}
                                                 </Typography>
                                             </Stack>
 
-                                            <Stack direction="row" spacing={1.5} alignItems="center">
+                                            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                                                 <Cake color="primary" />
                                                 <Typography>
                                                     DOB: {user.profile?.dateOfBirth || "N/A"}
                                                 </Typography>
                                             </Stack>
 
-                                            <Stack direction="row" spacing={1.5} alignItems="center">
+                                            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                                                 <Wc color="primary" />
                                                 <Typography sx={{ textTransform: 'capitalize' }}>
                                                     Gender: {user.profile?.gender?.toLowerCase() || "N/A"}
                                                 </Typography>
                                             </Stack>
 
-                                            <Stack direction="row" spacing={1.5} alignItems="flex-start">
+                                            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start' }}>
                                                 <LocationOn color="primary" />
                                                 <Typography>
                                                     Address: {user.profile?.address?.street || user.profile?.address?.city || user.profile?.address?.postalCode ? (
@@ -214,11 +213,10 @@ const UserDetailsPage = () => {
                                         </Stack>
                                     </CardContent>
                                 </Card>
-                            </Grid>
+                            </Box>
 
-                        </Grid>
-                    </Grid>
-                </Grid>
+                        </Stack>
+                </Box>
             </Paper>
         </Box>
     );

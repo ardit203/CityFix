@@ -5,22 +5,16 @@ import useProfileActions from "../../../hooks/profile/useProflieActions.js";
 
 
 
+import { emptyUpdateMyAccountDto } from "../../../dtos/authDto.js";
+
 const AccountForm = ({ user, onSuccess }) => {
-    const { formData, handleChange, resetForm} = useForm({
-        username: "",
-        email: "",
-        notificationsEnabled: true
-    });
+    const { formData, handleChange, resetForm} = useForm(emptyUpdateMyAccountDto);
 
     const { updateMyAccount } = useProfileActions();
 
     useEffect(() => {
         if (user) {
-            resetForm({
-                username: user.username || "",
-                email: user.email || "",
-                notificationsEnabled: user.notificationsEnabled ?? true
-            });
+            resetForm(user);
         }
     }, [user, resetForm]);
 

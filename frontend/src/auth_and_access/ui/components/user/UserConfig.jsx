@@ -1,13 +1,4 @@
-export const initialUserFilters = {
-    page: 0,
-    size: 10,
-    sortBy: "id",
-    sortDir: "asc",
-    id: "",
-    username: "",
-    email: "",
-    role: ""
-};
+
 
 export const userColumns = [
     {id: 'id', label: 'ID'},

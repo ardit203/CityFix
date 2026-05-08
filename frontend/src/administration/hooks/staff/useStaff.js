@@ -2,7 +2,7 @@ import {useCallback, useEffect, useState} from "react";
 import usePaginationState from "../../../common/hooks/usePaginationState.js";
 import useAsyncState from "../../../common/hooks/useAsyncState.js";
 
-import {cleanObject} from "../../../common/utils/objectUtils.js";
+import { mapToCleanQueryParams } from "../../../common/dtos/filterDto.js";
 import staffService from "../../service/staffService.js";
 
 
@@ -14,7 +14,8 @@ const useStaff = ({paged = true, fetchOnMount = true} = {}) => {
     const fetchStaffPaged = useCallback(async (filters = {}) => {
         startAsync();
         try {
-            const response = await staffService.findAllPaged(cleanObject(filters));
+            const safeFilters = mapToCleanQueryParams(filters);
+            const response = await staffService.findAllPaged(safeFilters);
             setStaff(response.data.content);
             updatePagination(response.data);
         } catch (error) {

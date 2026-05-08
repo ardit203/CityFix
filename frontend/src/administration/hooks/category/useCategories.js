@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useState} from "react";
 import usePaginationState from "../../../common/hooks/usePaginationState.js";
 import useAsyncState from "../../../common/hooks/useAsyncState.js";
-import {cleanObject} from "../../../common/utils/objectUtils.js";
+import { mapToCleanQueryParams } from "../../../common/dtos/filterDto.js";
 import categoryService from "../../service/categoryService.js";
 
 
@@ -13,7 +13,8 @@ const useCategories = ({paged = true, fetchOnMount = true} = {}) => {
     const fetchCategoriesPaged = useCallback(async (filters = {}) => {
         startAsync();
         try {
-            const response = await categoryService.findAllPaged(cleanObject(filters));
+            const safeFilters = mapToCleanQueryParams(filters);
+            const response = await categoryService.findAllPaged(safeFilters);
             setCategories(response.data.content);
             updatePagination(response.data);
         } catch (error) {

@@ -1,12 +1,3 @@
-export const initialCategoryFilters = {
-    page: 0,
-    size: 10,
-    sortBy: "id",
-    sortDir: "asc",
-    id: "",
-    text: "",
-    departmentId: ""
-};
 
 export const categoryColumns = [
     {id: 'id', label: 'ID'},

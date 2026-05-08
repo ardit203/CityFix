@@ -62,9 +62,8 @@ const StaffDetailsPage = () => {
             />
 
             <Paper elevation={2} sx={{ p: 4, borderRadius: 4 }}>
-                <Grid container spacing={4}>
-                    <Grid item xs={12}>
-                        <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                <Box>
+                        <Stack direction="row" spacing={2} sx={{ mb: 2, alignItems: 'center' }}>
                             <StaffIcon color="primary" sx={{ fontSize: 40 }} />
 
                             <Box>
@@ -80,10 +79,10 @@ const StaffDetailsPage = () => {
 
                         <Divider sx={{ mb: 3 }} />
 
-                        <Grid container spacing={3}>
+                        <Stack direction={{ xs: 'column', md: 'row' }} spacing={3}>
 
                             {/* 1. User Info */}
-                            <Grid item xs={12} md={4}>
+                            <Box sx={{ flex: 1 }}>
                                 <Card variant="outlined" sx={{ height: '100%' }}>
                                     <CardContent>
                                         <Typography variant="h6" sx={{ mb: 3 }} color="primary">
@@ -91,21 +90,28 @@ const StaffDetailsPage = () => {
                                         </Typography>
 
                                         <Stack spacing={2.5}>
-                                            <Stack direction="row" spacing={1.5} alignItems="center">
+                                            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                                                 <Badge color="action" />
                                                 <Typography>
                                                     Staff ID: {staff.id}
                                                 </Typography>
                                             </Stack>
 
-                                            <Stack direction="row" spacing={1.5} alignItems="center">
+                                            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+                                                <Badge color="action" />
+                                                <Typography>
+                                                    User ID: {staff.user?.id}
+                                                </Typography>
+                                            </Stack>
+
+                                            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                                                 <Person color="action" />
                                                 <Typography>
                                                     Username: @{staff.user?.username}
                                                 </Typography>
                                             </Stack>
 
-                                            <Stack direction="row" spacing={1.5} alignItems="center">
+                                            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                                                 <Email color="action" />
                                                 <Typography>
                                                     Email: {staff.user?.email}
@@ -114,10 +120,10 @@ const StaffDetailsPage = () => {
                                         </Stack>
                                     </CardContent>
                                 </Card>
-                            </Grid>
+                            </Box>
 
                             {/* 2. Department Info */}
-                            <Grid item xs={12} md={4}>
+                            <Box sx={{ flex: 1 }}>
                                 <Card variant="outlined" sx={{ height: '100%' }}>
                                     <CardContent>
                                         <Typography variant="h6" sx={{ mb: 3 }} color="primary">
@@ -126,21 +132,21 @@ const StaffDetailsPage = () => {
 
                                         {staff.department ? (
                                             <Stack spacing={2.5}>
-                                                <Stack direction="row" spacing={1.5} alignItems="center">
+                                                <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                                                     <Badge color="action" />
                                                     <Typography>
                                                         Dep ID: {staff.department.id}
                                                     </Typography>
                                                 </Stack>
 
-                                                <Stack direction="row" spacing={1.5} alignItems="center">
+                                                <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                                                     <Business color="action" />
                                                     <Typography>
                                                         Name: {staff.department.name}
                                                     </Typography>
                                                 </Stack>
 
-                                                <Stack direction="row" spacing={1.5} alignItems="flex-start">
+                                                <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start' }}>
                                                     <Description color="action" sx={{ mt: 0.5 }} />
                                                     <Typography variant="body2">
                                                         {staff.department.description || "No description provided"}
@@ -154,10 +160,10 @@ const StaffDetailsPage = () => {
                                         )}
                                     </CardContent>
                                 </Card>
-                            </Grid>
+                            </Box>
 
                             {/* 3. Municipality Info */}
-                            <Grid item xs={12} md={4}>
+                            <Box sx={{ flex: 1 }}>
                                 <Card variant="outlined" sx={{ height: '100%' }}>
                                     <CardContent>
                                         <Typography variant="h6" sx={{ mb: 3 }} color="primary">
@@ -166,21 +172,21 @@ const StaffDetailsPage = () => {
 
                                         {staff.municipality ? (
                                             <Stack spacing={2.5}>
-                                                <Stack direction="row" spacing={1.5} alignItems="center">
+                                                <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                                                     <Badge color="action" />
                                                     <Typography>
                                                         Mun ID: {staff.municipality.id}
                                                     </Typography>
                                                 </Stack>
 
-                                                <Stack direction="row" spacing={1.5} alignItems="center">
+                                                <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                                                     <LocationCity color="action" />
                                                     <Typography>
                                                         Name: {staff.municipality.name}
                                                     </Typography>
                                                 </Stack>
 
-                                                <Stack direction="row" spacing={1.5} alignItems="center">
+                                                <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
                                                     <Code color="action" />
                                                     <Typography>
                                                         Code: {staff.municipality.code}
@@ -194,11 +200,10 @@ const StaffDetailsPage = () => {
                                         )}
                                     </CardContent>
                                 </Card>
-                            </Grid>
+                            </Box>
 
-                        </Grid>
-                    </Grid>
-                </Grid>
+                        </Stack>
+                </Box>
             </Paper>
         </Box>
     );

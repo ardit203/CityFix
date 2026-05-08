@@ -3,6 +3,7 @@ import {useNavigate, useParams} from "react-router";
 import {Box, Typography} from "@mui/material";
 import AsyncDataView from "../../../../common/ui/components/AsyncDataView.jsx";
 import ActionBar from "../../../../common/ui/components/ActionBar.jsx";
+import { mapDisplayToFormMunicipalityDto } from "../../../dtos/municipalityDto.js";
 import MunicipalityForm from "../../components/municipality/MunicipalityForm.jsx";
 import useMunicipalityActions from "../../../hooks/municipality/useMunicipalityActions.js";
 import useMunicipalityDetails from "../../../hooks/municipality/useMunicipalityDetails.js";
@@ -48,7 +49,7 @@ const MunicipalityEditPage = () => {
             </Typography>
 
             <MunicipalityForm
-                initialValues={municipality}
+                initialValues={mapDisplayToFormMunicipalityDto(municipality)}
                 submitLabel="Update Municipality"
                 onSubmit={handleUpdate}
             />

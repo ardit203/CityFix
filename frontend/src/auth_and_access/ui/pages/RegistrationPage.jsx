@@ -17,27 +17,12 @@ import { useNavigate } from "react-router";
 import useForm from "../../../common/hooks/useForm.js";
 import useRegister from "../../hooks/auth/useRegister.js";
 
-const initialFormData = {
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    name: "",
-    surname: "",
-    dateOfBirth: "",
-    gender: "",
-    phoneNumber: "",
-    address: {
-        street: "",
-        city: "",
-        postalCode: ""
-    }
-};
+import { emptyRegisterDto } from "../../dtos/authDto.js";
 
 const RegisterPage = () => {
     const navigate = useNavigate();
 
-    const { formData, handleChange, handleSubmit } = useForm(initialFormData);
+    const { formData, handleChange, handleSubmit } = useForm(emptyRegisterDto);
     const [validationErrors, setValidationErrors] = useState({});
 
     const { register, loading, error: apiError } = useRegister();

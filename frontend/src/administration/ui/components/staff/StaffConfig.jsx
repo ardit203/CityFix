@@ -1,19 +1,6 @@
-export const initialStaffFilters = {
-    page: 0,
-    size: 10,
-    sortBy: "id",
-    sortDir: "asc",
-    id: "",
-    userId:"",
-    departmentId:"",
-    municipalityId: "",
-    username:"",
-    municipalityCode:"",
-    municipalityName:"",
-};
-
 export const staffColumns = [
     {id: 'id', label: 'ID'},
+    {id: 'userId', label: 'User ID'},
     {id: 'name', label: 'Name'},
     {id: 'surname', label: 'Surname'},
     {id: 'username', label: 'Username'},
@@ -24,6 +11,7 @@ export const staffColumns = [
 
 export const staffSortOptions = [
     {value: 'id', label: 'ID'},
+
     {value: 'name', label: 'Name'},
     {value: 'username', label: 'Username'},
     {value: 'departmentName', label: 'Department'},

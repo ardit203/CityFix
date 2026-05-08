@@ -1,50 +1,52 @@
 import axiosInstance from "../../common/axios/axios.js";
+import { 
+    mapToCreateCategoryDto, 
+    mapToDisplayCategoryDto, 
+    mapCategoryPageableList 
+} from "../dtos/categoryDto.js";
 
 const categoryService = {
     findAll: async () => {
-        return await axiosInstance.get("/categories");
+        const response = await axiosInstance.get("/categories");
+        response.data = mapCategoryPageableList(response.data);
+        return response;
     },
 
-    findAllPaged: async ({
-                             page = 0,
-                             size = 10,
-                             sortBy = "id",
-                             sortDir = "asc",
-                             id = null,
-                             text = null,
-                             departmentId = null
-                         }) => {
-        return await axiosInstance.get("/categories/paged", {
-            params: {
-                page,
-                size,
-                sortBy,
-                sortDir,
-                id,
-                text,
-                departmentId
-            }
+    findAllPaged: async (filters) => {
+        const response = await axiosInstance.get("/categories/paged", {
+            params: filters
         });
+        // Map the content array while preserving pagination info
+        response.data.content = mapCategoryPageableList(response.data.content);
+        return response;
     },
 
     findById: async (id) => {
-        return await axiosInstance.get(`/categories/${id}`);
+        const response = await axiosInstance.get(`/categories/${id}`);
+        response.data = mapToDisplayCategoryDto(response.data);
+        return response;
     },
 
     findByName: async (name) => {
-        return await axiosInstance.get(`/categories/by-name/${name}`);
+        const response = await axiosInstance.get(`/categories/by-name/${name}`);
+        response.data = mapToDisplayCategoryDto(response.data);
+        return response;
     },
 
     findByDepartmentId: async (departmentId) => {
-        return await axiosInstance.get(`/categories/by-department/${departmentId}`);
+        const response = await axiosInstance.get(`/categories/by-department/${departmentId}`);
+        response.data = mapCategoryPageableList(response.data);
+        return response;
     },
 
     create: async (data) => {
-        return await axiosInstance.post("/categories", data);
+        const safeData = mapToCreateCategoryDto(data);
+        return await axiosInstance.post("/categories", safeData);
     },
 
     update: async (id, data) => {
-        return await axiosInstance.put(`/categories/${id}`, data);
+        const safeData = mapToCreateCategoryDto(data);
+        return await axiosInstance.put(`/categories/${id}`, safeData);
     },
 
     deleteById: async (id) => {

@@ -5,6 +5,7 @@ import finki.ukim.backend.auth_and_access.model.enums.Role;
 
 public record DisplayStaffPageableDto(
         Long id,
+        Long userId,
         String name,
         String surname,
         String username,
@@ -17,6 +18,7 @@ public record DisplayStaffPageableDto(
     public static DisplayStaffPageableDto from(StaffPageableProjection projection) {
         return new DisplayStaffPageableDto(
                 projection.getId(),
+                projection.getUserId(),
                 projection.getName(),
                 projection.getSurname(),
                 projection.getUsername(),

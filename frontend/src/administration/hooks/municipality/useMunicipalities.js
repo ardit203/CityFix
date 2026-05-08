@@ -2,7 +2,7 @@ import {useCallback, useEffect, useState} from "react";
 import usePaginationState from "../../../common/hooks/usePaginationState.js";
 import useAsyncState from "../../../common/hooks/useAsyncState.js";
 import municipalityService from "../../service/municipalityService.js";
-import {cleanObject} from "../../../common/utils/objectUtils.js";
+import { mapToCleanQueryParams } from "../../../common/dtos/filterDto.js";
 
 
 const useMunicipalities = ({paged = true, fetchOnMount = true} = {}) => {
@@ -13,7 +13,8 @@ const useMunicipalities = ({paged = true, fetchOnMount = true} = {}) => {
     const fetchMunicipalitiesPaged = useCallback(async (filters = {}) => {
         startAsync();
         try {
-            const response = await municipalityService.findAllPaged(cleanObject(filters));
+            const safeFilters = mapToCleanQueryParams(filters);
+            const response = await municipalityService.findAllPaged(safeFilters);
             setMunicipalities(response.data.content);
             updatePagination(response.data);
         } catch (error) {

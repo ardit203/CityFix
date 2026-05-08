@@ -1,58 +1,62 @@
 import axiosInstance from "../../common/axios/axios.js";
+import {
+    mapToCreateStaffDto,
+    mapToDisplayStaffDto,
+    mapStaffPageableList,
+    mapToDisplayBasicStaffDto
+} from "../dtos/staffDto.js";
 
 const staffService = {
     findAll: async () => {
-        return await axiosInstance.get("/staff");
+        const response = await axiosInstance.get("/staff");
+        if (Array.isArray(response.data)) {
+            response.data = response.data.map(mapToDisplayBasicStaffDto);
+        }
+        return response;
     },
 
-    findAllPaged: async ({
-                             page = 0,
-                             size = 10,
-                             sortBy = "id",
-                             sortDir = 'asc',
-                             id = null,
-                             userId = null,
-                             departmentId = null,
-                             municipalityId = null,
-                             username = null,
-                             municipalityCode = null,
-                             municipalityName = null
-                         }) => {
-        return await axiosInstance.get("/staff/paged", {
-            params: {
-                page,
-                size,
-                sortBy,
-                sortDir,
-                id,
-                userId,
-                departmentId,
-                municipalityId,
-                username,
-                municipalityCode,
-                municipalityName
-            }
+    findAllPaged: async (filters) => {
+        const response = await axiosInstance.get("/staff/paged", {
+            params: filters
         });
+        response.data.content = mapStaffPageableList(response.data.content);
+        return response;
     },
 
     findAllDetailed: async () => {
-        return await axiosInstance.get("/staff/detailed");
+        const response = await axiosInstance.get("/staff/detailed");
+        if (Array.isArray(response.data)) {
+            response.data = response.data.map(mapToDisplayStaffDto);
+        }
+        return response;
     },
 
     findById: async (id) => {
-        return await axiosInstance.get(`/staff/${id}`);
+        const response = await axiosInstance.get(`/staff/${id}`);
+        response.data = mapToDisplayStaffDto(response.data);
+        return response;
     },
 
     findByUserId: async (userId) => {
-        return await axiosInstance.get(`/staff/by-user/${userId}`);
+        const response = await axiosInstance.get(`/staff/by-user/${userId}`);
+        response.data = mapToDisplayStaffDto(response.data);
+        return response;
     },
 
     findByDepartmentId: async (departmentId) => {
-        return await axiosInstance.get(`/staff/by-department/${departmentId}`);
+        const response = await axiosInstance.get(`/staff/by-department/${departmentId}`);
+        if (Array.isArray(response.data)) {
+            response.data = response.data.map(mapToDisplayBasicStaffDto);
+        }
+        return response;
     },
 
     findByMunicipalityId: async (municipalityId) => {
-        return await axiosInstance.get(`/staff/by-municipality/${municipalityId}`);
+        const response = await axiosInstance.get(`/staff/by-municipality/${municipalityId}`);
+        if (Array.isArray(response.data)) {
+            response.data = response.data.map(mapToDisplayBasicStaffDto);
+        }
+        return response;
     },
 
     findUsersAvailableForStaff: async () => {
@@ -60,11 +64,13 @@ const staffService = {
     },
 
     create: async (data) => {
-        return await axiosInstance.post("/staff", data);
+        const safeData = mapToCreateStaffDto(data);
+        return await axiosInstance.post("/staff", safeData);
     },
 
     update: async (id, data) => {
-        return await axiosInstance.put(`/staff/${id}`, data);
+        const safeData = mapToCreateStaffDto(data);
+        return await axiosInstance.put(`/staff/${id}`, safeData);
     },
 
     deleteById: async (id) => {

@@ -1,12 +1,3 @@
-export const initialMunicipalityFilters = {
-    page: 0,
-    size: 10,
-    sortBy: "id",
-    sortDir: "asc",
-    id: "",
-    code: "",
-    name: ""
-};
 
 export const municipalityColumns = [
     {id: 'id', label: 'ID'},

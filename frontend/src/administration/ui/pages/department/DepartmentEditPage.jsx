@@ -7,6 +7,7 @@ import useDepartmentActions from "../../../hooks/department/useDepartmentActions
 import AsyncDataView from "../../../../common/ui/components/AsyncDataView.jsx";
 import useDepartmentDetails from "../../../hooks/department/useDepartmentsDetails.js";
 import ActionBar from "../../../../common/ui/components/ActionBar.jsx";
+import { mapDisplayToFormDepartmentDto } from "../../../dtos/departmentDto.js";
 
 
 const DepartmentEditPage = () => {
@@ -49,7 +50,7 @@ const DepartmentEditPage = () => {
             </Typography>
 
             <DepartmentForm
-                initialValues={department}
+                initialValues={mapDisplayToFormDepartmentDto(department)}
                 submitLabel="Update Department"
                 onSubmit={handleUpdate}
             />

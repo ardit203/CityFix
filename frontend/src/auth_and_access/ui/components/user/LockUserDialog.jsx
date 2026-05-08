@@ -41,8 +41,8 @@ const LockUserDialog = ({ open, onClose, onSubmit}) => {
                     value={lockedUntil}
                     onChange={(e) => setLockedUntil(e.target.value)}
                     fullWidth
-                    InputLabelProps={{
-                        shrink: true
+                    slotProps={{
+                        inputLabel: { shrink: true }
                     }}
                 />
             </DialogContent>

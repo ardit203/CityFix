@@ -7,6 +7,7 @@ import ActionBar from "../../../../common/ui/components/ActionBar.jsx";
 import useCategoryDetails from "../../../hooks/category/useCategoryDetails.js";
 import useCategoryActions from "../../../hooks/category/useCategoryActions.js";
 import CategoryForm from "../../components/category/CategoryForm.jsx";
+import { mapDisplayToFormCategoryDto } from "../../../dtos/categoryDto.js";
 
 
 const CategoryEditPage = () => {
@@ -49,7 +50,7 @@ const CategoryEditPage = () => {
             </Typography>
 
             <CategoryForm
-                initialValues={category}
+                initialValues={mapDisplayToFormCategoryDto(category)}
                 submitLabel="Update category"
                 onSubmit={handleUpdate}
             />

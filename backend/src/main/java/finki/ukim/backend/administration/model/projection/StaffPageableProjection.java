@@ -5,6 +5,8 @@ import finki.ukim.backend.auth_and_access.model.enums.Role;
 public interface StaffPageableProjection {
     Long getId();
 
+    Long getUserId();
+
     String getName();
 
     String getSurname();

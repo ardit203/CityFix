@@ -4,14 +4,10 @@ import useProfileActions from "../../../hooks/profile/useProflieActions.js";
 
 
 
-const initialFormData = {
-    currentPassword: "",
-    newPassword: "",
-    confirmNewPassword: ""
-};
+import { emptyChangePasswordDto } from "../../../dtos/authDto.js";
 
 const ChangePasswordForm = () => {
-    const [formData, setFormData] = useState(initialFormData);
+    const [formData, setFormData] = useState(emptyChangePasswordDto);
     const { changeMyPassword } = useProfileActions();
 
     const handleChange = (event) => {
@@ -23,7 +19,7 @@ const ChangePasswordForm = () => {
         event.preventDefault();
         const success = await changeMyPassword(formData);
         if (success) {
-            setFormData(initialFormData);
+            setFormData(emptyChangePasswordDto);
         }
     };
 

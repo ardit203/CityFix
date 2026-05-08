@@ -1,13 +1,5 @@
 import {renderTruncatedText} from "../../../../common/utils/tableFormatters.jsx";
 
-export const initialDepartmentFilters = {
-    page: 0,
-    size: 10,
-    sortBy: "id",
-    sortDir: "asc",
-    id: "",
-    text: ""
-};
 
 export const departmentColumns = [
     {id: 'id', label: 'ID'},

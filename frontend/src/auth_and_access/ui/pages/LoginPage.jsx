@@ -12,14 +12,11 @@ import { useNavigate } from "react-router";
 import useForm from "../../../common/hooks/useForm.js";
 import useLogin from "../../hooks/auth/useLogin.js";
 
-const initialFormData = {
-    username: "",
-    password: "",
-};
+import { emptyLoginDto } from "../../dtos/authDto.js";
 
 const LoginPage = () => {
     const navigate = useNavigate();
-    const { formData, handleChange, handleSubmit } = useForm(initialFormData);
+    const { formData, handleChange, handleSubmit } = useForm(emptyLoginDto);
     const [validationErrors, setValidationErrors] = useState({});
     const { login, loading, error: apiError } = useLogin();
 

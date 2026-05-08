@@ -5,34 +5,16 @@ import useProfileActions from "../../../hooks/profile/useProflieActions.js";
 
 
 
+import { emptyUpdateMyProfileDto } from "../../../dtos/authDto.js";
+
 const ProfileForm = ({ user, onSuccess }) => {
-    const { formData, handleChange, resetForm } = useForm({
-        name: "",
-        surname: "",
-        phoneNumber: "",
-        dateOfBirth: "",
-        gender: "",
-        address: { street: "", city: "", postalCode: "" }
-    });
+    const { formData, handleChange, resetForm } = useForm(emptyUpdateMyProfileDto);
 
     const { updateMyProfile } = useProfileActions();
 
     useEffect(() => {
-        if (user) {
-            const profile = user.profile;
-            const address = profile?.address;
-            resetForm({
-                name: profile?.name || "",
-                surname: profile?.surname || "",
-                phoneNumber: profile?.phoneNumber || "",
-                dateOfBirth: profile?.dateOfBirth || "",
-                gender: profile?.gender || "",
-                address: {
-                    street: address?.street || "",
-                    city: address?.city || "",
-                    postalCode: address?.postalCode || ""
-                }
-            });
+        if (user && user.profile) {
+            resetForm(user.profile);
         }
     }, [user, resetForm]);
 

@@ -13,17 +13,14 @@ import { useNavigate, useSearchParams } from "react-router";
 import useForm from "../../../common/hooks/useForm.js";
 import usePasswordReset from "../../hooks/auth/usePasswordReset.js";
 
-const initialFormData = {
-    newPassword: "",
-    confirmPassword: ""
-};
+import { emptyResetPasswordDto } from "../../dtos/authDto.js";
 
 const ResetPasswordPage = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const token = searchParams.get("token");
 
-    const { formData, handleChange, handleSubmit } = useForm(initialFormData);
+    const { formData, handleChange, handleSubmit } = useForm(emptyResetPasswordDto);
     const [validationErrors, setValidationErrors] = useState({});
 
     // Pulling in the custom hook

@@ -15,7 +15,11 @@ const ChangeUserRoleDialog = ({ open, onClose, user, onSubmit}) => {
 
     useEffect(() => {
         if (user) {
-            setSelectedRole(user.role || "");
+            let initialRole = user.role || "";
+            if (initialRole && !initialRole.startsWith("ROLE_")) {
+                initialRole = "ROLE_" + initialRole;
+            }
+            setSelectedRole(initialRole);
         }
     }, [user]);
 
@@ -57,7 +61,7 @@ const ChangeUserRoleDialog = ({ open, onClose, user, onSubmit}) => {
                 <Button
                     variant="contained"
                     onClick={handleSubmit}
-                    disabled={!selectedRole || selectedRole === user?.role}
+                    disabled={!selectedRole || selectedRole.replace("ROLE_", "") === user?.role}
                 >
                     Change Role
                 </Button>

@@ -3,10 +3,10 @@ import {Box, MenuItem, TextField} from "@mui/material";
 import {useNavigate} from "react-router";
 
 import {
-    initialUserFilters,
     userColumns,
     userSortOptions
 } from "../components/user/UserConfig.jsx";
+import { emptyUserFilter } from "../../dtos/filterDto.js";
 import useUsers from "../../hooks/user/useUsers.js";
 import useUserActions from "../../hooks/user/useUserActions.js";
 import useFilters from "../../../common/hooks/useFilters.js";
@@ -31,7 +31,7 @@ const UsersPage = () => {
         handlePageChange,
         handleSizeChange,
         handleSortChange
-    } = useFilters(initialUserFilters, fetchUsersPaged);
+    } = useFilters(emptyUserFilter, fetchUsersPaged);
 
     const handleViewChange = (event, nextView) => {
         if (nextView !== null) {

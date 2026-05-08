@@ -54,6 +54,9 @@ const StaffCard = ({ staff, onDelete }) => {
                         <Typography variant="body2" color="text.secondary" noWrap>
                             @{staff.username}
                         </Typography>
+                        <Typography variant="body2" color="text.secondary" noWrap>
+                            {staff.role.replace("ROLE_","")}
+                        </Typography>
                     </Box>
                 </Stack>
 

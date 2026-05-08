@@ -156,7 +156,7 @@ const ProfilePage = () => {
                                                 <Badge color="action" />
                                                 <Box>
                                                     <Typography variant="caption" color="text.secondary">Role</Typography>
-                                                    <Typography variant="body1">{user.role}</Typography>
+                                                    <Typography variant="body1">{user.role.replace("ROLE_", "")}</Typography>
                                                 </Box>
                                             </Stack>
                                         </Stack>

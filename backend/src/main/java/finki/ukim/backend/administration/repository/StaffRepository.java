@@ -71,6 +71,7 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
 
     @Query("""
             select s.id as id,
+                   u.id as userId,
                    p.name as name,
                    p.surname as surname,
                    u.email as email,

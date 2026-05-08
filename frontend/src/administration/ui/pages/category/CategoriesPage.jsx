@@ -1,5 +1,14 @@
 import React, {useState} from 'react';
-import {Box, TextField} from "@mui/material";
+import {
+    Box,
+    CircularProgress,
+    FormControl,
+    FormHelperText,
+    InputLabel,
+    MenuItem,
+    Select,
+    TextField
+} from "@mui/material";
 import {useNavigate} from "react-router";
 import useFilters from "../../../../common/hooks/useFilters.js";
 import FilterBar from "../../../../common/ui/components/FilterBar.jsx";
@@ -8,17 +17,19 @@ import AdminTable from "../../../../common/ui/components/AdminTable.jsx";
 import PaginatedDataView from "../../../../common/ui/components/PaginatedDataView.jsx";
 import SortControls from "../../../../common/ui/components/SortControls.jsx";
 import {
-    initialCategoryFilters,
     categoryColumns,
     categorySortOptions
 } from "../../components/category/CategoryConfig.jsx";
+import { emptyCategoryFilter } from "../../../dtos/filterDto.js";
 import useCategories from "../../../hooks/category/useCategories.js";
 import useCategoryActions from "../../../hooks/category/useCategoryActions.js";
 import CategoryGrid from "../../components/category/CategoryGrid.jsx";
+import useDepartments from "../../../hooks/department/useDepartments.js";
 
 const CategoriesPage = () => {
     const navigate = useNavigate();
     const {categories, loading, pagination, fetchCategoriesPaged} = useCategories();
+    const { departments, loading: loadingDepartments } = useDepartments({ paged: false });
     const {deleteCategory} = useCategoryActions();
     const [viewMode, setViewMode] = useState('table');
 
@@ -30,7 +41,7 @@ const CategoriesPage = () => {
         handlePageChange,
         handleSizeChange,
         handleSortChange
-    } = useFilters(initialCategoryFilters, fetchCategoriesPaged);
+    } = useFilters(emptyCategoryFilter, fetchCategoriesPaged);
 
     const handleViewChange = (event, nextView) => {
         if (nextView !== null) {
@@ -50,6 +61,37 @@ const CategoriesPage = () => {
             >
                 <TextField label="ID" name="id" value={filters.id} onChange={handleFilterChange} size="small"/>
                 <TextField label="Search" name="text" value={filters.text} onChange={handleFilterChange} size="small"/>
+                <FormControl size="small" sx={{ minWidth: 140 }}>
+                    <InputLabel>Department</InputLabel>
+                    <Select
+                        name="departmentId"
+                        value={filters.departmentId}
+                        label="Department"
+                        onChange={handleFilterChange}
+                        disabled={loadingDepartments}
+                    >
+                        {/* 1. Put the default empty option OUTSIDE the conditional logic */}
+                        <MenuItem value="">
+                            <em>All Departments</em>
+                        </MenuItem>
+                        {/* 2. Then do your conditional mapping without Fragments */}
+                        {loadingDepartments ? (
+                            <MenuItem disabled value="loading">
+                                <CircularProgress size={20} sx={{ mr: 2 }} /> Loading...
+                            </MenuItem>
+                        ) : departments.length === 0 ? (
+                            <MenuItem disabled value="empty">
+                                No departments available
+                            </MenuItem>
+                        ) : (
+                            departments.map((dep) => (
+                                <MenuItem key={dep.id} value={dep.id}>
+                                    {dep.name}
+                                </MenuItem>
+                            ))
+                        )}
+                    </Select>
+                </FormControl>
                 <SortControls
                     sortByValue={filters.sortBy}
                     sortDirValue={filters.sortDir}

@@ -11,10 +11,10 @@ import useDepartmentActions from "../../../hooks/department/useDepartmentActions
 import PaginatedDataView from "../../../../common/ui/components/PaginatedDataView.jsx";
 import SortControls from "../../../../common/ui/components/SortControls.jsx";
 import {
-    initialDepartmentFilters,
     departmentColumns,
     departmentSortOptions
 } from "../../components/department/DepartmentConfig.jsx";
+import { emptyDepartmentFilter } from "../../../dtos/filterDto.js";
 
 const DepartmentsPage = () => {
     const navigate = useNavigate();
@@ -30,7 +30,7 @@ const DepartmentsPage = () => {
         handlePageChange,
         handleSizeChange,
         handleSortChange
-    } = useFilters(initialDepartmentFilters, fetchDepartmentsPaged);
+    } = useFilters(emptyDepartmentFilter, fetchDepartmentsPaged);
 
     const handleViewChange = (event, nextView) => {
         if (nextView !== null) {

@@ -15,34 +15,19 @@ import {
 
 import useForm from "../../../../common/hooks/useForm.js";
 
-const emptyUser = {
-    username: "",
-    email: "",
-    notificationsEnabled: true,
-    profile: {
-        name: "",
-        surname: "",
-        phoneNumber: "",
-        dateOfBirth: "",
-        gender: "",
-        address: {
-            street: "",
-            city: "",
-            postalCode: ""
-        }
-    }
-};
+import { emptyAdminUpdateUserDto } from "../../../dtos/userDto.js";
 
 const UserForm = ({
-    initialValues = emptyUser,
+    initialValues = emptyAdminUpdateUserDto,
     submitLabel = "Save",
     onSubmit
 }) => {
-    const { formData, handleChange, resetForm, handleSubmit } = useForm(emptyUser);
+    const { formData, handleChange, resetForm, handleSubmit } = useForm(emptyAdminUpdateUserDto);
     const [validationErrors, setValidationErrors] = useState({});
 
     useEffect(() => {
         if (initialValues) {
+            console.log("Initial User Form Values", initialValues)
             resetForm(initialValues);
         }
     }, [initialValues, resetForm]);
@@ -62,10 +47,10 @@ const UserForm = ({
 
     return (
         <Box component="form" onSubmit={(event) => handleSubmit(event, validate, onSubmit)}>
-            <Grid container spacing={3}>
+            <Stack direction={{ xs: 'column', md: 'row' }} spacing={3}>
                 
                 {/* --- Account Information --- */}
-                <Grid item xs={12} md={6}>
+                <Box sx={{ flex: 1 }}>
                     <Card variant="outlined">
                         <CardContent>
                             <Typography variant="subtitle1" sx={{ mb: 2 }} color="primary">
@@ -98,10 +83,10 @@ const UserForm = ({
                             </Stack>
                         </CardContent>
                     </Card>
-                </Grid>
+                </Box>
 
                 {/* --- Personal Details --- */}
-                <Grid item xs={12} md={6}>
+                <Box sx={{ flex: 1 }}>
                     <Card variant="outlined">
                         <CardContent>
                             <Typography variant="subtitle1" sx={{ mb: 2 }} color="primary">
@@ -110,28 +95,28 @@ const UserForm = ({
                             <Stack spacing={2.5}>
                                 <Stack direction="row" spacing={2}>
                                     <TextField
-                                        label="First Name" name="profile.name"
-                                        value={formData.profile?.name || ""} onChange={handleChange}
+                                        label="First Name" name="name"
+                                        value={formData.name || ""} onChange={handleChange}
                                         error={!!validationErrors.name} helperText={validationErrors.name}
                                         fullWidth required
                                     />
                                     <TextField
-                                        label="Last Name" name="profile.surname"
-                                        value={formData.profile?.surname || ""} onChange={handleChange}
+                                        label="Last Name" name="surname"
+                                        value={formData.surname || ""} onChange={handleChange}
                                         error={!!validationErrors.surname} helperText={validationErrors.surname}
                                         fullWidth required
                                     />
                                 </Stack>
                                 <Stack direction="row" spacing={2}>
                                     <TextField
-                                        label="Date of Birth" name="profile.dateOfBirth" type="date"
-                                        value={formData.profile?.dateOfBirth || ""} onChange={handleChange}
-                                        InputLabelProps={{ shrink: true }}
+                                        label="Date of Birth" name="dateOfBirth" type="date"
+                                        value={formData.dateOfBirth || ""} onChange={handleChange}
+                                        slotProps={{ inputLabel: { shrink: true } }}
                                         fullWidth
                                     />
                                     <TextField
-                                        select label="Gender" name="profile.gender"
-                                        value={formData.profile?.gender || ""} onChange={handleChange}
+                                        select label="Gender" name="gender"
+                                        value={formData.gender || ""} onChange={handleChange}
                                         fullWidth
                                     >
                                         <MenuItem value="">Not selected</MenuItem>
@@ -141,17 +126,18 @@ const UserForm = ({
                                     </TextField>
                                 </Stack>
                                 <TextField
-                                    label="Phone Number" name="profile.phoneNumber"
-                                    value={formData.profile?.phoneNumber || ""} onChange={handleChange}
+                                    label="Phone Number" name="phoneNumber"
+                                    value={formData.phoneNumber || ""} onChange={handleChange}
                                     fullWidth
                                 />
                             </Stack>
                         </CardContent>
                     </Card>
-                </Grid>
+                </Box>
+            </Stack>
 
-                {/* --- Address Information --- */}
-                <Grid item xs={12}>
+            {/* --- Address Information --- */}
+            <Box sx={{ mt: 3 }}>
                     <Card variant="outlined">
                         <CardContent>
                             <Typography variant="subtitle1" sx={{ mb: 2 }} color="primary">
@@ -159,25 +145,24 @@ const UserForm = ({
                             </Typography>
                             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                                 <TextField
-                                    label="Street Address" name="profile.address.street"
-                                    value={formData.profile?.address?.street || ""} onChange={handleChange}
+                                    label="Street Address" name="address.street"
+                                    value={formData.address?.street || ""} onChange={handleChange}
                                     fullWidth
                                 />
                                 <TextField
-                                    label="City" name="profile.address.city"
-                                    value={formData.profile?.address?.city || ""} onChange={handleChange}
+                                    label="City" name="address.city"
+                                    value={formData.address?.city || ""} onChange={handleChange}
                                     fullWidth
                                 />
                                 <TextField
-                                    label="Postal Code" name="profile.address.postalCode"
-                                    value={formData.profile?.address?.postalCode || ""} onChange={handleChange}
+                                    label="Postal Code" name="address.postalCode"
+                                    value={formData.address?.postalCode || ""} onChange={handleChange}
                                     sx={{ width: { sm: '200px' } }}
                                 />
                             </Stack>
                         </CardContent>
                     </Card>
-                </Grid>
-            </Grid>
+            </Box>
 
             {/* Standard Submit Button at the bottom */}
             <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>

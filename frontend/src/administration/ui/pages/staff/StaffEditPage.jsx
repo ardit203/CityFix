@@ -7,6 +7,7 @@ import ActionBar from "../../../../common/ui/components/ActionBar.jsx";
 import useStaffDetails from "../../../hooks/staff/useStaffDetails.js";
 import useStaffActions from "../../../hooks/staff/useStaffActions.js";
 import StaffForm from "../../components/staff/StaffForm.jsx";
+import { mapDisplayToFormStaffDto } from "../../../dtos/staffDto.js";
 
 
 const StaffEditPage = () => {
@@ -49,7 +50,7 @@ const StaffEditPage = () => {
             </Typography>
 
             <StaffForm
-                initialValues={staff}
+                initialValues={mapDisplayToFormStaffDto(staff)}
                 submitLabel="Update category"
                 onSubmit={handleUpdate}
             />
