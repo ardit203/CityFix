@@ -5,6 +5,7 @@ import finki.ukim.backend.administration.model.dto.CreateCategoryDto;
 import finki.ukim.backend.administration.model.dto.DisplayBasicCategoryDto;
 import finki.ukim.backend.administration.model.dto.DisplayCategoryDto;
 import finki.ukim.backend.administration.model.dto.DisplayCategoryPageableDto;
+import finki.ukim.backend.administration.model.dto.filters.CategoryFilterDto;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -25,5 +26,5 @@ public interface CategoryApplicationService {
 
     DisplayBasicCategoryDto deleteById(Long id);
 
-    Page<DisplayCategoryPageableDto> findAll(int page, int size, String sortBy, Long id, String text, Long departmentId);
+    Page<DisplayCategoryPageableDto> findAll(CategoryFilterDto categoryFilterDto);
 }

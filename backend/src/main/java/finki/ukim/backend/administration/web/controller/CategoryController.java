@@ -4,6 +4,7 @@ import finki.ukim.backend.administration.model.dto.CreateCategoryDto;
 import finki.ukim.backend.administration.model.dto.DisplayBasicCategoryDto;
 import finki.ukim.backend.administration.model.dto.DisplayCategoryDto;
 import finki.ukim.backend.administration.model.dto.DisplayCategoryPageableDto;
+import finki.ukim.backend.administration.model.dto.filters.CategoryFilterDto;
 import finki.ukim.backend.administration.service.application.CategoryApplicationService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,21 +29,11 @@ public class CategoryController {
 
     @GetMapping("/paged")
     public ResponseEntity<Page<DisplayCategoryPageableDto>> findAll(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(required = false) Long id,
-            @RequestParam(required = false) String text,
-            @RequestParam(required = false) Long departmentId
-    ) {
+            @ModelAttribute CategoryFilterDto categoryFilterDto
+            ) {
         return ResponseEntity.ok(
                 categoryApplicationService.findAll(
-                        page,
-                        size,
-                        sortBy,
-                        id,
-                        text,
-                        departmentId
+                        categoryFilterDto
                 )
         );
     }

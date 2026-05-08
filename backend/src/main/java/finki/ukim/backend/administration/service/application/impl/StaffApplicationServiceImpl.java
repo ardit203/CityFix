@@ -6,6 +6,7 @@ import finki.ukim.backend.administration.model.dto.CreateStaffDto;
 import finki.ukim.backend.administration.model.dto.DisplayBasicStaffDto;
 import finki.ukim.backend.administration.model.dto.DisplayStaffDto;
 import finki.ukim.backend.administration.model.dto.DisplayStaffPageableDto;
+import finki.ukim.backend.administration.model.dto.filters.StaffFilterDto;
 import finki.ukim.backend.administration.model.exception.DepartmentNotFoundException;
 import finki.ukim.backend.administration.service.application.StaffApplicationService;
 import finki.ukim.backend.administration.service.domain.DepartmentService;
@@ -48,19 +49,10 @@ public class StaffApplicationServiceImpl implements StaffApplicationService {
     @Override
     public Page<DisplayStaffPageableDto> findAll(
             User currentUser,
-            int page,
-            int size,
-            String sortBy,
-            Long id,
-            Long userId,
-            Long departmentId,
-            Long municipalityId,
-            String username,
-            String municipalityCode,
-            String municipalityName
+            StaffFilterDto staffFilterDto
     ) {
         return staffService
-                .findAll(currentUser, page, size, sortBy, id, userId, departmentId, municipalityId, username, municipalityCode, municipalityName)
+                .findAll(currentUser, staffFilterDto)
                 .map(DisplayStaffPageableDto::from);
     }
 

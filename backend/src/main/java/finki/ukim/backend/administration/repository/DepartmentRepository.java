@@ -17,10 +17,10 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
         select d from Department d
         where (:id is null or d.id = :id)
           and (
-              :text is null
-              or lower(d.name) like lower(concat('%', cast(:text as string), '%'))
-              or lower(d.description) like lower(concat('%', cast(:text as string), '%'))
-          )
+                :text = ''
+                or lower(d.name) like concat('%', :text, '%')
+                or lower(d.description) like concat('%', :text, '%')
+              )
         """)
     Page<Department> findFiltered(
             @Param("id") Long id,

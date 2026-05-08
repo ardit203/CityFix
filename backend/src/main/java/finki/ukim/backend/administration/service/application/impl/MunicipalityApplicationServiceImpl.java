@@ -2,6 +2,7 @@ package finki.ukim.backend.administration.service.application.impl;
 
 import finki.ukim.backend.administration.model.dto.CreateMunicipalityDto;
 import finki.ukim.backend.administration.model.dto.DisplayMunicipalityDto;
+import finki.ukim.backend.administration.model.dto.filters.MunicipalityFilterDto;
 import finki.ukim.backend.administration.service.application.MunicipalityApplicationService;
 import finki.ukim.backend.administration.service.domain.MunicipalityService;
 import lombok.AllArgsConstructor;
@@ -49,9 +50,9 @@ public class MunicipalityApplicationServiceImpl implements MunicipalityApplicati
     }
 
     @Override
-    public Page<DisplayMunicipalityDto> findAll(int page, int size, String sortBy, Long id, String code, String name) {
+    public Page<DisplayMunicipalityDto> findAll(MunicipalityFilterDto municipalityFilterDto) {
         return municipalityService
-                .findAll(page, size, sortBy, id, code, name)
+                .findAll(municipalityFilterDto)
                 .map(DisplayMunicipalityDto::from);
     }
 }

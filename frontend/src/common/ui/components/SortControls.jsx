@@ -3,7 +3,7 @@ import { FormControl, InputLabel, Select, MenuItem, Box } from "@mui/material";
 
 const SortControls = ({
                           sortByValue,
-                          // sortDirValue,
+                          sortDirValue,
                           onSortChange,
                           options = []
                       }) => {
@@ -25,18 +25,18 @@ const SortControls = ({
                 </Select>
             </FormControl>
 
-            {/*<FormControl size="small" sx={{ minWidth: 120 }}>*/}
-            {/*    <InputLabel>Order</InputLabel>*/}
-            {/*    <Select*/}
-            {/*        name="sortDir"*/}
-            {/*        value={sortDirValue || "asc"}*/}
-            {/*        label="Order"*/}
-            {/*        onChange={onSortChange}*/}
-            {/*    >*/}
-            {/*        <MenuItem value="asc">Ascending</MenuItem>*/}
-            {/*        <MenuItem value="desc">Descending</MenuItem>*/}
-            {/*    </Select>*/}
-            {/*</FormControl>*/}
+            <FormControl size="small" sx={{ minWidth: 120 }}>
+                <InputLabel>Order</InputLabel>
+                <Select
+                    name="sortDir"
+                    value={sortDirValue || "asc"}
+                    label="Order"
+                    onChange={onSortChange}
+                >
+                    <MenuItem value="asc">Ascending</MenuItem>
+                    <MenuItem value="desc">Descending</MenuItem>
+                </Select>
+            </FormControl>
         </Box>
     );
 };

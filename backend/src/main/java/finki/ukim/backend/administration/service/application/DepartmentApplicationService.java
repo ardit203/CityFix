@@ -2,6 +2,7 @@ package finki.ukim.backend.administration.service.application;
 
 import finki.ukim.backend.administration.model.dto.CreateDepartmentDto;
 import finki.ukim.backend.administration.model.dto.DisplayDepartmentDto;
+import finki.ukim.backend.administration.model.dto.filters.DepartmentFilterDto;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -21,5 +22,5 @@ public interface DepartmentApplicationService {
 
     DisplayDepartmentDto deleteById(Long id);
 
-    Page<DisplayDepartmentDto> findAll(int page, int size, String sortBy, Long id, String text);
+    Page<DisplayDepartmentDto> findAll(DepartmentFilterDto departmentFilterDto);
 }

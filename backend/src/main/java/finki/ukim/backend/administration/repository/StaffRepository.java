@@ -92,16 +92,16 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
           and (:departmentId is null or d.id = :departmentId)
           and (:municipalityId is null or m.id = :municipalityId)
           and (
-                cast(:username as string) is null
-                or lower(u.username) like lower(concat('%', cast(:username as string), '%'))
+                :username = ''
+                or lower(u.username) like concat('%', :username, '%')
               )
           and (
-                cast(:municipalityCode as string) is null
-                or lower(m.code) like lower(concat('%', cast(:municipalityCode as string), '%'))
+                :municipalityCode = ''
+                or lower(m.code) like concat('%', :municipalityCode, '%')
               )
           and (
-                cast(:municipalityName as string) is null
-                or lower(m.name) like lower(concat('%', cast(:municipalityName as string), '%'))
+                :municipalityName = ''
+                or lower(m.name) like concat('%', :municipalityName, '%')
               )
         """)
     Page<StaffPageableProjection> findFiltered(
@@ -154,4 +154,7 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
     Optional<Staff> findByUserIdWithDepartmentAndMunicipality(@Param("userId") Long userId);
 
     boolean existsByUser_Id(Long userId);
+
+    @Query("select s from Staff s where s.user.id = :userId")
+    Optional<Staff> findByUserIdLazy(@Param("userId") Long userId);
 }

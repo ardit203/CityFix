@@ -2,6 +2,7 @@ package finki.ukim.backend.administration.service.application;
 
 import finki.ukim.backend.administration.model.dto.CreateMunicipalityDto;
 import finki.ukim.backend.administration.model.dto.DisplayMunicipalityDto;
+import finki.ukim.backend.administration.model.dto.filters.MunicipalityFilterDto;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -21,5 +22,5 @@ public interface MunicipalityApplicationService {
 
     DisplayMunicipalityDto deleteById(Long id);
 
-    Page<DisplayMunicipalityDto> findAll(int page, int size, String sortBy, Long id, String code, String name);
+    Page<DisplayMunicipalityDto> findAll(MunicipalityFilterDto municipalityFilterDto);
 }

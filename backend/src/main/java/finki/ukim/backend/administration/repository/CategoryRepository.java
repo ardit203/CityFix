@@ -45,10 +45,10 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
         from Category c
         where (:id is null or c.id = :id)
           and (
-              cast(:text as string) is null
-              or lower(c.name) like lower(concat('%', cast(:text as string), '%'))
-              or lower(c.description) like lower(concat('%', cast(:text as string), '%'))
-          )
+                :text = ''
+                or lower(c.name) like concat('%', :text, '%')
+                or lower(c.description) like concat('%', :text, '%')
+              )
           and (:departmentId is null or c.department.id = :departmentId)
         """)
     Page<CategoryPageableProjection> findFiltered(

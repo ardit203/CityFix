@@ -2,6 +2,7 @@ package finki.ukim.backend.administration.service.application.impl;
 
 import finki.ukim.backend.administration.model.dto.CreateDepartmentDto;
 import finki.ukim.backend.administration.model.dto.DisplayDepartmentDto;
+import finki.ukim.backend.administration.model.dto.filters.DepartmentFilterDto;
 import finki.ukim.backend.administration.service.application.DepartmentApplicationService;
 import finki.ukim.backend.administration.service.domain.DepartmentService;
 import lombok.AllArgsConstructor;
@@ -48,9 +49,9 @@ public class DepartmentApplicationServiceImpl implements DepartmentApplicationSe
     }
 
     @Override
-    public Page<DisplayDepartmentDto> findAll(int page, int size, String sortBy, Long id, String text) {
+    public Page<DisplayDepartmentDto> findAll(DepartmentFilterDto departmentFilterDto) {
         return departmentService
-                .findAll(page, size, sortBy, id, text)
+                .findAll(departmentFilterDto)
                 .map(DisplayDepartmentDto::from);
     }
 }

@@ -2,6 +2,7 @@ package finki.ukim.backend.administration.web.controller;
 
 import finki.ukim.backend.administration.model.dto.CreateDepartmentDto;
 import finki.ukim.backend.administration.model.dto.DisplayDepartmentDto;
+import finki.ukim.backend.administration.model.dto.filters.DepartmentFilterDto;
 import finki.ukim.backend.administration.service.application.DepartmentApplicationService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,23 +27,13 @@ public class DepartmentController {
 
     @GetMapping("/paged")
     public ResponseEntity<Page<DisplayDepartmentDto>> findAll(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(required = false) Long id,
-            @RequestParam(required = false) String text
-    ) throws InterruptedException {
-        ResponseEntity<Page<DisplayDepartmentDto>> dto = ResponseEntity.ok(
+            @ModelAttribute DepartmentFilterDto departmentFilterDto
+            ) throws InterruptedException {
+        return ResponseEntity.ok(
                 departmentApplicationService.findAll(
-                        page,
-                        size,
-                        sortBy,
-                        id,
-                        text
+                        departmentFilterDto
                 )
         );
-
-        return dto;
     }
 
     @GetMapping("/{id}")

@@ -1,6 +1,7 @@
 package finki.ukim.backend.administration.service.domain;
 
 import finki.ukim.backend.administration.model.domain.Staff;
+import finki.ukim.backend.administration.model.dto.filters.StaffFilterDto;
 import finki.ukim.backend.administration.model.projection.StaffPageableProjection;
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.projection.UserPageableProjection;
@@ -33,15 +34,6 @@ public interface StaffService {
 
     Page<StaffPageableProjection> findAll(
             User user,
-            int page,
-            int size,
-            String sortBy,
-            Long id,
-            Long userId,
-            Long departmentId,
-            Long municipalityId,
-            String username,
-            String municipalityCode,
-            String municipalityName
+            StaffFilterDto staffFilterDto
     );
 }

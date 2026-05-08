@@ -1,6 +1,7 @@
 package finki.ukim.backend.administration.service.domain;
 
 import finki.ukim.backend.administration.model.domain.Category;
+import finki.ukim.backend.administration.model.dto.filters.CategoryFilterDto;
 import finki.ukim.backend.administration.model.projection.CategoryPageableProjection;
 import org.springframework.data.domain.Page;
 
@@ -21,5 +22,5 @@ public interface CategoryService {
 
     Category deleteById(Long id);
 
-    Page<CategoryPageableProjection> findAll(int page, int size, String sortBy, Long id, String text, Long departmentId);
+    Page<CategoryPageableProjection> findAll(CategoryFilterDto categoryFilterDto);
 }

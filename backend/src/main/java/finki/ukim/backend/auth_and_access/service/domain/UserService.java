@@ -2,6 +2,7 @@ package finki.ukim.backend.auth_and_access.service.domain;
 
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.domain.UserProfile;
+import finki.ukim.backend.auth_and_access.model.dto.filter.UserFilterDto;
 import finki.ukim.backend.auth_and_access.model.enums.Role;
 import finki.ukim.backend.auth_and_access.model.projection.UserPageableProjection;
 import finki.ukim.backend.auth_and_access.model.projection.UserWithIdUsernameAndEmail;
@@ -25,13 +26,7 @@ public interface UserService extends UserDetailsService {
 
     List<UserWithIdUsernameAndEmail> findAll();
 
-    Page<UserPageableProjection> findAll(int page,
-                                         int size,
-                                         String sortBy,
-                                         Long id,
-                                         String username,
-                                         String email,
-                                         Role role);
+    Page<UserPageableProjection> findAll(UserFilterDto userFilterDto);
 
     User adminUpdateUser(Long id, User user);
 

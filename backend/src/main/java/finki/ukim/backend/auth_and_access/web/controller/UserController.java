@@ -2,6 +2,7 @@ package finki.ukim.backend.auth_and_access.web.controller;
 
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.dto.*;
+import finki.ukim.backend.auth_and_access.model.dto.filter.UserFilterDto;
 import finki.ukim.backend.auth_and_access.model.enums.Role;
 import finki.ukim.backend.auth_and_access.service.application.UserApplicationService;
 import lombok.AllArgsConstructor;
@@ -74,16 +75,10 @@ public class UserController {
 
     @GetMapping("/paged")
     public ResponseEntity<Page<DisplayUserPageableDto>> findAll(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(required = false) Long id,
-            @RequestParam(required = false) String username,
-            @RequestParam(required = false) String email,
-            @RequestParam(required = false) Role role
+            @ModelAttribute UserFilterDto userFilterDto
     ) {
         return ResponseEntity.ok(
-                userApplicationService.findAll(page, size, sortBy, id, username, email, role)
+                userApplicationService.findAll(userFilterDto)
         );
     }
 
@@ -92,6 +87,7 @@ public class UserController {
         return ResponseEntity.ok(userApplicationService.findById(id));
 
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<DisplayUserDto> deleteById(@PathVariable Long id) {
         return ResponseEntity.ok(userApplicationService.deleteById(id));

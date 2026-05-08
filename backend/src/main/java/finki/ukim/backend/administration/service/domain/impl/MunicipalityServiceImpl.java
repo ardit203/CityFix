@@ -1,6 +1,7 @@
 package finki.ukim.backend.administration.service.domain.impl;
 
 import finki.ukim.backend.administration.model.domain.Municipality;
+import finki.ukim.backend.administration.model.dto.filters.MunicipalityFilterDto;
 import finki.ukim.backend.administration.model.exception.MunicipalityNotFoundException;
 import finki.ukim.backend.administration.repository.MunicipalityRepository;
 import finki.ukim.backend.administration.service.domain.MunicipalityService;
@@ -62,8 +63,14 @@ public class MunicipalityServiceImpl implements MunicipalityService {
     }
 
     @Override
-    public Page<Municipality> findAll(int page, int size, String sortBy, Long id, String code, String name) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-        return municipalityRepository.findFiltered(id, code, name, pageable);
+    public Page<Municipality> findAll(MunicipalityFilterDto municipalityFilterDto) {
+        municipalityFilterDto.normalizeTextFields();
+        Pageable pageable = municipalityFilterDto.toPageable();
+        return municipalityRepository.findFiltered(
+                municipalityFilterDto.getId(),
+                municipalityFilterDto.getCode(),
+                municipalityFilterDto.getName(),
+                pageable
+        );
     }
 }

@@ -9,6 +9,7 @@ const municipalityService = {
                              page = 0,
                              size = 10,
                              sortBy = "id",
+                             sortDir = 'asc',
                              id = null,
                              code = null,
                              name = null
@@ -18,6 +19,7 @@ const municipalityService = {
                 page,
                 size,
                 sortBy,
+                sortDir,
                 id,
                 code,
                 name

@@ -9,6 +9,7 @@ const categoryService = {
                              page = 0,
                              size = 10,
                              sortBy = "id",
+                             sortDir = "asc",
                              id = null,
                              text = null,
                              departmentId = null
@@ -18,6 +19,7 @@ const categoryService = {
                 page,
                 size,
                 sortBy,
+                sortDir,
                 id,
                 text,
                 departmentId

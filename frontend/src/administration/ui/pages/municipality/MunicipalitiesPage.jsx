@@ -53,7 +53,7 @@ const MunicipalitiesPage = () => {
                 <TextField label="Name" name="name" value={filters.name} onChange={handleFilterChange} size="small"/>
                 <SortControls
                     sortByValue={filters.sortBy}
-                    // sortDirValue={filters.sortDir}
+                    sortDirValue={filters.sortDir}
                     onSortChange={handleSortChange}
                     options={municipalitySortOptions}
                 />

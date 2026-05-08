@@ -52,7 +52,7 @@ const CategoriesPage = () => {
                 <TextField label="Search" name="text" value={filters.text} onChange={handleFilterChange} size="small"/>
                 <SortControls
                     sortByValue={filters.sortBy}
-                    // sortDirValue={filters.sortDir}
+                    sortDirValue={filters.sortDir}
                     onSortChange={handleSortChange}
                     options={categorySortOptions}
                 />

@@ -4,6 +4,7 @@ import finki.ukim.backend.administration.model.dto.CreateStaffDto;
 import finki.ukim.backend.administration.model.dto.DisplayBasicStaffDto;
 import finki.ukim.backend.administration.model.dto.DisplayStaffDto;
 import finki.ukim.backend.administration.model.dto.DisplayStaffPageableDto;
+import finki.ukim.backend.administration.model.dto.filters.StaffFilterDto;
 import finki.ukim.backend.administration.service.application.StaffApplicationService;
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.dto.DisplayUserPageableDto;
@@ -30,31 +31,13 @@ public class StaffController {
 
     @GetMapping("/paged")
     public ResponseEntity<Page<DisplayStaffPageableDto>> findAll(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(required = false) Long id,
-            @RequestParam(required = false) Long userId,
-            @RequestParam(required = false) Long departmentId,
-            @RequestParam(required = false) Long municipalityId,
-            @RequestParam(required = false) String username,
-            @RequestParam(required = false) String municipalityCode,
-            @RequestParam(required = false) String municipalityName,
+            @ModelAttribute StaffFilterDto  staffFilterDto,
             @AuthenticationPrincipal User currentUser
     ) {
         return ResponseEntity.ok(
                 staffApplicationService.findAll(
                         currentUser,
-                        page,
-                        size,
-                        sortBy,
-                        id,
-                        userId,
-                        departmentId,
-                        municipalityId,
-                        username,
-                        municipalityCode,
-                        municipalityName
+                        staffFilterDto
                 )
         );
     }

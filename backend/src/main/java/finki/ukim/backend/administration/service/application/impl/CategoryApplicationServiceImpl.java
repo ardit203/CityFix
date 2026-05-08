@@ -5,6 +5,7 @@ import finki.ukim.backend.administration.model.dto.CreateCategoryDto;
 import finki.ukim.backend.administration.model.dto.DisplayBasicCategoryDto;
 import finki.ukim.backend.administration.model.dto.DisplayCategoryDto;
 import finki.ukim.backend.administration.model.dto.DisplayCategoryPageableDto;
+import finki.ukim.backend.administration.model.dto.filters.CategoryFilterDto;
 import finki.ukim.backend.administration.model.exception.DepartmentNotFoundException;
 import finki.ukim.backend.administration.service.application.CategoryApplicationService;
 import finki.ukim.backend.administration.service.domain.CategoryService;
@@ -62,9 +63,9 @@ public class CategoryApplicationServiceImpl implements CategoryApplicationServic
     }
 
     @Override
-    public Page<DisplayCategoryPageableDto> findAll(int page, int size, String sortBy, Long id, String text, Long departmentId) {
+    public Page<DisplayCategoryPageableDto> findAll(CategoryFilterDto categoryFilterDto) {
         return categoryService
-                .findAll(page, size, sortBy, id, text, departmentId)
+                .findAll(categoryFilterDto)
                 .map(DisplayCategoryPageableDto::from);
     }
 }

@@ -1,6 +1,7 @@
 package finki.ukim.backend.auth_and_access.service.application.impl;
 
 import finki.ukim.backend.auth_and_access.model.dto.*;
+import finki.ukim.backend.auth_and_access.model.dto.filter.UserFilterDto;
 import finki.ukim.backend.auth_and_access.model.enums.Role;
 import finki.ukim.backend.auth_and_access.model.projection.UserWithIdUsernameAndEmail;
 import finki.ukim.backend.auth_and_access.service.application.UserApplicationService;
@@ -67,8 +68,8 @@ public class UserApplicationServiceImpl implements UserApplicationService {
     }
 
     @Override
-    public Page<DisplayUserPageableDto> findAll(int page, int size, String sortBy, Long id, String username, String email, Role role) {
-        return userService.findAll(page, size, sortBy, id, username, email, role).map(DisplayUserPageableDto::from);
+    public Page<DisplayUserPageableDto> findAll(UserFilterDto userFilterDto) {
+        return userService.findAll(userFilterDto).map(DisplayUserPageableDto::from);
     }
 
     @Override

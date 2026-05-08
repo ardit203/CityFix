@@ -9,6 +9,7 @@ const departmentService = {
                              page = 0,
                              size = 10,
                              sortBy = "id",
+                             sortDir = "asc",
                              id = null,
                              text = null
                          }) => {
@@ -17,6 +18,7 @@ const departmentService = {
                 page,
                 size,
                 sortBy,
+                sortDir,
                 id,
                 text
             }

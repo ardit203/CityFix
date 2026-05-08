@@ -3,6 +3,7 @@ package finki.ukim.backend.auth_and_access.service.domain.impl;
 import finki.ukim.backend.auth_and_access.model.domain.Address;
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.domain.UserProfile;
+import finki.ukim.backend.auth_and_access.model.dto.filter.UserFilterDto;
 import finki.ukim.backend.auth_and_access.model.enums.Role;
 import finki.ukim.backend.auth_and_access.model.exception.*;
 import finki.ukim.backend.auth_and_access.model.projection.UserPageableProjection;
@@ -52,10 +53,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserPageableProjection> findAll(int page, int size, String sortBy, Long id, String username, String email, Role role) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).and(Sort.by("createdAt")));
+    public Page<UserPageableProjection> findAll(UserFilterDto userFilterDto) {
+        userFilterDto.normalizeTextFields();
+        Pageable pageable = userFilterDto.toPageable();
 
-        return userRepository.findFiltered(id, username, email, role, pageable);
+        return userRepository.findFiltered(
+                userFilterDto.getId(),
+                userFilterDto.getUsername(),
+                userFilterDto.getEmail(),
+                userFilterDto.getRole(),
+                pageable
+        );
     }
 
     @Override

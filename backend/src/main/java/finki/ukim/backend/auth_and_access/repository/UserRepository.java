@@ -57,8 +57,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
         from User u
         left join u.profile p
         where (:id is null or u.id = :id)
-          and (:username is null or lower(u.username) like lower(concat('%', cast(:username as string), '%')))
-          and (:email is null or lower(u.email) like lower(concat('%', cast(:email as string), '%')))
+          and (
+                :username = ''
+                or lower(u.username) like concat('%', :username, '%')
+              )
+          and (
+                :email = ''
+                or lower(u.email) like concat('%', :email, '%')
+              )
           and (:role is null or u.role = :role)
         """)
     Page<UserPageableProjection> findFiltered(

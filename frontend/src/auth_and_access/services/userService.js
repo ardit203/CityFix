@@ -3,19 +3,21 @@ import axiosInstance from "../../common/axios/axios.js";
 const userService = {
     // Admin: paged/filterable users
     findAllPaged: async ({
-                        page = 0,
-                        size = 10,
-                        sortBy = "id",
-                        id = null,
-                        username = null,
-                        email = null,
-                        role = null
-                    }) => {
+                             page = 0,
+                             size = 10,
+                             sortBy = "id",
+                             sortDir = "asc",
+                             id = null,
+                             username = null,
+                             email = null,
+                             role = null
+                         }) => {
         return await axiosInstance.get("/users/paged", {
             params: {
                 page,
                 size,
                 sortBy,
+                sortDir,
                 id,
                 username,
                 email,

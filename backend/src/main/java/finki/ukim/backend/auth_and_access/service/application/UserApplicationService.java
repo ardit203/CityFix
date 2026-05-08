@@ -1,6 +1,7 @@
 package finki.ukim.backend.auth_and_access.service.application;
 
 import finki.ukim.backend.auth_and_access.model.dto.*;
+import finki.ukim.backend.auth_and_access.model.dto.filter.UserFilterDto;
 import finki.ukim.backend.auth_and_access.model.enums.Role;
 import finki.ukim.backend.auth_and_access.model.projection.UserWithIdUsernameAndEmail;
 import org.springframework.data.domain.Page;
@@ -24,7 +25,7 @@ public interface UserApplicationService {
 
     List<DisplayUserBasicDto> findAll();
 
-    Page<DisplayUserPageableDto> findAll(int page, int size, String sortBy, Long id, String username, String email, Role role);
+    Page<DisplayUserPageableDto> findAll(UserFilterDto userFilterDto);
 
     DisplayUserDto deleteById(Long id);
 

@@ -2,6 +2,7 @@ package finki.ukim.backend.administration.web.controller;
 
 import finki.ukim.backend.administration.model.dto.CreateMunicipalityDto;
 import finki.ukim.backend.administration.model.dto.DisplayMunicipalityDto;
+import finki.ukim.backend.administration.model.dto.filters.MunicipalityFilterDto;
 import finki.ukim.backend.administration.service.application.MunicipalityApplicationService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,21 +27,11 @@ public class MunicipalityController {
 
     @GetMapping("/paged")
     public ResponseEntity<Page<DisplayMunicipalityDto>> findAll(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(required = false) Long id,
-            @RequestParam(required = false) String code,
-            @RequestParam(required = false) String name
-    ) {
+            @ModelAttribute MunicipalityFilterDto municipalityFilterDto
+            ) {
         return ResponseEntity.ok(
                 municipalityApplicationService.findAll(
-                        page,
-                        size,
-                        sortBy,
-                        id,
-                        code,
-                        name
+                        municipalityFilterDto
                 )
         );
     }

@@ -1,6 +1,7 @@
 package finki.ukim.backend.administration.service.domain.impl;
 
 import finki.ukim.backend.administration.model.domain.Department;
+import finki.ukim.backend.administration.model.dto.filters.DepartmentFilterDto;
 import finki.ukim.backend.administration.model.exception.DepartmentNotFoundException;
 import finki.ukim.backend.administration.repository.DepartmentRepository;
 import finki.ukim.backend.administration.service.domain.DepartmentService;
@@ -63,8 +64,13 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public Page<Department> findAll(int page, int size, String sortBy, Long id, String text) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-        return departmentRepository.findFiltered(id, text, pageable);
+    public Page<Department> findAll(DepartmentFilterDto departmentFilterDto) {
+        departmentFilterDto.normalizeTextFields();
+        Pageable pageable = departmentFilterDto.toPageable();
+        return departmentRepository.findFiltered(
+                departmentFilterDto.getId(),
+                departmentFilterDto.getText(),
+                pageable
+        );
     }
 }

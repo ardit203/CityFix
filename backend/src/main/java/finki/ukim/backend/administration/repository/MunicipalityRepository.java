@@ -17,11 +17,17 @@ public interface MunicipalityRepository extends JpaRepository<Municipality, Long
     Optional<Municipality> findByCode(String code);
 
     @Query("""
-                select m from Municipality m
-                where (:id is null or m.id = :id)
-                  and (:code is null or m.code = :code)
-                  and (:name is null or m.name = :name)
-            """)
+        select m from Municipality m
+        where (:id is null or m.id = :id)
+          and (
+                :code = ''
+                or lower(m.code) like concat('%', :code, '%')
+              )
+          and (
+                :name = ''
+                or lower(m.name) like concat('%', :name, '%')
+              )
+        """)
     Page<Municipality> findFiltered(
             @Param("id") Long id,
             @Param("code") String code,

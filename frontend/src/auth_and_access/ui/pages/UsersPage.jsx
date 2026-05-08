@@ -70,7 +70,7 @@ const UsersPage = () => {
                 </TextField>
                 <SortControls
                     sortByValue={filters.sortBy}
-                    // sortDirValue={filters.sortDir}
+                    sortDirValue={filters.sortDir}
                     onSortChange={handleSortChange}
                     options={userSortOptions}
                 />
