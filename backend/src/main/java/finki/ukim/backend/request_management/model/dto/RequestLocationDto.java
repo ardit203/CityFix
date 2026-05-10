@@ -21,4 +21,8 @@ public record RequestLocationDto(
     public RequestLocation toRequestLocation() {
         return new RequestLocation(latitude, longitude);
     }
+
+    public static RequestLocationDto from(RequestLocation location) {
+        return new RequestLocationDto(location.getLatitude(), location.getLongitude());
+    }
 }

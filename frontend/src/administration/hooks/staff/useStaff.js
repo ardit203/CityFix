@@ -3,7 +3,7 @@ import usePaginationState from "../../../common/hooks/usePaginationState.js";
 import useAsyncState from "../../../common/hooks/useAsyncState.js";
 
 import { mapToCleanQueryParams } from "../../../common/dtos/filterDto.js";
-import staffService from "../../service/staffService.js";
+import staffService from "../../services/staffService.js";
 
 
 const useStaff = ({paged = true, fetchOnMount = true} = {}) => {

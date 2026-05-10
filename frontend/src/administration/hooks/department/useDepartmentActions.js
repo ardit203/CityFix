@@ -1,5 +1,5 @@
 import {useCallback} from "react";
-import departmentService from "../../service/departmentService.js";
+import departmentService from "../../services/departmentService.js";
 import useActionHelper from "../../../common/hooks/useActionHelper.js";
 
 const useDepartmentActions = () => {

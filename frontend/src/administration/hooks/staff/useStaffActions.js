@@ -1,6 +1,6 @@
 import {useCallback} from "react";
 import useActionHelper from "../../../common/hooks/useActionHelper.js";
-import staffService from "../../service/staffService.js";
+import staffService from "../../services/staffService.js";
 
 const useStaffActions = () => {
     const {executeAction, isExecuting} = useActionHelper();

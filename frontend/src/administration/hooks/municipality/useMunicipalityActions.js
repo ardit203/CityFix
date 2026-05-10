@@ -1,7 +1,7 @@
 import {useCallback} from "react";
 
 import useActionHelper from "../../../common/hooks/useActionHelper.js";
-import municipalityService from "../../service/municipalityService.js";
+import municipalityService from "../../services/municipalityService.js";
 
 const useMunicipalityActions = () => {
     const {executeAction, isExecuting} = useActionHelper();

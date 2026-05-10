@@ -1,7 +1,7 @@
 import {useCallback} from "react";
 
 import useActionHelper from "../../../common/hooks/useActionHelper.js";
-import categoryService from "../../service/categoryService.js";
+import categoryService from "../../services/categoryService.js";
 
 const useCategoryActions = () => {
     const {executeAction, isExecuting} = useActionHelper();

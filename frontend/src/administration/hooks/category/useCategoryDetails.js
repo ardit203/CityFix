@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState} from "react";
 import useAsyncState from "../../../common/hooks/useAsyncState.js";
-import categoryService from "../../service/categoryService.js";
+import categoryService from "../../services/categoryService.js";
 
 const useCategoryDetails = (id) => {
     const [category, setCategory] = useState(null);

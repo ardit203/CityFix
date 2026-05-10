@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState} from "react";
 import useAsyncState from "../../../common/hooks/useAsyncState.js";
-import municipalityService from "../../service/municipalityService.js";
+import municipalityService from "../../services/municipalityService.js";
 
 const useMunicipalityDetails = (id) => {
     const [municipality, setMunicipality] = useState(null);

@@ -14,7 +14,8 @@ const pages = [
     {path: '/departments', name: 'departments'},
     {path: '/municipalities', name: 'municipalities'},
     {path: '/categories', name: 'categories'},
-    {path: '/staff', name: 'staff'}
+    {path: '/staff', name: 'staff'},
+    {path: '/requests', name: 'requests'}
 ];
 
 const Header = () => {

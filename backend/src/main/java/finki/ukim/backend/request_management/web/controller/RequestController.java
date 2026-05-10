@@ -2,76 +2,85 @@ package finki.ukim.backend.request_management.web.controller;
 
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.request_management.model.dto.CreateRequestDto;
-import finki.ukim.backend.request_management.model.enums.Priority;
-import finki.ukim.backend.request_management.model.enums.RequestStatus;
-import finki.ukim.backend.request_management.model.enums.RoutingStatus;
+import finki.ukim.backend.request_management.model.dto.DisplayBasicRequestDto;
+import finki.ukim.backend.request_management.model.dto.DisplayRequestDto;
+import finki.ukim.backend.request_management.model.dto.DisplayRequestPageableDto;
+import finki.ukim.backend.request_management.model.dto.filter.RequestFilterDto;
+import finki.ukim.backend.request_management.service.application.RequestApplicationService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/requests")
 @AllArgsConstructor
 public class RequestController {
+    private final RequestApplicationService requestApplicationService;
 
     @GetMapping
-    public ResponseEntity<?> findAll(@AuthenticationPrincipal User currentUser) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<List<DisplayBasicRequestDto>> findAll(@AuthenticationPrincipal User currentUser) {
+        return ResponseEntity.ok(requestApplicationService.findAll(currentUser));
     }
 
     @GetMapping("/paged")
-    public ResponseEntity<?> findAllPaged(
+    public ResponseEntity<Page<DisplayRequestPageableDto>> findAllPaged(
             @AuthenticationPrincipal User currentUser,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(required = false) Long id,
-            @RequestParam(required = false) Priority priority,
-            @RequestParam(required = false) RequestStatus status,
-            @RequestParam(required = false) Long municipalityId,
-            @RequestParam(required = false) Long departmentId,
-            @RequestParam(required = false) Long categoryId,
-            @RequestParam(required = false) RoutingStatus routingStatus,
-            @RequestParam(required = false) Long employeeId,
-            @RequestParam(required = false) LocalDateTime submittedFrom,
-            @RequestParam(required = false) LocalDateTime submittedTo
+            @ModelAttribute RequestFilterDto requestFilterDto
     ) {
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(
+                requestApplicationService
+                        .findAll(currentUser, requestFilterDto)
+        );
     }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DisplayRequestDto> findById(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User currentUser
+    ) {
+        return ResponseEntity.ok(
+                requestApplicationService.findById(id, currentUser)
+        );
+    }
+
 
     @PostMapping
-    public ResponseEntity<?> create(
+    public ResponseEntity<DisplayRequestDto> create(
             @AuthenticationPrincipal User currentUser,
-            @Valid @RequestBody CreateRequestDto dto
+            @Valid @RequestBody CreateRequestDto createRequestDto
     ) {
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(
+                requestApplicationService.create(currentUser, createRequestDto)
+        );
     }
 
-    @GetMapping("/{requestId}")
-    public ResponseEntity<?> findById(
-            @PathVariable Long requestId,
-            @AuthenticationPrincipal User currentUser
-    ) {
-        return ResponseEntity.ok().build();
-    }
-
-    @PatchMapping("/{requestId}/cancel")
+    @PatchMapping("/{id}/cancel")
     public ResponseEntity<?> cancel(
-            @PathVariable Long requestId,
+            @PathVariable Long id,
             @AuthenticationPrincipal User currentUser
     ) {
+        return ResponseEntity.ok(requestApplicationService.cancel(id, currentUser));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteById(
+            @PathVariable Long id
+    ) {
+        requestApplicationService.delete(id);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{requestId}")
-    public ResponseEntity<?> deleteById(
-            @PathVariable Long requestId,
-            @AuthenticationPrincipal User currentUser
+    @DeleteMapping("/bulk")
+    public ResponseEntity<?> deleteBulk(
+            @RequestBody List<Long> ids
     ) {
+        requestApplicationService.deleteBulk(ids);
         return ResponseEntity.ok().build();
     }
 }

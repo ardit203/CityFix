@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import useAsyncState from "../../../common/hooks/useAsyncState.js";
 
 // Make sure this points to your correct staffService file!
-import staffService from "../../service/staffService.js";
+import staffService from "../../services/staffService.js";
 
 const useAvailableUsersForStaff = () => {
     const { loading, error, startAsync, finishAsync, handleError } = useAsyncState();

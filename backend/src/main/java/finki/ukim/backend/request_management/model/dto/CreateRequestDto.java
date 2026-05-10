@@ -17,8 +17,8 @@ public record CreateRequestDto(
         @Size(max = 2000, message = "Description must not be longer than 2000 characters")
         String description,
 
-        @NotNull(message = "User id is required")
-        Long userId,
+//        @NotNull(message = "User id is required")
+//        Long userId,
 
         @NotNull(message = "Municipality id is required")
         Long municipalityId,

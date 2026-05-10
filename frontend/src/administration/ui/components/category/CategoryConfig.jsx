@@ -1,4 +1,3 @@
-
 export const categoryColumns = [
     {id: 'id', label: 'ID'},
     {id: 'name', label: 'Category Name'},

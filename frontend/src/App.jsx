@@ -14,6 +14,7 @@ import ResetPasswordPage from "./auth_and_access/ui/pages/ResetPasswordPage.jsx"
 import {userRoutes} from "./auth_and_access/routes/userRoutes.jsx";
 import {profileRoutes} from "./auth_and_access/routes/profileRoutes.jsx";
 import {staffRoutes} from "./administration/routes/staffRoutes.jsx";
+import {requestRoutes} from "./request_management/routes/requestRoutes.jsx";
 
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
                     {userRoutes}
                     {profileRoutes}
                     {staffRoutes}
+                    {requestRoutes}
                 </Route>
             </Routes>
         </BrowserRouter>

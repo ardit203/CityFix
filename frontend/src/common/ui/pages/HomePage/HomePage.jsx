@@ -1,4 +1,5 @@
 import { Box, Container, Typography } from '@mui/material';
+import LocationPicker from "../../../../request_management/ui/component/request/LocationPicker.jsx";
 
 const HomePage = () => {
     return (
@@ -11,6 +12,13 @@ const HomePage = () => {
                     This is the home page.
                 </Typography>
             </Container>
+            <LocationPicker
+                onLocationSelect={(location) => {
+                    console.log(location.latitude);
+                    console.log(location.longitude);
+                    console.log(location.address);
+                }}
+            />
         </Box>
     );
 };

@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState} from "react";
 import useAsyncState from "../../../common/hooks/useAsyncState.js";
-import departmentService from "../../service/departmentService.js";
+import departmentService from "../../services/departmentService.js";
 
 const useDepartmentDetails = (id) => {
     const [department, setDepartment] = useState(null);

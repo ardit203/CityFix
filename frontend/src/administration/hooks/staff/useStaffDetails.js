@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState} from "react";
 import useAsyncState from "../../../common/hooks/useAsyncState.js";
-import staffService from "../../service/staffService.js";
+import staffService from "../../services/staffService.js";
 
 
 const useStaffDetails = (id) => {

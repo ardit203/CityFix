@@ -1,7 +1,7 @@
 import {useCallback, useEffect, useState} from "react";
 import usePaginationState from "../../../common/hooks/usePaginationState.js";
 import useAsyncState from "../../../common/hooks/useAsyncState.js";
-import departmentService from "../../service/departmentService.js";
+import departmentService from "../../services/departmentService.js";
 import { mapToCleanQueryParams } from "../../../common/dtos/filterDto.js";
 
 
