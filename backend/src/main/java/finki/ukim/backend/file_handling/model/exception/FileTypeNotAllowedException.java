@@ -13,4 +13,8 @@ public class FileTypeNotAllowedException extends ConflictException {
                 )
         );
     }
+
+    public FileTypeNotAllowedException(String message) {
+        super(message);
+    }
 }

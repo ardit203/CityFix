@@ -58,6 +58,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         }
 
         return new File(
+                file.getOriginalFilename(),
                 fileName,
                 fileType,
                 FileConstants.getBaseUrl(directory) + fileName,

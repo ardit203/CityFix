@@ -1,22 +1,28 @@
-package finki.ukim.backend.request_management.service.domain;
+package finki.ukim.backend.request_management.service.domain.impl;
 
-import finki.ukim.backend.administration.model.exception.InsufficientRoleException;
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.dto.accessScope.RequestScopeFilters;
-import finki.ukim.backend.auth_and_access.model.dto.accessScope.StaffScope;
 import finki.ukim.backend.auth_and_access.service.domain.AccessScopeService;
+import finki.ukim.backend.file_handling.constants.FileConstants;
+import finki.ukim.backend.file_handling.model.domain.File;
+import finki.ukim.backend.file_handling.service.domain.FileService;
 import finki.ukim.backend.request_management.model.domain.Request;
 import finki.ukim.backend.request_management.model.dto.filter.RequestFilterDto;
+import finki.ukim.backend.request_management.model.enums.LogAction;
 import finki.ukim.backend.request_management.model.enums.RequestStatus;
 import finki.ukim.backend.request_management.model.exception.RequestCannotBeCanceled;
 import finki.ukim.backend.request_management.model.exception.RequestNotFoundException;
 import finki.ukim.backend.request_management.model.projection.RequestPageableProjection;
 import finki.ukim.backend.request_management.repository.RequestRepository;
+import finki.ukim.backend.request_management.service.domain.RequestLogService;
+import finki.ukim.backend.request_management.service.domain.RequestService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,6 +30,8 @@ import java.util.List;
 public class RequestServiceImpl implements RequestService {
     private final RequestRepository requestRepository;
     private final AccessScopeService accessScopeService;
+    private final RequestLogService requestLogService;
+    private final FileService fileService;
 
     @Override
     public List<Request> findAll(User user) {
@@ -40,8 +48,35 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Request create(Request request) {
+    public Request create(Request request, List<MultipartFile> files) {
+        request.setStatus(RequestStatus.SUBMITTED);
+        List<File> createdFiles = new ArrayList<>();
+        if (files != null && !files.isEmpty()) {
+            createdFiles = fileService.createAll(files, FileConstants.REQUESTS_DIR);
+            request.addFiles(createdFiles);
+        }
         Request created = requestRepository.save(request);
+
+
+        requestLogService.create(
+                created,
+                created.getUser(),
+                LogAction.REQUEST_CREATED,
+                null,
+                "Created",
+                "Your request was created"
+        );
+
+        createdFiles.forEach(f -> {
+            requestLogService.create(
+                    created,
+                    created.getUser(),
+                    LogAction.FILE_UPLOADED,
+                    null,
+                    f.getOriginalFileName(),
+                    "File uploaded to request."
+            );
+        });
         //start ai
         //send mail
         return created;
@@ -51,8 +86,6 @@ public class RequestServiceImpl implements RequestService {
     public Page<RequestPageableProjection> findAll(User user, RequestFilterDto requestFilterDto) {
         requestFilterDto.normalizeTextFields();
         Pageable pageable = requestFilterDto.toPageable();
-        List<Request> requests = findAll(user);
-        System.out.println(requests);
 
         RequestScopeFilters scopeFilters = accessScopeService.getRequestFilters(
                 user,
@@ -62,7 +95,7 @@ public class RequestServiceImpl implements RequestService {
                 requestFilterDto.getAssignedEmployeeUserId()
         );
 
-        Page<RequestPageableProjection> page = requestRepository.findFiltered(
+        return requestRepository.findFiltered(
                 requestFilterDto.getId(),
                 scopeFilters.requestedUserId(),
                 scopeFilters.departmentId(),
@@ -77,8 +110,6 @@ public class RequestServiceImpl implements RequestService {
                 requestFilterDto.getSubmittedTo(),
                 pageable
         );
-
-        return page;
     }
 
     @Override

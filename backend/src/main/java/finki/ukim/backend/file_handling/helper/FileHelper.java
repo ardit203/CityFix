@@ -68,7 +68,25 @@ public class FileHelper {
         return fileTypeList.contains(fileType);
     }
 
+    public Boolean areValidFileTypes(List<MultipartFile> files) {
+        List<FileType> fileTypes = getReqFileTypes();
+        if (files == null || files.isEmpty()) {
+            return true;
+        }
+        for (MultipartFile file : files) {
+            FileType fileType = getFileType(file.getContentType());
+            if (!fileTypes.contains(fileType)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private List<FileType> getImageTypes() {
         return List.of(FileType.PNG, FileType.JPEG);
+    }
+
+    private List<FileType> getReqFileTypes() {
+        return List.of(FileType.PNG, FileType.JPEG, FileType.PDF);
     }
 }

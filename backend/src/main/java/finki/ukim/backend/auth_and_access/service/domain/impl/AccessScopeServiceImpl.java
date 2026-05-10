@@ -15,7 +15,10 @@ import finki.ukim.backend.auth_and_access.service.domain.AccessScopeService;
 import finki.ukim.backend.auth_and_access.service.domain.UserService;
 import finki.ukim.backend.common.exception.ForbiddenException;
 import finki.ukim.backend.request_management.model.domain.Request;
+import finki.ukim.backend.request_management.model.domain.RequestLog;
 import finki.ukim.backend.request_management.repository.RequestAssignmentRepository;
+import finki.ukim.backend.request_management.repository.RequestLogRepository;
+import finki.ukim.backend.request_management.repository.RequestRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -124,7 +127,7 @@ public class AccessScopeServiceImpl implements AccessScopeService {
             throw new CitizenCannotBeStaffException(currentUser.getUsername());
         }
 
-        if(staffRepository.existsByUser_Id(currentUser.getId())){
+        if (staffRepository.existsByUser_Id(currentUser.getId())) {
             throw new UserIsAlreadyStaffException(currentUser.getId());
         }
     }

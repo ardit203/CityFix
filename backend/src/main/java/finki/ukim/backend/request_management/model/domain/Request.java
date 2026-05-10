@@ -5,6 +5,7 @@ import finki.ukim.backend.administration.model.domain.Department;
 import finki.ukim.backend.administration.model.domain.Municipality;
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.common.model.BaseAuditableEntity;
+import finki.ukim.backend.file_handling.model.domain.File;
 import finki.ukim.backend.request_management.model.enums.Priority;
 import finki.ukim.backend.request_management.model.enums.RequestStatus;
 import finki.ukim.backend.request_management.model.enums.RoutingStatus;
@@ -13,6 +14,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -54,6 +58,22 @@ public class Request extends BaseAuditableEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Department department;
+
+    @OneToMany(
+            mappedBy = "request",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<RequestFile> files = new ArrayList<>();
+
+    public void addFile(File file) {
+        RequestFile requestFile = new RequestFile(this, file);
+        this.files.add(requestFile);
+    }
+
+    public void addFiles(List<File> files) {
+        files.forEach(this::addFile);
+    }
 
     public Request(String title, String description, User user, Municipality municipality, RequestLocation requestLocation) {
         this.title = title;

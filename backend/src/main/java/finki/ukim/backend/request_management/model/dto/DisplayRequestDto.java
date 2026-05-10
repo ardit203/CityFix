@@ -1,9 +1,12 @@
 package finki.ukim.backend.request_management.model.dto;
 
+import finki.ukim.backend.file_handling.model.domain.File;
 import finki.ukim.backend.request_management.model.domain.Request;
 import finki.ukim.backend.request_management.model.enums.Priority;
 import finki.ukim.backend.request_management.model.enums.RequestStatus;
 import finki.ukim.backend.request_management.model.enums.RoutingStatus;
+
+import java.util.List;
 
 public record DisplayRequestDto(
         Long id,

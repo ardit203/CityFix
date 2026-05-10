@@ -10,9 +10,11 @@ import finki.ukim.backend.request_management.service.application.RequestApplicat
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -50,10 +52,11 @@ public class RequestController {
     }
 
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<DisplayRequestDto> create(
             @AuthenticationPrincipal User currentUser,
-            @Valid @RequestBody CreateRequestDto createRequestDto
+            @Valid @RequestPart("request") CreateRequestDto createRequestDto,
+            @RequestPart(value = "files", required = false) List<MultipartFile> files
     ) {
         return ResponseEntity.ok(
                 requestApplicationService.create(currentUser, createRequestDto)

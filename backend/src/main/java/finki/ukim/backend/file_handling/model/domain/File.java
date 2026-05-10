@@ -16,6 +16,9 @@ import lombok.Setter;
 @Setter
 @Table(name = "files")
 public class File extends BaseAuditableEntity {
+    @Column(nullable = false)
+    private String originalFileName;
+
     @Column(nullable = false, unique = true)
     private String fileName;
 

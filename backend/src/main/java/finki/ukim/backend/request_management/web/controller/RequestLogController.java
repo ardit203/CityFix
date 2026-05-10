@@ -1,65 +1,44 @@
 package finki.ukim.backend.request_management.web.controller;
 
+import finki.ukim.backend.auth_and_access.model.domain.User;
+import finki.ukim.backend.request_management.model.dto.DisplayRequestLogDto;
+import finki.ukim.backend.request_management.model.dto.filter.RequestLogFilterDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class RequestLogController {
-//
-//    private final RequestLogApplicationService requestLogApplicationService;
-//
-//    @GetMapping("/request-logs")
-//    public Page<DisplayRequestLogDto> findAllPaged(
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size,
-//            @RequestParam(defaultValue = "createdAt") String sortBy,
-//            @RequestParam(defaultValue = "desc") String sortDir,
-//            @RequestParam(required = false) Long requestId,
-//            @RequestParam(required = false) Long actionByUserId,
-//            @RequestParam(required = false) RequestLogAction action
-//    ) {
-//        return requestLogApplicationService.findAllPaged(
-//                page,
-//                size,
-//                sortBy,
-//                sortDir,
-//                requestId,
-//                actionByUserId,
-//                action
-//        );
-//    }
-//
-//    @GetMapping("/request-logs/{logId}")
-//    public DisplayRequestLogDetailsDto findById(
-//            @PathVariable Long logId
-//    ) {
-//        return requestLogApplicationService.findById(logId);
-//    }
-//
-//    @GetMapping("/requests/{requestId}/logs")
-//    public List<DisplayRequestLogDto> findAllByRequest(
-//            @PathVariable Long requestId
-//    ) {
-//        return requestLogApplicationService.findAllByRequest(requestId);
-//    }
-//
-//    @GetMapping("/requests/{requestId}/logs/paged")
-//    public Page<DisplayRequestLogDto> findAllByRequestPaged(
-//            @PathVariable Long requestId,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size,
-//            @RequestParam(defaultValue = "createdAt") String sortBy,
-//            @RequestParam(defaultValue = "desc") String sortDir
-//    ) {
-//        return requestLogApplicationService.findAllByRequestPaged(
-//                requestId,
-//                page,
-//                size,
-//                sortBy,
-//                sortDir
-//        );
-//    }
+
+
+    @GetMapping("/request-logs/{logId}")
+    public ResponseEntity<DisplayRequestLogDto> findById(
+            @PathVariable Long logId,
+            @AuthenticationPrincipal User user
+    ) {
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/requests/{requestId}/logs")
+    public ResponseEntity<List<DisplayRequestLogDto>> findAllByRequest(
+            @PathVariable Long requestId,
+            @AuthenticationPrincipal User user
+    ) {
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/requests/{requestId}/logs/paged")
+    public ResponseEntity<Page<DisplayRequestLogDto>> findAllByRequestPaged(
+            @PathVariable Long requestId,
+            @AuthenticationPrincipal User user,
+            @ModelAttribute RequestLogFilterDto filter
+    ) {
+        return ResponseEntity.ok().build();
+    }
 }
