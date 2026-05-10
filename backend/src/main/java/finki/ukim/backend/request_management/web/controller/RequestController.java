@@ -1,10 +1,7 @@
 package finki.ukim.backend.request_management.web.controller;
 
 import finki.ukim.backend.auth_and_access.model.domain.User;
-import finki.ukim.backend.request_management.model.dto.CreateRequestDto;
-import finki.ukim.backend.request_management.model.dto.DisplayBasicRequestDto;
-import finki.ukim.backend.request_management.model.dto.DisplayRequestDto;
-import finki.ukim.backend.request_management.model.dto.DisplayRequestPageableDto;
+import finki.ukim.backend.request_management.model.dto.*;
 import finki.ukim.backend.request_management.model.dto.filter.RequestFilterDto;
 import finki.ukim.backend.request_management.service.application.RequestApplicationService;
 import jakarta.validation.Valid;
@@ -59,7 +56,7 @@ public class RequestController {
             @RequestPart(value = "files", required = false) List<MultipartFile> files
     ) {
         return ResponseEntity.ok(
-                requestApplicationService.create(currentUser, createRequestDto)
+                requestApplicationService.create(currentUser, createRequestDto, files)
         );
     }
 
@@ -71,8 +68,19 @@ public class RequestController {
         return ResponseEntity.ok(requestApplicationService.cancel(id, currentUser));
     }
 
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<DisplayRequestDto> changeStatus(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User currentUser,
+            @RequestBody ChangeRequestStatusDto changeRequestStatusDto
+    ) {
+        return ResponseEntity.ok(
+                requestApplicationService.changeStatus(id, currentUser, changeRequestStatusDto)
+        );
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteById(
+    public ResponseEntity<Void> deleteById(
             @PathVariable Long id
     ) {
         requestApplicationService.delete(id);
@@ -80,7 +88,7 @@ public class RequestController {
     }
 
     @DeleteMapping("/bulk")
-    public ResponseEntity<?> deleteBulk(
+    public ResponseEntity<Void> deleteBulk(
             @RequestBody List<Long> ids
     ) {
         requestApplicationService.deleteBulk(ids);

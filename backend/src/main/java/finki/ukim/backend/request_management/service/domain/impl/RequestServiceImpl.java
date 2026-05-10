@@ -7,9 +7,11 @@ import finki.ukim.backend.file_handling.constants.FileConstants;
 import finki.ukim.backend.file_handling.model.domain.File;
 import finki.ukim.backend.file_handling.service.domain.FileService;
 import finki.ukim.backend.request_management.model.domain.Request;
+import finki.ukim.backend.request_management.model.dto.ChangeRequestStatusDto;
 import finki.ukim.backend.request_management.model.dto.filter.RequestFilterDto;
 import finki.ukim.backend.request_management.model.enums.LogAction;
 import finki.ukim.backend.request_management.model.enums.RequestStatus;
+import finki.ukim.backend.request_management.model.exception.InvalidRequestStatusTransitionException;
 import finki.ukim.backend.request_management.model.exception.RequestCannotBeCanceled;
 import finki.ukim.backend.request_management.model.exception.RequestNotFoundException;
 import finki.ukim.backend.request_management.model.projection.RequestPageableProjection;
@@ -124,9 +126,49 @@ public class RequestServiceImpl implements RequestService {
             throw new RequestCannotBeCanceled(id);
         }
 
+        RequestStatus oldStatus = request.getStatus();
+
         request.setStatus(RequestStatus.CANCELED);
-        return requestRepository.save(request);
+
+        Request savedRequest = requestRepository.save(request);
+
+        requestLogService.create(
+                savedRequest,
+                user,
+                LogAction.REQUEST_CANCELED,
+                oldStatus.name(),
+                RequestStatus.CANCELED.name(),
+                "Request was canceled by the citizen."
+        );
+
+        return savedRequest;
     }
+
+    @Override
+    public Request changeStatus(Request request, User user, ChangeRequestStatusDto dto) {
+        accessScopeService.hasAccessToRequest(user, request);
+
+        RequestStatus oldStatus = request.getStatus();
+        RequestStatus newStatus = dto.status();
+
+        validateStatusTransition(oldStatus, newStatus);
+
+        request.setStatus(newStatus);
+
+        Request savedRequest = requestRepository.save(request);
+
+        requestLogService.create(
+                savedRequest,
+                user,
+                LogAction.STATUS_CHANGED,
+                oldStatus.name(),
+                newStatus.name(),
+                dto.note() != null ? dto.note() : dto.reason()
+        );
+
+        return savedRequest;
+    }
+
 
     @Override
     public void delete(Long id) {
@@ -136,5 +178,48 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public void deleteBulk(List<Long> ids) {
         requestRepository.deleteAllByIdInBatch(ids);
+    }
+
+
+    private void validateStatusTransition(RequestStatus oldStatus, RequestStatus newStatus) {
+        if (oldStatus == newStatus) {
+            return;
+        }
+
+        switch (oldStatus) {
+            case SUBMITTED -> {
+                if (newStatus != RequestStatus.IN_REVIEW &&
+                        newStatus != RequestStatus.CANCELED &&
+                        newStatus != RequestStatus.REJECTED) {
+                    throw new InvalidRequestStatusTransitionException(oldStatus, newStatus);
+                }
+            }
+
+            case IN_REVIEW -> {
+                if (newStatus != RequestStatus.ASSIGNED &&
+                        newStatus != RequestStatus.IN_PROGRESS &&
+                        newStatus != RequestStatus.REJECTED) {
+                    throw new InvalidRequestStatusTransitionException(oldStatus, newStatus);
+                }
+            }
+
+            case ASSIGNED -> {
+                if (newStatus != RequestStatus.IN_PROGRESS &&
+                        newStatus != RequestStatus.REJECTED) {
+                    throw new InvalidRequestStatusTransitionException(oldStatus, newStatus);
+                }
+            }
+
+            case IN_PROGRESS -> {
+                if (newStatus != RequestStatus.RESOLVED &&
+                        newStatus != RequestStatus.REJECTED) {
+                    throw new InvalidRequestStatusTransitionException(oldStatus, newStatus);
+                }
+            }
+
+            case RESOLVED, REJECTED, CANCELED -> {
+                throw new InvalidRequestStatusTransitionException(oldStatus, newStatus);
+            }
+        }
     }
 }

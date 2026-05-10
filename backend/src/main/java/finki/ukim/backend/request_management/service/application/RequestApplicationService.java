@@ -1,10 +1,7 @@
 package finki.ukim.backend.request_management.service.application;
 
 import finki.ukim.backend.auth_and_access.model.domain.User;
-import finki.ukim.backend.request_management.model.dto.CreateRequestDto;
-import finki.ukim.backend.request_management.model.dto.DisplayBasicRequestDto;
-import finki.ukim.backend.request_management.model.dto.DisplayRequestDto;
-import finki.ukim.backend.request_management.model.dto.DisplayRequestPageableDto;
+import finki.ukim.backend.request_management.model.dto.*;
 import finki.ukim.backend.request_management.model.dto.filter.RequestFilterDto;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +18,8 @@ public interface RequestApplicationService {
     Page<DisplayRequestPageableDto> findAll(User user, RequestFilterDto requestFilterDto);
 
     DisplayRequestDto cancel(Long id, User user);
+
+    DisplayRequestDto changeStatus(Long id, User user, ChangeRequestStatusDto changeRequestStatusDto);
 
     void delete(Long id);
 

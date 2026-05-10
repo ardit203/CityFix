@@ -6,6 +6,8 @@ import finki.ukim.backend.request_management.model.dto.DisplayRequestAssignmentB
 import finki.ukim.backend.request_management.model.dto.DisplayRequestAssignmentDto;
 import finki.ukim.backend.request_management.model.dto.DisplayRequestAssignmentPageableDto;
 import finki.ukim.backend.request_management.model.dto.filter.RequestAssignmentFilterDto;
+import finki.ukim.backend.request_management.service.application.RequestAssignmentApplicationService;
+import finki.ukim.backend.request_management.service.domain.RequestAssignmentService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,12 +21,16 @@ import java.util.List;
 @RequestMapping("/api/requests/{requestId}/assignments")
 @AllArgsConstructor
 public class RequestAssignmentController {
+    private final RequestAssignmentApplicationService requestAssignmentApplicationService;
+
     @GetMapping
     public ResponseEntity<List<DisplayRequestAssignmentBasicDto>> findAllByRequest(
             @PathVariable Long requestId,
             @AuthenticationPrincipal User user
     ) {
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(
+                requestAssignmentApplicationService.findAllByRequest(requestId, user)
+        );
     }
 
 
@@ -34,7 +40,11 @@ public class RequestAssignmentController {
             @AuthenticationPrincipal User user,
             @Valid @ModelAttribute RequestAssignmentFilterDto requestAssignmentFilterDto
     ) {
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(
+                requestAssignmentApplicationService.findAll(
+                        requestId, user, requestAssignmentFilterDto
+                )
+        );
     }
 
     @PostMapping
@@ -43,17 +53,21 @@ public class RequestAssignmentController {
             @AuthenticationPrincipal User user,
             @Valid @RequestBody CreateRequestAssignmentDto createRequestAssignmentDto
     ) {
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(
+                requestAssignmentApplicationService.assignEmployee(requestId, user, createRequestAssignmentDto)
+        );
     }
 
-    @PostMapping("/bulk")
-    public ResponseEntity<List<DisplayRequestAssignmentDto>> assignMultipleEmployees(
-            @PathVariable Long requestId,
-            @AuthenticationPrincipal User user,
-            @Valid @RequestBody List<CreateRequestAssignmentDto> createRequestAssignmentDtos
-    ) {
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping("/bulk")
+//    public ResponseEntity<List<DisplayRequestAssignmentDto>> assignMultipleEmployees(
+//            @PathVariable Long requestId,
+//            @AuthenticationPrincipal User user,
+//            @Valid @RequestBody List<CreateRequestAssignmentDto> createRequestAssignmentDtos
+//    ) {
+//        return ResponseEntity.ok(
+//                requestAssignmentApplicationService.
+//        );
+//    }
 
 
     @DeleteMapping("/{assignmentId}")
@@ -62,6 +76,7 @@ public class RequestAssignmentController {
             @AuthenticationPrincipal User user,
             @PathVariable Long assignmentId
     ) {
+        requestAssignmentApplicationService.removeAssignment(requestId, user, assignmentId);
         return ResponseEntity.ok().build();
     }
 
@@ -71,6 +86,7 @@ public class RequestAssignmentController {
             @AuthenticationPrincipal User user,
             List<Long> ids
     ) {
+        requestAssignmentApplicationService.removeMultipleAssignments(requestId, user, ids);
         return ResponseEntity.ok().build();
     }
 
@@ -79,6 +95,7 @@ public class RequestAssignmentController {
             @PathVariable Long requestId,
             @AuthenticationPrincipal User user
     ) {
+        requestAssignmentApplicationService.removeAllAssignments(requestId, user);
         return ResponseEntity.ok().build();
     }
 }

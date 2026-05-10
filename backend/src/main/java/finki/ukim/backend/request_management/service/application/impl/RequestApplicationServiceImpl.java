@@ -4,19 +4,12 @@ import finki.ukim.backend.administration.model.domain.Municipality;
 import finki.ukim.backend.administration.service.domain.MunicipalityService;
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.service.domain.UserService;
-import finki.ukim.backend.file_handling.constants.FileConstants;
 import finki.ukim.backend.file_handling.helper.FileHelper;
-import finki.ukim.backend.file_handling.model.domain.File;
 import finki.ukim.backend.file_handling.model.exception.FileTypeNotAllowedException;
-import finki.ukim.backend.file_handling.service.domain.FileService;
 import finki.ukim.backend.request_management.model.domain.Request;
-import finki.ukim.backend.request_management.model.dto.CreateRequestDto;
-import finki.ukim.backend.request_management.model.dto.DisplayBasicRequestDto;
-import finki.ukim.backend.request_management.model.dto.DisplayRequestDto;
-import finki.ukim.backend.request_management.model.dto.DisplayRequestPageableDto;
+import finki.ukim.backend.request_management.model.dto.*;
 import finki.ukim.backend.request_management.model.dto.filter.RequestFilterDto;
 import finki.ukim.backend.request_management.service.application.RequestApplicationService;
-import finki.ukim.backend.request_management.service.domain.RequestFileService;
 import finki.ukim.backend.request_management.service.domain.RequestService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,9 +23,7 @@ import java.util.List;
 public class RequestApplicationServiceImpl implements RequestApplicationService {
     private final RequestService requestService;
     private final MunicipalityService municipalityService;
-
     private final FileHelper fileHelper;
-    private final RequestFileService requestFileService;
     private final UserService userService;
 
     @Override
@@ -65,6 +56,12 @@ public class RequestApplicationServiceImpl implements RequestApplicationService 
     @Override
     public DisplayRequestDto cancel(Long id, User user) {
         return DisplayRequestDto.from(requestService.cancel(id, user));
+    }
+
+    @Override
+    public DisplayRequestDto changeStatus(Long id, User user, ChangeRequestStatusDto changeRequestStatusDto) {
+        Request request = requestService.findById(id, user);
+        return DisplayRequestDto.from(requestService.changeStatus(request,  user, changeRequestStatusDto));
     }
 
     @Override

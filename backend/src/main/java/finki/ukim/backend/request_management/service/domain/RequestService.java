@@ -2,6 +2,8 @@ package finki.ukim.backend.request_management.service.domain;
 
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.request_management.model.domain.Request;
+import finki.ukim.backend.request_management.model.dto.ChangeRequestStatusDto;
+import finki.ukim.backend.request_management.model.dto.DisplayRequestDto;
 import finki.ukim.backend.request_management.model.dto.filter.RequestFilterDto;
 import finki.ukim.backend.request_management.model.projection.RequestPageableProjection;
 import org.springframework.data.domain.Page;
@@ -19,6 +21,8 @@ public interface RequestService {
     Page<RequestPageableProjection> findAll(User user, RequestFilterDto requestFilterDto);
 
     Request cancel(Long id, User user);
+
+    Request changeStatus(Request request, User user, ChangeRequestStatusDto changeRequestStatusDto);
 
     void delete(Long id);
 

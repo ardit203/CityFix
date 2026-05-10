@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface RequestAssignmentService {
+    RequestAssignment findById(Long id);
+
     List<RequestAssignment> findAllByRequest(
             Request request,
             User user
@@ -27,11 +29,11 @@ public interface RequestAssignmentService {
             RequestAssignment assignment
     );
 
-    List<RequestAssignment> assignMultipleEmployees(
-            Request request,
-            User user,
-            List<RequestAssignment> assignments
-    );
+//    List<RequestAssignment> assignMultipleEmployees(
+//            Request request,
+//            User user,
+//            List<RequestAssignment> assignments
+//    );
 
     void removeAssignment(
             Request request,
