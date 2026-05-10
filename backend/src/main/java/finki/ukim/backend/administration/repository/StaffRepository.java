@@ -132,5 +132,15 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
             @Param("roles") List<Role> roles
     );
 
+
+    @Query("""
+            select s
+            from Staff s
+            where s.user.id in :ids
+            """)
+    List<Staff> findStaff(
+            @Param("ids") List<Long> ids
+    );
+
     boolean existsByUser_Id(Long userId);
 }

@@ -7,6 +7,7 @@ import finki.ukim.backend.administration.model.exception.UserIsAlreadyStaffExcep
 import finki.ukim.backend.administration.model.exception.UserIsNotStaffException;
 import finki.ukim.backend.administration.repository.StaffRepository;
 import finki.ukim.backend.auth_and_access.model.domain.User;
+import finki.ukim.backend.auth_and_access.model.dto.accessScope.RequestAssignmentScopeFilters;
 import finki.ukim.backend.auth_and_access.model.dto.accessScope.RequestScopeFilters;
 import finki.ukim.backend.auth_and_access.model.dto.accessScope.StaffScope;
 import finki.ukim.backend.auth_and_access.model.dto.accessScope.StaffScopeFilters;
@@ -163,6 +164,14 @@ public class AccessScopeServiceImpl implements AccessScopeService {
     }
 
     @Override
+    public void hasAccessToStaff(User currentUser, Long staffId) {
+        Staff staff = staffRepository
+                .findById(staffId)
+                .orElseThrow(() -> new UserIsNotStaffException(currentUser.getUsername()));
+        hasAccessToStaff(currentUser, staff);
+    }
+
+    @Override
     public void hasAccessToRequest(User currentUser, Request request) {
         if (isAdmin(currentUser)) {
             return;
@@ -193,28 +202,58 @@ public class AccessScopeServiceImpl implements AccessScopeService {
             throw new ForbiddenException("You are not allowed to access this request.");
         }
 
-//        if (isEmployee(currentUser)) {
-//            StaffScope scope = getStaffScope(currentUser);
-//
-//            boolean sameDepartment = request.getDepartment() != null &&
-//                    request.getDepartment().getId().equals(scope.departmentId());
-//
-//            boolean sameMunicipality = request.getMunicipality() != null &&
-//                    request.getMunicipality().getId().equals(scope.municipalityId());
-//
-//            boolean assignedToEmployee = requestAssignmentRepository
-//                    .existsByRequest_IdAndEmployee_Id(
-//                            request.getId(),
-//                            currentUser.getId()
-//                    );
-//
-//            if (sameDepartment && sameMunicipality && assignedToEmployee) {
-//                return;
-//            }
-//
-//            throw new ForbiddenException("You are not allowed to access this request.");
-//        }
+        if (isEmployee(currentUser)) {
+            StaffScope scope = getStaffScope(currentUser);
 
+            boolean sameDepartment = request.getDepartment() != null &&
+                    request.getDepartment().getId().equals(scope.departmentId());
+
+            boolean sameMunicipality = request.getMunicipality() != null &&
+                    request.getMunicipality().getId().equals(scope.municipalityId());
+
+            boolean assignedToEmployee = requestAssignmentRepository
+                    .existsByRequest_IdAndEmployee_Id(
+                            request.getId(),
+                            currentUser.getId()
+                    );
+
+            if (sameDepartment && sameMunicipality && assignedToEmployee) {
+                return;
+            }
+
+            throw new ForbiddenException("You are not allowed to access this request.");
+        }
+
+        throw new InsufficientRoleException(currentUser.getUsername());
+    }
+
+    @Override
+    public List<Long> assignmentsYouCanView(User currentUser, Request request) {
+        if (isCitizen(currentUser)) {
+            return List.of();
+        }
+        if (isAdmin(currentUser)) {
+            return requestAssignmentRepository.findIds(request.getId(), null, null, null);
+        }
+        hasAccessToRequest(currentUser, request);
+
+        if (isManager(currentUser)) {
+            return requestAssignmentRepository.findIds(
+                    request.getId(),
+                    request.getDepartment().getId(),
+                    request.getMunicipality().getId(),
+                    null
+            );
+        }
+
+        if (isEmployee(currentUser)) {
+            return requestAssignmentRepository.findIds(
+                    request.getId(),
+                    request.getDepartment().getId(),
+                    request.getMunicipality().getId(),
+                    currentUser.getId()
+            );
+        }
         throw new InsufficientRoleException(currentUser.getUsername());
     }
 
@@ -285,6 +324,36 @@ public class AccessScopeServiceImpl implements AccessScopeService {
                     scope.departmentId(),
                     scope.municipalityId(),
                     currentUser.getId()
+            );
+        }
+
+        throw new InsufficientRoleException(currentUser.getUsername());
+    }
+
+    @Override
+    public RequestAssignmentScopeFilters getRequestAssignmentFilters(User currentUser, Long employeeId, Long assignedByUserId) {
+        if (isCitizen(currentUser)) {
+            throw new ForbiddenException("Citizens are not allowed to view request assignments.");
+        }
+
+        if (isAdmin(currentUser)) {
+            return new RequestAssignmentScopeFilters(
+                    employeeId,
+                    assignedByUserId
+            );
+        }
+
+        if (isManager(currentUser)) {
+            return new RequestAssignmentScopeFilters(
+                    employeeId,
+                    assignedByUserId
+            );
+        }
+
+        if (isEmployee(currentUser)) {
+            return new RequestAssignmentScopeFilters(
+                    currentUser.getId(),
+                    null
             );
         }
 

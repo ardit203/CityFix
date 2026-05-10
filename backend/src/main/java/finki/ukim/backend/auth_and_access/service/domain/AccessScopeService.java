@@ -2,6 +2,7 @@ package finki.ukim.backend.auth_and_access.service.domain;
 
 import finki.ukim.backend.administration.model.domain.Staff;
 import finki.ukim.backend.auth_and_access.model.domain.User;
+import finki.ukim.backend.auth_and_access.model.dto.accessScope.RequestAssignmentScopeFilters;
 import finki.ukim.backend.auth_and_access.model.dto.accessScope.RequestScopeFilters;
 import finki.ukim.backend.auth_and_access.model.dto.accessScope.StaffScope;
 import finki.ukim.backend.auth_and_access.model.dto.accessScope.StaffScopeFilters;
@@ -24,7 +25,7 @@ public interface AccessScopeService {
 
     boolean isManagement(User currentUser);
 
-    public List<Role> getRoleVisibility(User currentUser);
+    List<Role> getRoleVisibility(User currentUser);
 
     void checkForManagement(User currentUser);
 
@@ -36,7 +37,11 @@ public interface AccessScopeService {
 
     void hasAccessToStaff(User currentUser, Staff targetStaff);
 
+    void hasAccessToStaff(User currentUser, Long staffId);
+
     void hasAccessToRequest(User currentUser, Request request);
+
+    List<Long> assignmentsYouCanView(User currentUser, Request request);
 
     StaffScopeFilters getStaffFilters(
             User currentUser,
@@ -50,5 +55,11 @@ public interface AccessScopeService {
             Long departmentId,
             Long municipalityId,
             Long assignedEmployeeUserId
+    );
+
+    RequestAssignmentScopeFilters getRequestAssignmentFilters(
+            User currentUser,
+            Long employeeId,
+            Long assignedByUserId
     );
 }
