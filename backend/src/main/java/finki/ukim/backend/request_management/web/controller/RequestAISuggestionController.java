@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/requests/{requestId}/ai-suggestion")
 @AllArgsConstructor
 public class RequestAISuggestionController {
-//
 //    @GetMapping
 //    public ResponseEntity<?> findSuggestion(
 //            @PathVariable Long requestId,
@@ -17,13 +16,6 @@ public class RequestAISuggestionController {
 //        return ResponseEntity.ok().build();
 //    }
 //
-//    @PostMapping("/generate")
-//    public ResponseEntity<?> generateSuggestion(
-//            @PathVariable Long requestId,
-//            @AuthenticationPrincipal User currentUser
-//    ) {
-//        return ResponseEntity.ok().build();
-//    }
 //
 //    @PostMapping("/approve")
 //    public ResponseEntity<?> approveSuggestion(

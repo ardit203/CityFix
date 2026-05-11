@@ -1,5 +1,6 @@
 package finki.ukim.backend.request_management.service.domain.impl;
 
+import finki.ukim.backend.ai_integration.service.domain.AiSuggestionService;
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.dto.accessScope.RequestScopeFilters;
 import finki.ukim.backend.auth_and_access.service.domain.AccessScopeService;
@@ -33,6 +34,7 @@ public class RequestServiceImpl implements RequestService {
     private final RequestRepository requestRepository;
     private final AccessScopeService accessScopeService;
     private final RequestLogService requestLogService;
+    private final AiSuggestionService aiSuggestionService;
     private final FileService fileService;
 
     @Override
@@ -79,7 +81,7 @@ public class RequestServiceImpl implements RequestService {
                     "File uploaded to request."
             );
         });
-        //start ai
+        aiSuggestionService.suggest(request);
         //send mail
         return created;
     }
@@ -168,7 +170,6 @@ public class RequestServiceImpl implements RequestService {
 
         return savedRequest;
     }
-
 
     @Override
     public void delete(Long id) {

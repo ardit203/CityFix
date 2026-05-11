@@ -127,14 +127,14 @@ export const emptyForgotPasswordDto = {
 export const emptyResetPasswordDto = {
     token: "",
     newPassword: "",
-    confirmNewPassword: ""
+    confirmPassword: ""
 };
 
 export const mapToChangePasswordDto = (formData) => {
     return {
         currentPassword: formData.currentPassword || "",
         newPassword: formData.newPassword || "",
-        confirmNewPassword: formData.confirmNewPassword || ""
+        confirmPassword: formData.confirmPassword || ""
     };
 };
 
@@ -142,6 +142,6 @@ export const mapToResetPasswordDto = (formData) => {
     return {
         token: formData.token || "",
         newPassword: formData.newPassword || "",
-        confirmNewPassword: formData.confirmNewPassword || ""
+        confirmPassword: formData.confirmPassword || ""
     };
 };

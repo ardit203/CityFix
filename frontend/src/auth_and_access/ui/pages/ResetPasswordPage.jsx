@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useState} from "react";
 import {
     Box,
     Button,
@@ -8,27 +8,27 @@ import {
     Typography,
     Alert
 } from "@mui/material";
-import { useNavigate, useSearchParams } from "react-router";
+import {useNavigate, useSearchParams} from "react-router";
 
 import useForm from "../../../common/hooks/useForm.js";
 import usePasswordReset from "../../hooks/auth/usePasswordReset.js";
 
-import { emptyResetPasswordDto } from "../../dtos/authDto.js";
+import {emptyResetPasswordDto} from "../../dtos/authDto.js";
 
 const ResetPasswordPage = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const token = searchParams.get("token");
 
-    const { formData, handleChange, handleSubmit } = useForm(emptyResetPasswordDto);
+    const {formData, handleChange} = useForm(emptyResetPasswordDto);
     const [validationErrors, setValidationErrors] = useState({});
 
     // Pulling in the custom hook
-    const { resetPassword, loading, error: apiError } = usePasswordReset();
+    const {resetPassword, loading, error: apiError} = usePasswordReset();
 
     const validate = () => {
         let tempErrors = {};
-        
+
         if (!formData.newPassword) tempErrors.newPassword = "Password is required";
         if (!formData.confirmPassword) {
             tempErrors.confirmPassword = "Confirm password is required";
@@ -42,26 +42,29 @@ const ResetPasswordPage = () => {
 
     const handleFormSubmit = async (event) => {
         event.preventDefault();
-        
+        let data = {
+            token,
+            newPassword: formData.newPassword,
+            confirmPassword: formData.confirmPassword
+        }
+
+        console.log(data)
+
         if (validate()) {
             // The API DTO expects { token, newPassword, confirmPassword }
-            await resetPassword({
-                token,
-                newPassword: formData.newPassword,
-                confirmPassword: formData.confirmPassword
-            });
+            await resetPassword(data);
         }
     };
 
     if (!token) {
         return (
             <Container maxWidth="sm">
-                <Paper elevation={3} sx={{ padding: 4, mt: 8 }}>
+                <Paper elevation={3} sx={{padding: 4, mt: 8}}>
                     <Typography variant="h5" align="center" gutterBottom color="error">
                         Invalid Reset Link
                     </Typography>
 
-                    <Typography color="text.secondary" align="center" sx={{ mb: 3 }}>
+                    <Typography color="text.secondary" align="center" sx={{mb: 3}}>
                         The reset link is missing a token. Please request a new password reset email.
                     </Typography>
 
@@ -79,7 +82,7 @@ const ResetPasswordPage = () => {
 
     return (
         <Container maxWidth="sm">
-            <Paper elevation={3} sx={{ padding: 4, mt: 8 }}>
+            <Paper elevation={3} sx={{padding: 4, mt: 8}}>
                 <Typography variant="h5" align="center" gutterBottom>
                     Reset Password
                 </Typography>
@@ -88,13 +91,13 @@ const ResetPasswordPage = () => {
                     variant="body2"
                     color="text.secondary"
                     align="center"
-                    sx={{ mb: 3 }}
+                    sx={{mb: 3}}
                 >
                     Enter your new password below.
                 </Typography>
 
                 {apiError && (
-                    <Alert severity="error" sx={{ mb: 3 }}>
+                    <Alert severity="error" sx={{mb: 3}}>
                         {apiError}
                     </Alert>
                 )}
@@ -131,7 +134,7 @@ const ResetPasswordPage = () => {
                         fullWidth
                         variant="contained"
                         type="submit"
-                        sx={{ mt: 3 }}
+                        sx={{mt: 3}}
                         disabled={loading}
                     >
                         {loading ? "Resetting..." : "Reset Password"}
@@ -140,7 +143,7 @@ const ResetPasswordPage = () => {
                     <Button
                         fullWidth
                         variant="outlined"
-                        sx={{ mt: 1 }}
+                        sx={{mt: 1}}
                         onClick={() => navigate("/login")}
                         disabled={loading}
                     >

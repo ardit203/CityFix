@@ -25,6 +25,15 @@ public class Initializer {
     @PostConstruct
     public void init() {
         createUser(
+                "ardit",
+                "ardit",
+                "arditselmani203@gmail.com",
+                Role.ROLE_ADMINISTRATOR,
+                "Ardit",
+                "Selmani"
+        );
+
+        createUser(
                 "admin",
                 "admin",
                 "admin@cityfix.com",

@@ -69,7 +69,7 @@ public class FileHelper {
     }
 
     public Boolean areValidFileTypes(List<MultipartFile> files) {
-        List<FileType> fileTypes = getReqFileTypes();
+        List<FileType> fileTypes = getImageTypes();
         if (files == null || files.isEmpty()) {
             return true;
         }
