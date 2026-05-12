@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {
     Box, Button, Card, CardContent, Stack, TextField,
-    FormControl, InputLabel, Select, MenuItem, FormHelperText, CircularProgress, Typography
+    FormControl, InputLabel, Select, MenuItem, FormHelperText, CircularProgress, Typography,
+    List, ListItem, ListItemText, ListItemSecondaryAction, IconButton
 } from "@mui/material";
+import { CloudUpload, Delete as DeleteIcon } from "@mui/icons-material";
 
 import useForm from "../../../../common/hooks/useForm.js";
 import useMunicipalities from "../../../../administration/hooks/municipality/useMunicipalities.js";
@@ -51,8 +53,45 @@ const RequestForm = ({
             tempErrors.location = "Please select a location on the map.";
         }
 
+        if (formData.files && formData.files.length > 5) {
+            tempErrors.files = "You can only upload up to 5 files.";
+        }
+
         setErrors(tempErrors);
         return Object.keys(tempErrors).length === 0;
+    };
+
+    const handleFileChange = (e) => {
+        const selectedFiles = Array.from(e.target.files);
+        if (selectedFiles.length + (formData.files?.length || 0) > 5) {
+            setErrors(prev => ({...prev, files: "You can only upload up to 5 files total."}));
+            return;
+        }
+        
+        handleChange({
+            target: {
+                name: 'files',
+                value: [...(formData.files || []), ...selectedFiles]
+            }
+        });
+        
+        if (errors.files) {
+            setErrors(prev => ({...prev, files: null}));
+        }
+        
+        // Reset input value so same files can be selected again if removed
+        e.target.value = null;
+    };
+
+    const handleRemoveFile = (index) => {
+        const newFiles = [...(formData.files || [])];
+        newFiles.splice(index, 1);
+        handleChange({
+            target: {
+                name: 'files',
+                value: newFiles
+            }
+        });
     };
 
     const handleLocationSelect = (location) => {
@@ -163,6 +202,50 @@ const RequestForm = ({
                                 <Typography variant="caption" color="success.main" sx={{ mt: 1, display: 'block' }}>
                                     Location selected: {formData.requestLocationDto.latitude.toFixed(4)}, {formData.requestLocationDto.longitude.toFixed(4)}
                                 </Typography>
+                            )}
+                        </Box>
+
+                        <Box>
+                            <Typography variant="subtitle1" gutterBottom>
+                                Attachments (Optional, Max 5)
+                            </Typography>
+                            <Button
+                                variant="outlined"
+                                component="label"
+                                startIcon={<CloudUpload />}
+                            >
+                                Upload Files
+                                <input
+                                    type="file"
+                                    hidden
+                                    multiple
+                                    onChange={handleFileChange}
+                                    accept="image/*,application/pdf"
+                                />
+                            </Button>
+                            
+                            {errors.files && (
+                                <Typography variant="caption" color="error" sx={{ mt: 1, display: 'block' }}>
+                                    {errors.files}
+                                </Typography>
+                            )}
+
+                            {formData.files && formData.files.length > 0 && (
+                                <List dense>
+                                    {formData.files.map((file, index) => (
+                                        <ListItem key={index}>
+                                            <ListItemText 
+                                                primary={file.name} 
+                                                secondary={`${(file.size / 1024 / 1024).toFixed(2)} MB`} 
+                                            />
+                                            <ListItemSecondaryAction>
+                                                <IconButton edge="end" aria-label="delete" onClick={() => handleRemoveFile(index)}>
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </ListItemSecondaryAction>
+                                        </ListItem>
+                                    ))}
+                                </List>
                             )}
                         </Box>
 

@@ -42,10 +42,10 @@ public class Request extends BaseAuditableEntity {
     private Priority priority;
 
     @Enumerated(EnumType.STRING)
-    private RequestStatus status;
+    private RequestStatus status = RequestStatus.SUBMITTED;
 
     @Enumerated(EnumType.STRING)
-    private RoutingStatus routingStatus;
+    private RoutingStatus routingStatus = RoutingStatus.PENDING_REVIEW;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;

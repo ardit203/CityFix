@@ -12,13 +12,6 @@ const HomePage = () => {
                     This is the home page.
                 </Typography>
             </Container>
-            <LocationPicker
-                onLocationSelect={(location) => {
-                    console.log(location.latitude);
-                    console.log(location.longitude);
-                    console.log(location.address);
-                }}
-            />
         </Box>
     );
 };

@@ -32,6 +32,14 @@ const useRequestActions = () => {
         });
     }, [executeAction]);
 
+    const changeStatus = useCallback(async (id, data, onSuccess) => {
+        return executeAction({
+            successMessage: "Request status updated successfully!",
+            actionFn: () => requestService.changeStatus(id, data),
+            onSuccess: onSuccess
+        });
+    }, [executeAction]);
+
     const deleteRequestsBulk = useCallback(async (ids, onSuccess) => {
         return executeAction({
             confirmDialog: {
@@ -44,7 +52,50 @@ const useRequestActions = () => {
         });
     }, [executeAction]);
 
-    return {createRequest, deleteRequest, cancelRequest, deleteRequestsBulk, isExecuting};
+    const confirmRouting = useCallback(async (id, onSuccess) => {
+        return executeAction({
+            successMessage: "Routing confirmed successfully!",
+            actionFn: () => requestService.confirmRouting(id),
+            onSuccess: onSuccess
+        });
+    }, [executeAction]);
+
+    const rejectRouting = useCallback(async (id, data, onSuccess) => {
+        return executeAction({
+            successMessage: "Routing rejected successfully!",
+            actionFn: () => requestService.rejectRouting(id, data),
+            onSuccess: onSuccess
+        });
+    }, [executeAction]);
+
+    const updateRouting = useCallback(async (id, data, onSuccess) => {
+        return executeAction({
+            successMessage: "Routing updated successfully!",
+            actionFn: () => requestService.updateRouting(id, data),
+            onSuccess: onSuccess
+        });
+    }, [executeAction]);
+
+    const reopenRouting = useCallback(async (id, onSuccess) => {
+        return executeAction({
+            successMessage: "Routing reopened successfully!",
+            actionFn: () => requestService.reopenRouting(id),
+            onSuccess: onSuccess
+        });
+    }, [executeAction]);
+
+    return {
+        createRequest, 
+        deleteRequest, 
+        cancelRequest, 
+        changeStatus,
+        deleteRequestsBulk, 
+        confirmRouting,
+        rejectRouting,
+        updateRouting,
+        reopenRouting,
+        isExecuting
+    };
 };
 
 export default useRequestActions;

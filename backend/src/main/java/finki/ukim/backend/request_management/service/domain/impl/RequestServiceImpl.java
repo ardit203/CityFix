@@ -53,7 +53,6 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public Request create(Request request, List<MultipartFile> files) {
-        request.setStatus(RequestStatus.SUBMITTED);
         List<File> createdFiles = new ArrayList<>();
         if (files != null && !files.isEmpty()) {
             createdFiles = fileService.createAll(files, FileConstants.REQUESTS_DIR);

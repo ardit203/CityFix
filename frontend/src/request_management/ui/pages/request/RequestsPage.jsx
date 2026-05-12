@@ -1,12 +1,6 @@
 import React, {useState} from 'react';
 import {
-    Box,
-    CircularProgress,
-    FormControl,
-    FormHelperText,
-    InputLabel,
-    MenuItem,
-    Select,
+    Box, CircularProgress, FormControl, InputLabel, MenuItem, Select,
     TextField
 } from "@mui/material";
 import {useNavigate} from "react-router";
@@ -17,21 +11,55 @@ import AdminTable from "../../../../common/ui/components/AdminTable.jsx";
 import PaginatedDataView from "../../../../common/ui/components/PaginatedDataView.jsx";
 import SortControls from "../../../../common/ui/components/SortControls.jsx";
 import useRequests from "../../../hooks/request/useRequests.js";
-import useMunicipalities from "../../../../administration/hooks/municipality/useMunicipalities.js";
 import useRequestActions from "../../../hooks/request/useRequestActions.js";
 import {emptyRequestFilter} from "../../../dtos/filterDto.js";
 import {requestColumns, requestSortOptions} from "../../component/request/RequestConfig.jsx";
 import RequestGrid from "../../component/request/RequestGrid.jsx";
+import RequireRole from "../../../../auth_and_access/ui/components/auth/RequireRole.jsx";
+import useDepartments from "../../../../administration/hooks/department/useDepartments.js";
+import useCategories from "../../../../administration/hooks/category/useCategories.js";
+import useMunicipalities from "../../../../administration/hooks/municipality/useMunicipalities.js";
+
+
+const requestStatusOptions = [
+    "SUBMITTED",
+    "IN_REVIEW",
+    "ASSIGNED",
+    "IN_PROGRESS",
+    "RESOLVED",
+    "REJECTED",
+    "CANCELED"
+];
+
+const routingStatusOptions = [
+    "PENDING_REVIEW",
+    "CONFIRMED",
+    "REJECTED"
+];
+
+const priorityOptions = [
+    "LOW",
+    "MEDIUM",
+    "HIGH"
+];
+
+const formatLabel = (value) => {
+    return value
+        .replaceAll("_", " ")
+        .toLowerCase()
+        .replace(/\b\w/g, char => char.toUpperCase());
+};
+
 
 
 const RequestsPage = () => {
     const navigate = useNavigate();
     const {requests, loading, pagination, fetchRequestsPaged} = useRequests();
-    const {municipalities, loading: loadingMunicipalities} = useMunicipalities({paged: false});
+    const {departments, loading: loadingDepartments} = useDepartments({paged: false})
+    const {categories, loading: loadingCategories} = useCategories({paged: false})
+    const {municipalities, loading: loadingMunicipalities} = useMunicipalities({paged: false})
     const {deleteRequest, deleteRequestsBulk} = useRequestActions();
     const [viewMode, setViewMode] = useState('table');
-
-    console.log(requests)
 
     const {
         filters,
@@ -60,38 +88,158 @@ const RequestsPage = () => {
                 onViewChange={handleViewChange}
             >
                 <TextField label="ID" name="id" value={filters.id} onChange={handleFilterChange} size="small"/>
+                <RequireRole allowedRoles={["ADMINISTRATOR", "MANAGER", "EMPLOYEE"]}>
+                    <TextField label="Citizen ID" name="citizenId" value={filters.citizenId} onChange={handleFilterChange} size="small"/>
+                </RequireRole>
+                <RequireRole allowedRoles={["ADMINISTRATOR"]}>
+                    <FormControl size="small" sx={{minWidth: 140}}>
+                        <InputLabel>Department</InputLabel>
+                        <Select
+                            name="departmentId"
+                            value={filters.departmentId}
+                            label="Department"
+                            onChange={handleFilterChange}
+                            disabled={loadingDepartments}
+                        >
+                            {/* 1. Put the default empty option OUTSIDE the conditional logic */}
+                            <MenuItem value="">
+                                <em>All Departments</em>
+                            </MenuItem>
+                            {/* 2. Then do your conditional mapping without Fragments */}
+                            {loadingDepartments ? (
+                                <MenuItem disabled value="loading">
+                                    <CircularProgress size={20} sx={{mr: 2}}/> Loading...
+                                </MenuItem>
+                            ) : departments.length === 0 ? (
+                                <MenuItem disabled value="empty">
+                                    No departments available
+                                </MenuItem>
+                            ) : (
+                                departments.map((dep) => (
+                                    <MenuItem key={dep.id} value={dep.id}>
+                                        {dep.name}
+                                    </MenuItem>
+                                ))
+                            )}
+                        </Select>
+                    </FormControl>
+                </RequireRole>
+                <RequireRole allowedRoles={["ADMINISTRATOR"]}>
+                    <FormControl size="small" sx={{minWidth: 140}}>
+                        <InputLabel>Municipality</InputLabel>
+                        <Select
+                            name="municipalityId"
+                            value={filters.municipalityId}
+                            label="Municipality"
+                            onChange={handleFilterChange}
+                            disabled={loadingMunicipalities}
+                        >
+                            {/* 1. Put the default empty option OUTSIDE the conditional logic */}
+                            <MenuItem value="">
+                                <em>All Municipalities</em>
+                            </MenuItem>
+                            {/* 2. Then do your conditional mapping without Fragments */}
+                            {loadingMunicipalities ? (
+                                <MenuItem disabled value="loading">
+                                    <CircularProgress size={20} sx={{mr: 2}}/> Loading...
+                                </MenuItem>
+                            ) : municipalities.length === 0 ? (
+                                <MenuItem disabled value="empty">
+                                    No municipalities available
+                                </MenuItem>
+                            ) : (
+                                municipalities.map((mun) => (
+                                    <MenuItem key={mun.id} value={mun.id}>
+                                        {mun.name}
+                                    </MenuItem>
+                                ))
+                            )}
+                        </Select>
+                    </FormControl>
+                </RequireRole>
+                <RequireRole allowedRoles={["ADMINISTRATOR"]}>
+                    <FormControl size="small" sx={{minWidth: 140}}>
+                        <InputLabel>Category</InputLabel>
+                        <Select
+                            name="categoryId"
+                            value={filters.categoryId}
+                            label="Category"
+                            onChange={handleFilterChange}
+                            disabled={loadingCategories}
+                        >
+                            {/* 1. Put the default empty option OUTSIDE the conditional logic */}
+                            <MenuItem value="">
+                                <em>All Categories</em>
+                            </MenuItem>
+                            {/* 2. Then do your conditional mapping without Fragments */}
+                            {loadingCategories ? (
+                                <MenuItem disabled value="loading">
+                                    <CircularProgress size={20} sx={{mr: 2}}/> Loading...
+                                </MenuItem>
+                            ) : categories.length === 0 ? (
+                                <MenuItem disabled value="empty">
+                                    No categories available
+                                </MenuItem>
+                            ) : (
+                                categories.map((cat) => (
+                                    <MenuItem key={cat.id} value={cat.id}>
+                                        {cat.name}
+                                    </MenuItem>
+                                ))
+                            )}
+                        </Select>
+                    </FormControl>
+                </RequireRole>
+                <RequireRole allowedRoles={["ADMINISTRATOR"]}>
+                    <TextField label="Assigned Employee ID" name="assignedEmployeeUserId" value={filters.assignedEmployeeUserId} onChange={handleFilterChange} size="small"/>
+                </RequireRole>
+                <TextField select label="Status" name="status" value={filters.status} onChange={handleFilterChange} size="small" sx={{minWidth: 140}}>
+                    <MenuItem value="">All statuses</MenuItem>
+
+                    {requestStatusOptions.map(status => (
+                        <MenuItem key={status} value={status}>
+                            {formatLabel(status)}
+                        </MenuItem>
+                    ))}
+                </TextField>
+                <TextField select label="Routing status" name="routingStatus" value={filters.routingStatus} onChange={handleFilterChange} size="small" sx={{minWidth: 160}}>
+                    <MenuItem value="">All statuses</MenuItem>
+
+                    {routingStatusOptions.map(status => (
+                        <MenuItem key={status} value={status}>
+                            {formatLabel(status)}
+                        </MenuItem>
+                    ))}
+                </TextField>
+                <TextField select label="Priority" name="priority" value={filters.priority} onChange={handleFilterChange} size="small" sx={{minWidth: 140}}>
+                    <MenuItem value="">All priorities</MenuItem>
+
+                    {priorityOptions.map(priority => (
+                        <MenuItem key={priority} value={priority}>
+                            {formatLabel(priority)}
+                        </MenuItem>
+                    ))}
+                </TextField>
+                <TextField
+                    label="Subimtted From"
+                    name="submittedFrom"
+                    type="datetime-local"
+                    value={filters.submittedFrom}
+                    onChange={handleFilterChange}
+                    size="small"
+                    sx={{minWidth: 130}}
+                />
+                <TextField
+                    label="Subimtted To"
+                    name="submittedTo"
+                    type="datetime-local"
+                    value={filters.submittedTo}
+                    onChange={handleFilterChange}
+                    size="small"
+                    sx={{minWidth: 130}}
+                />
                 <TextField label="Search" name="text" value={filters.text} onChange={handleFilterChange} size="small"/>
-                {/*<FormControl size="small" sx={{minWidth: 140}}>*/}
-                {/*    <InputLabel>Department</InputLabel>*/}
-                {/*    <Select*/}
-                {/*        name="departmentId"*/}
-                {/*        value={filters.departmentId}*/}
-                {/*        label="Department"*/}
-                {/*        onChange={handleFilterChange}*/}
-                {/*        disabled={loadingMunicipalities}*/}
-                {/*    >*/}
-                {/*        /!* 1. Put the default empty option OUTSIDE the conditional logic *!/*/}
-                {/*        <MenuItem value="">*/}
-                {/*            <em>All Departments</em>*/}
-                {/*        </MenuItem>*/}
-                {/*        /!* 2. Then do your conditional mapping without Fragments *!/*/}
-                {/*        {loadingMunicipalities ? (*/}
-                {/*            <MenuItem disabled value="loading">*/}
-                {/*                <CircularProgress size={20} sx={{mr: 2}}/> Loading...*/}
-                {/*            </MenuItem>*/}
-                {/*        ) : requests.length === 0 ? (*/}
-                {/*            <MenuItem disabled value="empty">*/}
-                {/*                No municipalities available*/}
-                {/*            </MenuItem>*/}
-                {/*        ) : (*/}
-                {/*            municipalities.map((mun) => (*/}
-                {/*                <MenuItem key={mun.id} value={mun.id}>*/}
-                {/*                    {mun.name}*/}
-                {/*                </MenuItem>*/}
-                {/*            ))*/}
-                {/*        )}*/}
-                {/*    </Select>*/}
-                {/*</FormControl>*/}
+
                 <SortControls
                     sortByValue={filters.sortBy}
                     sortDirValue={filters.sortDir}

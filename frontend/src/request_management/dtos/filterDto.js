@@ -21,7 +21,7 @@ export const emptyRequestFilter = {
 export const mapRequestFilterForApi = (filterState) => {
     // Remove empty/default values before sending to the backend
     const apiFilter = {};
-    
+
     // Always include pagination and sorting if valid
     if (filterState.page !== undefined) apiFilter.page = filterState.page;
     if (filterState.size !== undefined) apiFilter.size = filterState.size;
@@ -44,3 +44,12 @@ export const mapRequestFilterForApi = (filterState) => {
 
     return apiFilter;
 };
+
+export const emptyRequestLogFilters = {
+    ...emptyRequestFilter,
+    id: '',
+    action: '',
+    text: '',
+    createdFrom: '',
+    createdTo: ''
+}

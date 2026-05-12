@@ -9,5 +9,5 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "ai.gemini")
 public class GeminiProperties {
     private String apiKey;
-    private String model = "gemini-1.5-flash";
+    private String model = "gemini-2.5-flash";
 }

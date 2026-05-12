@@ -4,5 +4,6 @@ public enum SuggestionStatus {
     NOT_GENERATED,
     PENDING_REVIEW,
     APPROVED,
+    OVERRIDDEN,
     REJECTED
 }

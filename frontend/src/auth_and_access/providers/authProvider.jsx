@@ -11,19 +11,15 @@ const decode = (jwtToken) => {
 };
 
 const AuthProvider = ({children}) => {
-    const [state, setState] = useState({
-        "user": null,
-        "loading": true
-    });
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     const login = (jwtToken) => {
         const payload = decode(jwtToken);
         if (payload) {
             localStorage.setItem("token", jwtToken);
-            setState({
-                "user": payload,
-                "loading": false,
-            });
+            setUser(payload);
+            setLoading(false);
         }
     };
 
@@ -31,10 +27,8 @@ const AuthProvider = ({children}) => {
         const jwtToken = localStorage.getItem("token");
         if (jwtToken) {
             localStorage.removeItem("token");
-            setState({
-                "user": null,
-                "loading": false,
-            });
+            setUser(null);
+            setLoading(false);
         }
     };
 
@@ -43,26 +37,20 @@ const AuthProvider = ({children}) => {
         if (jwtToken) {
             const payload = decode(jwtToken);
             if (payload) {
-                setState({
-                    "user": payload,
-                    "loading": false,
-                });
+                setUser(payload);
+                setLoading(false);
             } else {
-                setState({
-                    "user": null,
-                    "loading": false,
-                });
+                setUser(null);
+                setLoading(false);
             }
         } else {
-            setState({
-                "user": null,
-                "loading": false,
-            });
+            setUser(null);
+            setLoading(false);
         }
     }, []);
 
     return (
-        <AuthContext.Provider value={{login, logout, ...state, isLoggedIn: !!state.user}}>
+        <AuthContext.Provider value={{login, logout, user, loading, isLoggedIn: !!user}}>
             {children}
         </AuthContext.Provider>
     );

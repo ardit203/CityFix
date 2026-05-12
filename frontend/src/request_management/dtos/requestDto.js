@@ -9,7 +9,8 @@ export const emptyCreateRequestDto = {
     requestLocationDto: {
         latitude: "",
         longitude: ""
-    }
+    },
+    files: []
 };
 
 /**
