@@ -68,6 +68,7 @@ public class RequestAiSuggestionServiceImpl implements RequestAiSuggestionServic
 
         request.setCategory(newCategory);
         request.setPriority(dto.getPriority());
+        request.setDepartment(newCategory.getDepartment());
         if (dto.getSummary() != null && !dto.getSummary().isBlank()) {
             request.setSummary(dto.getSummary());
         }
@@ -80,7 +81,7 @@ public class RequestAiSuggestionServiceImpl implements RequestAiSuggestionServic
                 user,
                 LogAction.AI_SUGGESTION_APPROVED,
                 "Status: " + suggestion.getSuggestionStatus(),
-                "Category: " + newCategory.getName() + ", Priority: " + dto.getPriority(),
+                "Category: " + newCategory.getName()+ "Department: " + newCategory.getDepartment().getName()  + ", Priority: " + dto.getPriority(),
                 categoryDiffers || priorityDiffers ? "User overridden AI suggestion" : "User approved AI suggestion"
         );
 

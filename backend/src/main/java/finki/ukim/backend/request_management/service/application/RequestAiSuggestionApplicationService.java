@@ -5,7 +5,7 @@ import finki.ukim.backend.request_management.model.dto.AiSuggestionResponseDto;
 import finki.ukim.backend.request_management.model.dto.ProcessAiSuggestionDto;
 import finki.ukim.backend.request_management.model.dto.RejectAiSuggestionDto;
 
-public interface RequestAiSuggestionAppService {
+public interface RequestAiSuggestionApplicationService {
     AiSuggestionResponseDto findSuggestion(Long requestId, User currentUser);
     void processSuggestion(Long requestId, User currentUser, ProcessAiSuggestionDto dto);
     void rejectSuggestion(Long requestId, User currentUser, RejectAiSuggestionDto dto);

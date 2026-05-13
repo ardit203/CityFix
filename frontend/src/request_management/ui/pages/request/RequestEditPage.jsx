@@ -274,25 +274,25 @@ const RequestEditPageContent = () => {
                                             </FormControl>
                                         </Grid>
 
-                                        <Grid size={{xs: 12, md: 6}}>
-                                            <FormControl fullWidth>
-                                                <InputLabel>Department</InputLabel>
-                                                <Select
-                                                    name="departmentId"
-                                                    value={routingForm.departmentId}
-                                                    label="Department"
-                                                    onChange={handleRoutingChange}
-                                                    disabled={isExecuting || loadingDepartments}
-                                                >
-                                                    <MenuItem value=""><em>Unassigned</em></MenuItem>
-                                                    {departments.map((department) => (
-                                                        <MenuItem key={department.id} value={department.id}>
-                                                            {department.name}
-                                                        </MenuItem>
-                                                    ))}
-                                                </Select>
-                                            </FormControl>
-                                        </Grid>
+                                        {/*<Grid size={{xs: 12, md: 6}}>*/}
+                                        {/*    <FormControl fullWidth>*/}
+                                        {/*        <InputLabel>Department</InputLabel>*/}
+                                        {/*        <Select*/}
+                                        {/*            name="departmentId"*/}
+                                        {/*            value={routingForm.departmentId}*/}
+                                        {/*            label="Department"*/}
+                                        {/*            onChange={handleRoutingChange}*/}
+                                        {/*            disabled={isExecuting || loadingDepartments}*/}
+                                        {/*        >*/}
+                                        {/*            <MenuItem value=""><em>Unassigned</em></MenuItem>*/}
+                                        {/*            {departments.map((department) => (*/}
+                                        {/*                <MenuItem key={department.id} value={department.id}>*/}
+                                        {/*                    {department.name}*/}
+                                        {/*                </MenuItem>*/}
+                                        {/*            ))}*/}
+                                        {/*        </Select>*/}
+                                        {/*    </FormControl>*/}
+                                        {/*</Grid>*/}
 
                                         <Grid size={{xs: 12, md: 6}}>
                                             <FormControl fullWidth>

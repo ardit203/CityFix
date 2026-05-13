@@ -205,11 +205,11 @@ const RequestDetailsPage = () => {
                                             <Stack direction="row" spacing={1} alignItems="center">
                                                 <Psychology color="primary" />
                                                 <Typography variant="h6" fontWeight={700}>
-                                                    AI Summary
+                                                    Summary
                                                 </Typography>
                                             </Stack>
                                             <Typography variant="body2" color={request.summary ? "text.primary" : "text.secondary"} sx={{whiteSpace: "pre-wrap"}}>
-                                                {request.summary || "No AI summary is available yet."}
+                                                {request.summary || "No summary is available yet."}
                                             </Typography>
                                         </Stack>
                                     </CardContent>

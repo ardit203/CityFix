@@ -14,6 +14,7 @@ import finki.ukim.backend.request_management.model.dto.UpdateRequestRoutingDto;
 import finki.ukim.backend.request_management.model.enums.LogAction;
 import finki.ukim.backend.request_management.model.enums.Priority;
 import finki.ukim.backend.request_management.model.enums.RoutingStatus;
+import finki.ukim.backend.request_management.model.exception.RequestCannotGetConfirmedException;
 import finki.ukim.backend.request_management.repository.RequestRepository;
 import finki.ukim.backend.request_management.service.domain.RequestLogService;
 import finki.ukim.backend.request_management.service.domain.RequestRoutingService;
@@ -43,6 +44,7 @@ public class RequestRoutingServiceImpl implements RequestRoutingService {
             String oldVal = request.getCategory() != null ? request.getCategory().getName() : "None";
             Category category = categoryRepository.findById(dto.categoryId()).orElseThrow();
             request.setCategory(category);
+            request.setDepartment(category.getDepartment());
             requestLogService.create(request, currentUser, LogAction.CATEGORY_CHANGED, oldVal, category.getName(), dto.note());
         }
 
@@ -83,6 +85,10 @@ public class RequestRoutingServiceImpl implements RequestRoutingService {
     public Request confirmRouting(Long requestId, User currentUser) {
         accessScopeService.checkForManagement(currentUser);
         Request request = requestService.findById(requestId, currentUser);
+
+        if(request.getCategory() == null || request.getDepartment() == null || request.getPriority() == null){
+            throw new RequestCannotGetConfirmedException();
+        }
 
         String oldVal = request.getRoutingStatus() != null ? request.getRoutingStatus().name() : "None";
         request.setRoutingStatus(RoutingStatus.CONFIRMED);

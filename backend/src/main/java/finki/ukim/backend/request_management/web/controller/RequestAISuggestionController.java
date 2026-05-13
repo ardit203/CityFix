@@ -3,7 +3,7 @@ package finki.ukim.backend.request_management.web.controller;
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.request_management.model.dto.ProcessAiSuggestionDto;
 import finki.ukim.backend.request_management.model.dto.RejectAiSuggestionDto;
-import finki.ukim.backend.request_management.service.application.RequestAiSuggestionAppService;
+import finki.ukim.backend.request_management.service.application.RequestAiSuggestionApplicationService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class RequestAISuggestionController {
 
-    private final RequestAiSuggestionAppService requestAiSuggestionAppService;
+    private final RequestAiSuggestionApplicationService requestAiSuggestionAppService;
 
     @GetMapping
     public ResponseEntity<?> findSuggestion(
