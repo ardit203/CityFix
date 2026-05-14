@@ -331,7 +331,13 @@ public class AccessScopeServiceImpl implements AccessScopeService {
     }
 
     @Override
-    public RequestAssignmentScopeFilters getRequestAssignmentFilters(User currentUser, Long employeeId, Long assignedByUserId) {
+    public RequestAssignmentScopeFilters getRequestAssignmentFilters(
+            User currentUser,
+            Long employeeId,
+            Long assignedByUserId,
+            Long departmentId,
+            Long municipalityId
+    ) {
         if (isCitizen(currentUser)) {
             throw new ForbiddenException("Citizens are not allowed to view request assignments.");
         }
@@ -339,21 +345,29 @@ public class AccessScopeServiceImpl implements AccessScopeService {
         if (isAdmin(currentUser)) {
             return new RequestAssignmentScopeFilters(
                     employeeId,
-                    assignedByUserId
+                    assignedByUserId,
+                    departmentId,
+                    municipalityId
             );
         }
 
         if (isManager(currentUser)) {
+            StaffScope scope = getStaffScope(currentUser);
             return new RequestAssignmentScopeFilters(
                     employeeId,
-                    assignedByUserId
+                    assignedByUserId,
+                    scope.departmentId(),
+                    scope.municipalityId()
             );
         }
 
         if (isEmployee(currentUser)) {
+            StaffScope scope = getStaffScope(currentUser);
             return new RequestAssignmentScopeFilters(
                     currentUser.getId(),
-                    null
+                    null,
+                    scope.departmentId(),
+                    scope.municipalityId()
             );
         }
 

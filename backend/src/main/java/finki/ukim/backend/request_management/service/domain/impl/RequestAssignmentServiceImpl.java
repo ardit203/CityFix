@@ -4,6 +4,7 @@ import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.dto.accessScope.RequestAssignmentScopeFilters;
 import finki.ukim.backend.auth_and_access.model.dto.accessScope.StaffScope;
 import finki.ukim.backend.auth_and_access.service.domain.AccessScopeService;
+import finki.ukim.backend.common.exception.ConflictException;
 import finki.ukim.backend.request_management.model.domain.Request;
 import finki.ukim.backend.request_management.model.domain.RequestAssignment;
 import finki.ukim.backend.request_management.model.dto.filter.RequestAssignmentFilterDto;
@@ -17,7 +18,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,9 +35,22 @@ public class RequestAssignmentServiceImpl implements RequestAssignmentService {
     }
 
     @Override
+    public RequestAssignment findById(Long id, User user) {
+        RequestAssignment assignment = requestAssignmentRepository.findWithDetailsById(id)
+                .orElseThrow(() -> new RequestAssignmentNotFoundException(id));
+
+        List<Long> visibleAssignmentIds = accessScopeService.assignmentsYouCanView(user, assignment.getRequest());
+        if (!visibleAssignmentIds.contains(id)) {
+            throw new RequestAssignmentNotFoundException(id);
+        }
+
+        return assignment;
+    }
+
+    @Override
     public List<RequestAssignment> findAllByRequest(Request request, User user) {
         List<Long> ids = accessScopeService.assignmentsYouCanView(user, request);
-        return requestAssignmentRepository.findAllById(ids);
+        return requestAssignmentRepository.findByIdIn(ids);
     }
 
     @Override
@@ -48,7 +61,9 @@ public class RequestAssignmentServiceImpl implements RequestAssignmentService {
                 accessScopeService.getRequestAssignmentFilters(
                         user,
                         filters.getEmployeeId(),
-                        filters.getAssignedByUserId()
+                        filters.getAssignedByUserId(),
+                        request.getDepartment() == null ? null : request.getDepartment().getId(),
+                        request.getMunicipality() == null ? null : request.getMunicipality().getId()
                 );
 
         return requestAssignmentRepository.findFiltered(
@@ -56,6 +71,34 @@ public class RequestAssignmentServiceImpl implements RequestAssignmentService {
                 filters.getId(),
                 scopeFilters.employeeId(),
                 scopeFilters.assignedByUserId(),
+                scopeFilters.departmentId(),
+                scopeFilters.municipalityId(),
+                filters.getRequestStatus(),
+                filters.getAssignedFrom(),
+                filters.getAssignedTo(),
+                filters.toPageable()
+        );
+    }
+
+    @Override
+    public Page<RequestAssignmentPageableProjection> findAll(User user, RequestAssignmentFilterDto filters) {
+        RequestAssignmentScopeFilters scopeFilters =
+                accessScopeService.getRequestAssignmentFilters(
+                        user,
+                        filters.getEmployeeId(),
+                        filters.getAssignedByUserId(),
+                        filters.getDepartmentId(),
+                        filters.getMunicipalityId()
+                );
+
+        return requestAssignmentRepository.findFiltered(
+                filters.getRequestId(),
+                filters.getId(),
+                scopeFilters.employeeId(),
+                scopeFilters.assignedByUserId(),
+                scopeFilters.departmentId(),
+                scopeFilters.municipalityId(),
+                filters.getRequestStatus(),
                 filters.getAssignedFrom(),
                 filters.getAssignedTo(),
                 filters.toPageable()
@@ -64,10 +107,18 @@ public class RequestAssignmentServiceImpl implements RequestAssignmentService {
 
     @Override
     public RequestAssignment assignEmployee(Request request, User user, RequestAssignment assignment) {
+        accessScopeService.checkForManagement(user);
         accessScopeService.hasAccessToRequest(user, request);
 
         StaffScope staffScope = accessScopeService.getStaffScope(assignment.getEmployee());
         accessScopeService.hasAccessToStaff(user, staffScope.staffId());
+
+        if (requestAssignmentRepository.existsByRequest_IdAndEmployee_Id(
+                request.getId(),
+                assignment.getEmployee().getId()
+        )) {
+            throw new ConflictException("Employee is already assigned to this request.");
+        }
 
         assignment.setRequest(request);
         assignment.setAssignedBy(user);
@@ -93,7 +144,12 @@ public class RequestAssignmentServiceImpl implements RequestAssignmentService {
 
     @Override
     public void removeAssignment(Request request, User user, RequestAssignment assignment) {
+        accessScopeService.checkForManagement(user);
         accessScopeService.hasAccessToRequest(user, request);
+
+        if (!assignment.getRequest().getId().equals(request.getId())) {
+            throw new RequestAssignmentNotFoundException(assignment.getId());
+        }
 
         StaffScope staffScope = accessScopeService.getStaffScope(assignment.getEmployee());
         accessScopeService.hasAccessToStaff(user, staffScope.staffId());
@@ -112,6 +168,7 @@ public class RequestAssignmentServiceImpl implements RequestAssignmentService {
 
     @Override
     public void removeMultipleAssignments(Request request, User user, List<Long> ids) {
+        accessScopeService.checkForManagement(user);
         accessScopeService.hasAccessToRequest(user, request);
 
         List<RequestAssignment> assignments = requestAssignmentRepository.findAllById(ids);
@@ -145,6 +202,7 @@ public class RequestAssignmentServiceImpl implements RequestAssignmentService {
 
     @Override
     public void removeAllAssignments(Request request, User user) {
+        accessScopeService.checkForManagement(user);
         accessScopeService.hasAccessToRequest(user, request);
 
         List<RequestAssignment> assignments = requestAssignmentRepository.findAllByRequest_Id(request.getId());

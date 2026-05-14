@@ -1,11 +1,29 @@
-import React, {useState} from 'react';
-import {Box, CircularProgress, FormControl, InputLabel, MenuItem, Select, TextField} from "@mui/material";
+import React, {useRef, useState} from 'react';
+import {
+    Box,
+    Button,
+    CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    Stack,
+    Typography,
+    TextField
+} from "@mui/material";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
 import {useNavigate} from "react-router";
 import useFilters from "../../../../common/hooks/useFilters.js";
 import FilterBar from "../../../../common/ui/components/FilterBar.jsx";
 import LoadingBar from "../../../../common/ui/components/LoadingBar.jsx";
 import AdminTable from "../../../../common/ui/components/AdminTable.jsx";
 import PaginatedDataView from "../../../../common/ui/components/PaginatedDataView.jsx";
+import PageHeader from "../../../../common/ui/components/PageHeader.jsx";
 import SortControls from "../../../../common/ui/components/SortControls.jsx";
 import {
     staffColumns,
@@ -24,10 +42,10 @@ const StaffPage = () => {
     const {staff, loading, pagination, fetchStaffPaged} = useStaff();
     const { departments, loading: loadingDepartments } = useDepartments({ paged: false });
     const { municipalities, loading: loadingMunicipalities } = useMunicipalities({ paged: false });
-    const {deleteStaff, deleteStaffBulk} = useStaffActions();
+    const {deleteStaff, deleteStaffBulk, importStaffExcel, isExecuting} = useStaffActions();
     const [viewMode, setViewMode] = useState('table');
-
-    console.log(staff)
+    const [rulesOpen, setRulesOpen] = useState(false);
+    const fileInputRef = useRef(null);
 
     const {
         filters,
@@ -45,8 +63,26 @@ const StaffPage = () => {
         }
     };
 
+    const handleImportClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleImportFileChange = async (event) => {
+        const file = event.target.files?.[0];
+        event.target.value = "";
+
+        if (!file) return;
+
+        await importStaffExcel(file, () => fetchStaffPaged(filters));
+    };
+
     return (
         <Box>
+            <PageHeader
+                title="Staff"
+                subtitle="Manage staff assignments to departments and municipalities."
+            />
+
             <FilterBar
                 onSearch={handleSearch}
                 onClear={handleClearFilters}
@@ -128,7 +164,76 @@ const StaffPage = () => {
                     onSortChange={handleSortChange}
                     options={staffSortOptions}
                 />
+
+                <Button
+                    variant="outlined"
+                    startIcon={<InfoOutlinedIcon />}
+                    onClick={() => setRulesOpen(true)}
+                >
+                    Import Rules
+                </Button>
+
+                <Button
+                    variant="outlined"
+                    startIcon={<UploadFileIcon />}
+                    onClick={handleImportClick}
+                    disabled={isExecuting}
+                >
+                    Import Excel
+                </Button>
+                <input
+                    ref={fileInputRef}
+                    type="file"
+                    hidden
+                    accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+                    onChange={handleImportFileChange}
+                />
             </FilterBar>
+
+            <Dialog open={rulesOpen} onClose={() => setRulesOpen(false)} fullWidth maxWidth="sm">
+                <DialogTitle>Staff Import Rules</DialogTitle>
+                <DialogContent>
+                    <Stack spacing={2}>
+                        <Box>
+                            <Typography variant="subtitle2" fontWeight={700}>
+                                Required headers
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                The first row must contain: userId, departmentId, municipalityId
+                            </Typography>
+                        </Box>
+
+                        <Box>
+                            <Typography variant="subtitle2" fontWeight={700}>
+                                Validation
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                Each value must be a whole number. Users, departments, and municipalities must already exist.
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                A user cannot appear twice in the same file and cannot already be assigned as staff.
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                Citizen users cannot be imported as staff.
+                            </Typography>
+                        </Box>
+
+                        <Box>
+                            <Typography variant="subtitle2" fontWeight={700}>
+                                Example
+                            </Typography>
+                            <Typography component="pre" variant="body2" sx={{m: 0, p: 1.5, bgcolor: "background.default", borderRadius: 1, overflowX: "auto"}}>
+{`userId | departmentId | municipalityId
+1      | 2            | 1
+5      | 3            | 1`}
+                            </Typography>
+                        </Box>
+                    </Stack>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setRulesOpen(false)}>Close</Button>
+                </DialogActions>
+            </Dialog>
 
             <LoadingBar loading={loading}/>
 

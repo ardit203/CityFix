@@ -100,32 +100,70 @@ const ClickHandler = ({ onLocationSelect, setPosition }) => {
     return null;
 };
 
-const LocationPicker = ({ onLocationSelect }) => {
-    const [position, setPosition] = useState(null);
+const MapPosition = ({ position }) => {
+    const map = useMap();
+
+    useEffect(() => {
+        if (position) {
+            map.setView(position, 14);
+        }
+    }, [map, position]);
+
+    return null;
+};
+
+const LocationPicker = ({ onLocationSelect, initialLocation = null, readOnly = false, height = 400 }) => {
+    const [position, setPosition] = useState(() => {
+        if (!initialLocation?.latitude || !initialLocation?.longitude) {
+            return null;
+        }
+
+        return {
+            lat: initialLocation.latitude,
+            lng: initialLocation.longitude
+        };
+    });
+
+    useEffect(() => {
+        if (!initialLocation?.latitude || !initialLocation?.longitude) {
+            return;
+        }
+
+        setPosition({
+            lat: initialLocation.latitude,
+            lng: initialLocation.longitude
+        });
+    }, [initialLocation?.latitude, initialLocation?.longitude]);
 
     return (
         <MapContainer
-            center={[41.9981, 21.4254]}
-            zoom={8}
+            center={position || [41.9981, 21.4254]}
+            zoom={position ? 14 : 8}
             minZoom={8}
             maxBounds={macedoniaBounds}
             maxBoundsViscosity={1.0}
-            style={{ height: "400px", width: "100%" }}
+            style={{ height, width: "100%" }}
         >
             <TileLayer
                 attribution="&copy; OpenStreetMap contributors"
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-            <SearchControl
-                onLocationSelect={onLocationSelect}
-                setPosition={setPosition}
-            />
+            <MapPosition position={position} />
 
-            <ClickHandler
-                onLocationSelect={onLocationSelect}
-                setPosition={setPosition}
-            />
+            {!readOnly && (
+                <>
+                    <SearchControl
+                        onLocationSelect={onLocationSelect}
+                        setPosition={setPosition}
+                    />
+
+                    <ClickHandler
+                        onLocationSelect={onLocationSelect}
+                        setPosition={setPosition}
+                    />
+                </>
+            )}
 
             {position && <Marker position={position} />}
         </MapContainer>

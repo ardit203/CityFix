@@ -30,6 +30,12 @@ const requestService = {
         return response;
     },
 
+    exportPdf: async (id) => {
+        return await axiosInstance.get(`/requests/${id}/export/pdf`, {
+            responseType: "blob"
+        });
+    },
+
     create: async (data) => {
         const formData = new FormData();
         const safeData = mapToCreateRequestDto(data);

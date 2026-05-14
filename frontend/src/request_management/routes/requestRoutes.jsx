@@ -6,11 +6,13 @@ import RequestDetailsPage from "../ui/pages/request/RequestDetailsPage.jsx";
 import RequestEditPage from "../ui/pages/request/RequestEditPage.jsx";
 import RequestLogsPage from "../ui/pages/requestLogs/RequestLogsPage.jsx";
 import RequestLogDetailsPage from "../ui/pages/requestLogs/RequestLogDetailsPage.jsx";
+import RequestAssignmentsPage from "../ui/pages/requestAssignments/RequestAssignmentsPage.jsx";
 
 export const requestRoutes = (
     <Route path="requests">
         <Route index element={<RequestsPage />} />
         <Route path="create" element={<RequestCreatePage />} />
+        <Route path="assignments" element={<RequestAssignmentsPage />} />
         <Route path=":id" element={<RequestDetailsPage />} />
         <Route path=":id/edit" element={<RequestEditPage />} />
 

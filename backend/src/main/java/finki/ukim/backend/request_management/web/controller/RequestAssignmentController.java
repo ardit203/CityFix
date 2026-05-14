@@ -7,7 +7,6 @@ import finki.ukim.backend.request_management.model.dto.DisplayRequestAssignmentD
 import finki.ukim.backend.request_management.model.dto.DisplayRequestAssignmentPageableDto;
 import finki.ukim.backend.request_management.model.dto.filter.RequestAssignmentFilterDto;
 import finki.ukim.backend.request_management.service.application.RequestAssignmentApplicationService;
-import finki.ukim.backend.request_management.service.domain.RequestAssignmentService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -84,7 +83,7 @@ public class RequestAssignmentController {
     public ResponseEntity<Void> removeMultipleAssignments(
             @PathVariable Long requestId,
             @AuthenticationPrincipal User user,
-            List<Long> ids
+            @RequestBody List<Long> ids
     ) {
         requestAssignmentApplicationService.removeMultipleAssignments(requestId, user, ids);
         return ResponseEntity.ok().build();

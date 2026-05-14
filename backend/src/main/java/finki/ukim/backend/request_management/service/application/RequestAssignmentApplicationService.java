@@ -11,6 +11,11 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface RequestAssignmentApplicationService {
+    DisplayRequestAssignmentDto findById(
+            Long assignmentId,
+            User user
+    );
+
     List<DisplayRequestAssignmentBasicDto> findAllByRequest(
             Long requestId,
             User user
@@ -18,6 +23,11 @@ public interface RequestAssignmentApplicationService {
 
     Page<DisplayRequestAssignmentPageableDto> findAll(
             Long requestId,
+            User user,
+            RequestAssignmentFilterDto requestAssignmentFilterDto
+    );
+
+    Page<DisplayRequestAssignmentPageableDto> findAll(
             User user,
             RequestAssignmentFilterDto requestAssignmentFilterDto
     );

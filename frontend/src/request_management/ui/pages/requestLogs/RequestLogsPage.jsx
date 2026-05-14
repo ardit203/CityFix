@@ -9,6 +9,7 @@ import FilterBar from "../../../../common/ui/components/FilterBar.jsx";
 import LoadingBar from "../../../../common/ui/components/LoadingBar.jsx";
 import AdminTable from "../../../../common/ui/components/AdminTable.jsx";
 import PaginatedDataView from "../../../../common/ui/components/PaginatedDataView.jsx";
+import PageHeader from "../../../../common/ui/components/PageHeader.jsx";
 import SortControls from "../../../../common/ui/components/SortControls.jsx";
 import {emptyRequestFilter, emptyRequestLogFilters} from "../../../dtos/filterDto.js";
 import {requestColumns, requestSortOptions} from "../../component/request/RequestConfig.jsx";
@@ -75,6 +76,11 @@ const RequestLogsPage = () => {
 
     return (
         <Box>
+            <PageHeader
+                title="Request Timeline"
+                subtitle={`Review changes and activity for request #${requestId}.`}
+            />
+
             <FilterBar
                 onSearch={handleSearch}
                 onClear={handleClearFilters}
@@ -100,6 +106,9 @@ const RequestLogsPage = () => {
                     onChange={handleFilterChange}
                     size="small"
                     sx={{minWidth: 130}}
+                    slotProps={{
+                        inputLabel: { shrink: true }
+                    }}
                 />
                 <TextField
                     label="Created To"
@@ -109,6 +118,9 @@ const RequestLogsPage = () => {
                     onChange={handleFilterChange}
                     size="small"
                     sx={{minWidth: 130}}
+                    slotProps={{
+                        inputLabel: { shrink: true }
+                    }}
                 />
                 <TextField label="Search" name="text" value={filters.text} onChange={handleFilterChange} size="small"/>
 

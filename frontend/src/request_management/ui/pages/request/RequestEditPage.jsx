@@ -29,6 +29,7 @@ import {
 import useAuth from "../../../../auth_and_access/hooks/auth/useAuth.js";
 import useRequestActions from "../../../hooks/request/useRequestActions.js";
 import useRequestDetails from "../../../hooks/request/useRequestDetails.js";
+import useAiSuggestionDetails from "../../../hooks/request/useAiSuggestionDetails.js";
 import useCategories from "../../../../administration/hooks/category/useCategories.js";
 import useDepartments from "../../../../administration/hooks/department/useDepartments.js";
 import useMunicipalities from "../../../../administration/hooks/municipality/useMunicipalities.js";
@@ -73,6 +74,7 @@ const RequestEditPageContent = () => {
     const navigate = useNavigate();
 
     const {request, loading, error, fetchRequest} = useRequestDetails(id);
+    const {suggestion: aiSuggestion} = useAiSuggestionDetails(id);
     const {
         changeStatus,
         confirmRouting,
@@ -176,6 +178,10 @@ const RequestEditPageContent = () => {
         );
     }
 
+    const isAiSuggestionPending = (aiSuggestion?.status === "PENDING_REVIEW");
+    const disableManualEditing = isExecuting || isAiSuggestionPending;
+
+    console.log("isAiSuggestionPending", isAiSuggestionPending, aiSuggestion.status)
     return (
         <Box>
             <ActionBar
@@ -253,6 +259,12 @@ const RequestEditPageContent = () => {
                                         </Typography>
                                     </Stack>
 
+                                    {isAiSuggestionPending && (
+                                        <Alert severity="warning">
+                                            Process the pending AI triage before changing routing manually.
+                                        </Alert>
+                                    )}
+
                                     <Grid container spacing={2}>
                                         <Grid size={{xs: 12, md: 6}}>
                                             <FormControl fullWidth>
@@ -262,7 +274,7 @@ const RequestEditPageContent = () => {
                                                     value={routingForm.categoryId}
                                                     label="Category"
                                                     onChange={handleRoutingChange}
-                                                    disabled={isExecuting || loadingCategories}
+                                                    disabled={disableManualEditing || loadingCategories}
                                                 >
                                                     <MenuItem value=""><em>Unassigned</em></MenuItem>
                                                     {categories.map((category) => (
@@ -302,7 +314,7 @@ const RequestEditPageContent = () => {
                                                     value={routingForm.municipalityId}
                                                     label="Municipality"
                                                     onChange={handleRoutingChange}
-                                                    disabled={isExecuting || loadingMunicipalities}
+                                                    disabled={disableManualEditing || loadingMunicipalities}
                                                 >
                                                     <MenuItem value=""><em>Unassigned</em></MenuItem>
                                                     {municipalities.map((municipality) => (
@@ -322,7 +334,7 @@ const RequestEditPageContent = () => {
                                                     value={routingForm.priority}
                                                     label="Priority"
                                                     onChange={handleRoutingChange}
-                                                    disabled={isExecuting}
+                                                    disabled={disableManualEditing}
                                                 >
                                                     <MenuItem value=""><em>Not set</em></MenuItem>
                                                     {priorityOptions.map((priority) => (
@@ -342,7 +354,7 @@ const RequestEditPageContent = () => {
                                         onChange={handleRoutingChange}
                                         multiline
                                         minRows={3}
-                                        disabled={isExecuting}
+                                        disabled={disableManualEditing}
                                         fullWidth
                                     />
 
@@ -353,7 +365,7 @@ const RequestEditPageContent = () => {
                                         onChange={handleRoutingChange}
                                         multiline
                                         minRows={2}
-                                        disabled={isExecuting}
+                                        disabled={disableManualEditing}
                                         fullWidth
                                     />
 
@@ -362,7 +374,7 @@ const RequestEditPageContent = () => {
                                             variant="contained"
                                             startIcon={<Save />}
                                             onClick={handleUpdateRouting}
-                                            disabled={isExecuting}
+                                            disabled={disableManualEditing}
                                         >
                                             Save Routing
                                         </Button>
@@ -371,7 +383,7 @@ const RequestEditPageContent = () => {
                                             color="success"
                                             startIcon={<CheckCircle />}
                                             onClick={handleConfirmRouting}
-                                            disabled={isExecuting || request.routingStatus === "CONFIRMED"}
+                                            disabled={disableManualEditing || request.routingStatus === "CONFIRMED"}
                                         >
                                             Confirm Routing
                                         </Button>
@@ -386,14 +398,14 @@ const RequestEditPageContent = () => {
                                             onChange={(event) => setRoutingRejectReason(event.target.value)}
                                             multiline
                                             minRows={2}
-                                            disabled={isExecuting}
+                                            disabled={disableManualEditing}
                                             fullWidth
                                         />
                                         <Button
                                             variant="outlined"
                                             color="error"
                                             onClick={handleRejectRouting}
-                                            disabled={isExecuting || !routingRejectReason.trim() || request.routingStatus === "REJECTED"}
+                                            disabled={disableManualEditing || !routingRejectReason.trim() || request.routingStatus === "REJECTED"}
                                         >
                                             Reject Routing
                                         </Button>
@@ -411,6 +423,12 @@ const RequestEditPageContent = () => {
                                         Status Change
                                     </Typography>
 
+                                    {isAiSuggestionPending && (
+                                        <Alert severity="warning">
+                                            Status changes are disabled until the pending AI triage is processed.
+                                        </Alert>
+                                    )}
+
                                     <Grid container spacing={2}>
                                         <Grid size={{xs: 12, md: 4}}>
                                             <FormControl fullWidth>
@@ -420,7 +438,7 @@ const RequestEditPageContent = () => {
                                                     value={statusForm.status}
                                                     label="Status"
                                                     onChange={handleStatusChange}
-                                                    disabled={isExecuting}
+                                                    disabled={disableManualEditing}
                                                 >
                                                     {statusOptions.map((status) => (
                                                         <MenuItem key={status} value={status}>
@@ -437,7 +455,7 @@ const RequestEditPageContent = () => {
                                                 label="Reason"
                                                 value={statusForm.reason}
                                                 onChange={handleStatusChange}
-                                                disabled={isExecuting}
+                                                disabled={disableManualEditing}
                                                 fullWidth
                                             />
                                         </Grid>
@@ -448,7 +466,7 @@ const RequestEditPageContent = () => {
                                                 label="Timeline note"
                                                 value={statusForm.note}
                                                 onChange={handleStatusChange}
-                                                disabled={isExecuting}
+                                                disabled={disableManualEditing}
                                                 fullWidth
                                             />
                                         </Grid>
@@ -459,7 +477,7 @@ const RequestEditPageContent = () => {
                                             variant="contained"
                                             startIcon={<Save />}
                                             onClick={handleChangeStatus}
-                                            disabled={isExecuting || !statusForm.status || statusForm.status === request.status}
+                                            disabled={disableManualEditing || !statusForm.status || statusForm.status === request.status}
                                         >
                                             Update Status
                                         </Button>

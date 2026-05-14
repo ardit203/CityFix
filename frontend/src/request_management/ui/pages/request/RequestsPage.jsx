@@ -9,6 +9,7 @@ import FilterBar from "../../../../common/ui/components/FilterBar.jsx";
 import LoadingBar from "../../../../common/ui/components/LoadingBar.jsx";
 import AdminTable from "../../../../common/ui/components/AdminTable.jsx";
 import PaginatedDataView from "../../../../common/ui/components/PaginatedDataView.jsx";
+import PageHeader from "../../../../common/ui/components/PageHeader.jsx";
 import SortControls from "../../../../common/ui/components/SortControls.jsx";
 import useRequests from "../../../hooks/request/useRequests.js";
 import useRequestActions from "../../../hooks/request/useRequestActions.js";
@@ -79,6 +80,11 @@ const RequestsPage = () => {
 
     return (
         <Box>
+            <PageHeader
+                title="Requests"
+                subtitle="Browse, filter, and manage citizen service requests."
+            />
+
             <FilterBar
                 onSearch={handleSearch}
                 onClear={handleClearFilters}
@@ -228,6 +234,9 @@ const RequestsPage = () => {
                     onChange={handleFilterChange}
                     size="small"
                     sx={{minWidth: 130}}
+                    slotProps={{
+                        inputLabel: { shrink: true }
+                    }}
                 />
                 <TextField
                     label="Subimtted To"
@@ -237,6 +246,9 @@ const RequestsPage = () => {
                     onChange={handleFilterChange}
                     size="small"
                     sx={{minWidth: 130}}
+                    slotProps={{
+                        inputLabel: { shrink: true }
+                    }}
                 />
                 <TextField label="Search" name="text" value={filters.text} onChange={handleFilterChange} size="small"/>
 

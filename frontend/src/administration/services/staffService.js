@@ -68,6 +68,17 @@ const staffService = {
         return await axiosInstance.post("/staff", safeData);
     },
 
+    importExcel: async (file) => {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        return await axiosInstance.post("/staff/import/excel", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        });
+    },
+
     update: async (id, data) => {
         const safeData = mapToCreateStaffDto(data);
         return await axiosInstance.put(`/staff/${id}`, safeData);

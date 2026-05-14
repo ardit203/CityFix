@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface RequestRepository extends JpaRepository<Request, Long> {
     @Query("""
@@ -58,6 +59,297 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
             @Param("submittedFrom") LocalDateTime submittedFrom,
             @Param("submittedTo") LocalDateTime submittedTo,
             Pageable pageable
+    );
+
+    @Query("""
+            select count(distinct r.id)
+            from Request r
+            left join r.municipality m
+            left join r.category c
+            left join r.department d
+            where (:citizenId is null or r.user.id = :citizenId)
+              and (:departmentId is null or d.id = :departmentId)
+              and (:municipalityId is null or m.id = :municipalityId)
+              and (:categoryId is null or c.id = :categoryId)
+              and (:status is null or r.status = :status)
+              and (:routingStatus is null or r.routingStatus = :routingStatus)
+              and (:priority is null or r.priority = :priority)
+              and (
+                    :text = ''
+                    or lower(r.title) like concat('%', :text, '%')
+                    or lower(r.description) like concat('%', :text, '%')
+                    or lower(r.summary) like concat('%', :text, '%')
+                  )
+              and (:submittedFrom is null or r.createdAt >= :submittedFrom)
+              and (:submittedTo is null or r.createdAt <= :submittedTo)
+            """)
+    Long countFiltered(
+            @Param("citizenId") Long citizenId,
+            @Param("departmentId") Long departmentId,
+            @Param("municipalityId") Long municipalityId,
+            @Param("categoryId") Long categoryId,
+            @Param("status") RequestStatus status,
+            @Param("routingStatus") RoutingStatus routingStatus,
+            @Param("priority") Priority priority,
+            @Param("text") String text,
+            @Param("submittedFrom") LocalDateTime submittedFrom,
+            @Param("submittedTo") LocalDateTime submittedTo
+    );
+
+    @Query("""
+            select count(distinct r.id)
+            from Request r
+            left join r.municipality m
+            left join r.category c
+            left join r.department d
+            where (:citizenId is null or r.user.id = :citizenId)
+              and (:departmentId is null or d.id = :departmentId)
+              and (:municipalityId is null or m.id = :municipalityId)
+              and (:categoryId is null or c.id = :categoryId)
+              and (:status is null or r.status = :status)
+              and (:routingStatus is null or r.routingStatus = :routingStatus)
+              and (:priority is null or r.priority = :priority)
+              and (
+                    :text = ''
+                    or lower(r.title) like concat('%', :text, '%')
+                    or lower(r.description) like concat('%', :text, '%')
+                    or lower(r.summary) like concat('%', :text, '%')
+                  )
+              and (:submittedFrom is null or r.createdAt >= :submittedFrom)
+              and (:submittedTo is null or r.createdAt <= :submittedTo)
+              and exists (
+                    select a.id
+                    from RequestAssignment a
+                    where a.request.id = r.id
+                  )
+            """)
+    Long countAssignedFiltered(
+            @Param("citizenId") Long citizenId,
+            @Param("departmentId") Long departmentId,
+            @Param("municipalityId") Long municipalityId,
+            @Param("categoryId") Long categoryId,
+            @Param("status") RequestStatus status,
+            @Param("routingStatus") RoutingStatus routingStatus,
+            @Param("priority") Priority priority,
+            @Param("text") String text,
+            @Param("submittedFrom") LocalDateTime submittedFrom,
+            @Param("submittedTo") LocalDateTime submittedTo
+    );
+
+    @Query("""
+            select r.status, count(distinct r.id)
+            from Request r
+            left join r.municipality m
+            left join r.category c
+            left join r.department d
+            where (:citizenId is null or r.user.id = :citizenId)
+              and (:departmentId is null or d.id = :departmentId)
+              and (:municipalityId is null or m.id = :municipalityId)
+              and (:categoryId is null or c.id = :categoryId)
+              and (:status is null or r.status = :status)
+              and (:routingStatus is null or r.routingStatus = :routingStatus)
+              and (:priority is null or r.priority = :priority)
+              and (
+                    :text = ''
+                    or lower(r.title) like concat('%', :text, '%')
+                    or lower(r.description) like concat('%', :text, '%')
+                    or lower(r.summary) like concat('%', :text, '%')
+                  )
+              and (:submittedFrom is null or r.createdAt >= :submittedFrom)
+              and (:submittedTo is null or r.createdAt <= :submittedTo)
+            group by r.status
+            """)
+    List<Object[]> countByStatus(
+            @Param("citizenId") Long citizenId,
+            @Param("departmentId") Long departmentId,
+            @Param("municipalityId") Long municipalityId,
+            @Param("categoryId") Long categoryId,
+            @Param("status") RequestStatus status,
+            @Param("routingStatus") RoutingStatus routingStatus,
+            @Param("priority") Priority priority,
+            @Param("text") String text,
+            @Param("submittedFrom") LocalDateTime submittedFrom,
+            @Param("submittedTo") LocalDateTime submittedTo
+    );
+
+    @Query("""
+            select r.priority, count(distinct r.id)
+            from Request r
+            left join r.municipality m
+            left join r.category c
+            left join r.department d
+            where (:citizenId is null or r.user.id = :citizenId)
+              and (:departmentId is null or d.id = :departmentId)
+              and (:municipalityId is null or m.id = :municipalityId)
+              and (:categoryId is null or c.id = :categoryId)
+              and (:status is null or r.status = :status)
+              and (:routingStatus is null or r.routingStatus = :routingStatus)
+              and (:priority is null or r.priority = :priority)
+              and (
+                    :text = ''
+                    or lower(r.title) like concat('%', :text, '%')
+                    or lower(r.description) like concat('%', :text, '%')
+                    or lower(r.summary) like concat('%', :text, '%')
+                  )
+              and (:submittedFrom is null or r.createdAt >= :submittedFrom)
+              and (:submittedTo is null or r.createdAt <= :submittedTo)
+            group by r.priority
+            """)
+    List<Object[]> countByPriority(
+            @Param("citizenId") Long citizenId,
+            @Param("departmentId") Long departmentId,
+            @Param("municipalityId") Long municipalityId,
+            @Param("categoryId") Long categoryId,
+            @Param("status") RequestStatus status,
+            @Param("routingStatus") RoutingStatus routingStatus,
+            @Param("priority") Priority priority,
+            @Param("text") String text,
+            @Param("submittedFrom") LocalDateTime submittedFrom,
+            @Param("submittedTo") LocalDateTime submittedTo
+    );
+
+    @Query("""
+            select r.routingStatus, count(distinct r.id)
+            from Request r
+            left join r.municipality m
+            left join r.category c
+            left join r.department d
+            where (:citizenId is null or r.user.id = :citizenId)
+              and (:departmentId is null or d.id = :departmentId)
+              and (:municipalityId is null or m.id = :municipalityId)
+              and (:categoryId is null or c.id = :categoryId)
+              and (:status is null or r.status = :status)
+              and (:routingStatus is null or r.routingStatus = :routingStatus)
+              and (:priority is null or r.priority = :priority)
+              and (
+                    :text = ''
+                    or lower(r.title) like concat('%', :text, '%')
+                    or lower(r.description) like concat('%', :text, '%')
+                    or lower(r.summary) like concat('%', :text, '%')
+                  )
+              and (:submittedFrom is null or r.createdAt >= :submittedFrom)
+              and (:submittedTo is null or r.createdAt <= :submittedTo)
+            group by r.routingStatus
+            """)
+    List<Object[]> countByRoutingStatus(
+            @Param("citizenId") Long citizenId,
+            @Param("departmentId") Long departmentId,
+            @Param("municipalityId") Long municipalityId,
+            @Param("categoryId") Long categoryId,
+            @Param("status") RequestStatus status,
+            @Param("routingStatus") RoutingStatus routingStatus,
+            @Param("priority") Priority priority,
+            @Param("text") String text,
+            @Param("submittedFrom") LocalDateTime submittedFrom,
+            @Param("submittedTo") LocalDateTime submittedTo
+    );
+
+    @Query("""
+            select coalesce(d.name, 'Unassigned'), count(distinct r.id)
+            from Request r
+            left join r.municipality m
+            left join r.category c
+            left join r.department d
+            where (:citizenId is null or r.user.id = :citizenId)
+              and (:departmentId is null or d.id = :departmentId)
+              and (:municipalityId is null or m.id = :municipalityId)
+              and (:categoryId is null or c.id = :categoryId)
+              and (:status is null or r.status = :status)
+              and (:routingStatus is null or r.routingStatus = :routingStatus)
+              and (:priority is null or r.priority = :priority)
+              and (
+                    :text = ''
+                    or lower(r.title) like concat('%', :text, '%')
+                    or lower(r.description) like concat('%', :text, '%')
+                    or lower(r.summary) like concat('%', :text, '%')
+                  )
+              and (:submittedFrom is null or r.createdAt >= :submittedFrom)
+              and (:submittedTo is null or r.createdAt <= :submittedTo)
+            group by d.name
+            """)
+    List<Object[]> countByDepartment(
+            @Param("citizenId") Long citizenId,
+            @Param("departmentId") Long departmentId,
+            @Param("municipalityId") Long municipalityId,
+            @Param("categoryId") Long categoryId,
+            @Param("status") RequestStatus status,
+            @Param("routingStatus") RoutingStatus routingStatus,
+            @Param("priority") Priority priority,
+            @Param("text") String text,
+            @Param("submittedFrom") LocalDateTime submittedFrom,
+            @Param("submittedTo") LocalDateTime submittedTo
+    );
+
+    @Query("""
+            select coalesce(m.code, 'Unassigned'), count(distinct r.id)
+            from Request r
+            left join r.municipality m
+            left join r.category c
+            left join r.department d
+            where (:citizenId is null or r.user.id = :citizenId)
+              and (:departmentId is null or d.id = :departmentId)
+              and (:municipalityId is null or m.id = :municipalityId)
+              and (:categoryId is null or c.id = :categoryId)
+              and (:status is null or r.status = :status)
+              and (:routingStatus is null or r.routingStatus = :routingStatus)
+              and (:priority is null or r.priority = :priority)
+              and (
+                    :text = ''
+                    or lower(r.title) like concat('%', :text, '%')
+                    or lower(r.description) like concat('%', :text, '%')
+                    or lower(r.summary) like concat('%', :text, '%')
+                  )
+              and (:submittedFrom is null or r.createdAt >= :submittedFrom)
+              and (:submittedTo is null or r.createdAt <= :submittedTo)
+            group by m.code
+            """)
+    List<Object[]> countByMunicipality(
+            @Param("citizenId") Long citizenId,
+            @Param("departmentId") Long departmentId,
+            @Param("municipalityId") Long municipalityId,
+            @Param("categoryId") Long categoryId,
+            @Param("status") RequestStatus status,
+            @Param("routingStatus") RoutingStatus routingStatus,
+            @Param("priority") Priority priority,
+            @Param("text") String text,
+            @Param("submittedFrom") LocalDateTime submittedFrom,
+            @Param("submittedTo") LocalDateTime submittedTo
+    );
+
+    @Query("""
+            select coalesce(c.name, 'Unassigned'), count(distinct r.id)
+            from Request r
+            left join r.municipality m
+            left join r.category c
+            left join r.department d
+            where (:citizenId is null or r.user.id = :citizenId)
+              and (:departmentId is null or d.id = :departmentId)
+              and (:municipalityId is null or m.id = :municipalityId)
+              and (:categoryId is null or c.id = :categoryId)
+              and (:status is null or r.status = :status)
+              and (:routingStatus is null or r.routingStatus = :routingStatus)
+              and (:priority is null or r.priority = :priority)
+              and (
+                    :text = ''
+                    or lower(r.title) like concat('%', :text, '%')
+                    or lower(r.description) like concat('%', :text, '%')
+                    or lower(r.summary) like concat('%', :text, '%')
+                  )
+              and (:submittedFrom is null or r.createdAt >= :submittedFrom)
+              and (:submittedTo is null or r.createdAt <= :submittedTo)
+            group by c.name
+            """)
+    List<Object[]> countByCategory(
+            @Param("citizenId") Long citizenId,
+            @Param("departmentId") Long departmentId,
+            @Param("municipalityId") Long municipalityId,
+            @Param("categoryId") Long categoryId,
+            @Param("status") RequestStatus status,
+            @Param("routingStatus") RoutingStatus routingStatus,
+            @Param("priority") Priority priority,
+            @Param("text") String text,
+            @Param("submittedFrom") LocalDateTime submittedFrom,
+            @Param("submittedTo") LocalDateTime submittedTo
     );
 
 

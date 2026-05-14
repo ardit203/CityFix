@@ -15,6 +15,7 @@ import {userRoutes} from "./auth_and_access/routes/userRoutes.jsx";
 import {profileRoutes} from "./auth_and_access/routes/profileRoutes.jsx";
 import {staffRoutes} from "./administration/routes/staffRoutes.jsx";
 import {requestRoutes} from "./request_management/routes/requestRoutes.jsx";
+import {reportRoutes} from "./reporting/routes/reportRoutes.jsx";
 
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
                     {profileRoutes}
                     {staffRoutes}
                     {requestRoutes}
+                    {reportRoutes}
                 </Route>
             </Routes>
         </BrowserRouter>

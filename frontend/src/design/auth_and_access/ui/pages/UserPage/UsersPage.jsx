@@ -11,8 +11,7 @@ import {
 } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
-import UserGrid from "../../components/user/UserGrid/UserGrid.jsx";
-import useUsers from "../../../hooks/useUsers.js";
+import UserGrid from "../../../../../auth_and_access/ui/components/user/UserGrid.jsx";
 
 const UsersPage = () => {
     const { users, loading, pagination, fetchUsers } = useUsers();

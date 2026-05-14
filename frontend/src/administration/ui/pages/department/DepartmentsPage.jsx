@@ -9,6 +9,7 @@ import LoadingBar from "../../../../common/ui/components/LoadingBar.jsx";
 import AdminTable from "../../../../common/ui/components/AdminTable.jsx";
 import useDepartmentActions from "../../../hooks/department/useDepartmentActions.js";
 import PaginatedDataView from "../../../../common/ui/components/PaginatedDataView.jsx";
+import PageHeader from "../../../../common/ui/components/PageHeader.jsx";
 import SortControls from "../../../../common/ui/components/SortControls.jsx";
 import {
     departmentColumns,
@@ -41,6 +42,11 @@ const DepartmentsPage = () => {
 
     return (
         <Box>
+            <PageHeader
+                title="Departments"
+                subtitle="Manage municipal departments used for routing requests."
+            />
+
             <FilterBar
                 onSearch={handleSearch}
                 onClear={handleClearFilters}

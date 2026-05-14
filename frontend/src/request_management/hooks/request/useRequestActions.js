@@ -40,6 +40,25 @@ const useRequestActions = () => {
         });
     }, [executeAction]);
 
+    const exportRequestPdf = useCallback(async (id) => {
+        return executeAction({
+            successMessage: "Request PDF exported successfully!",
+            actionFn: async () => {
+                const response = await requestService.exportPdf(id);
+                const file = new Blob([response.data], {type: "application/pdf"});
+                const fileUrl = window.URL.createObjectURL(file);
+                const link = document.createElement("a");
+
+                link.href = fileUrl;
+                link.download = `request-${id}.pdf`;
+                link.click();
+
+                window.URL.revokeObjectURL(fileUrl);
+                return true;
+            }
+        });
+    }, [executeAction]);
+
     const deleteRequestsBulk = useCallback(async (ids, onSuccess) => {
         return executeAction({
             confirmDialog: {
@@ -89,6 +108,7 @@ const useRequestActions = () => {
         deleteRequest, 
         cancelRequest, 
         changeStatus,
+        exportRequestPdf,
         deleteRequestsBulk, 
         confirmRouting,
         rejectRouting,

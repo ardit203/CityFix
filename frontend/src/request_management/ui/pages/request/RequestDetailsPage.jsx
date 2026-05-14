@@ -3,6 +3,7 @@ import {useNavigate, useParams} from "react-router";
 import {
     Alert,
     Box,
+    Button,
     Card,
     CardContent,
     Chip,
@@ -17,6 +18,7 @@ import {
     Business,
     Category as CategoryIcon,
     Description,
+    Download,
     LocationCity,
     LocationOn,
     Person,
@@ -34,8 +36,11 @@ import useMunicipalities from "../../../../administration/hooks/municipality/use
 import AsyncDataView from "../../../../common/ui/components/AsyncDataView.jsx";
 import ActionBar from "../../../../common/ui/components/ActionBar.jsx";
 import RequestCommentsSection from "../../component/request/RequestCommentsSection.jsx";
+import RequestAssignmentPanel from "../../component/requestAssignments/RequestAssignmentPanel.jsx";
+import LocationPicker from "../../component/request/LocationPicker.jsx";
 
 const staffRoles = ["ADMINISTRATOR", "MANAGER", "EMPLOYEE"];
+const managementRoles = ["ADMINISTRATOR", "MANAGER"];
 
 const getUserRoles = (user) => {
     const roles = user?.roles || [];
@@ -106,13 +111,14 @@ const RequestDetailsPage = () => {
     const {user} = useAuth();
 
     const {request, loading, error} = useRequestDetails(id);
-    const {deleteRequest} = useRequestActions();
+    const {deleteRequest, exportRequestPdf, isExecuting} = useRequestActions();
 
     const {categories} = useCategories({paged: false});
     const {departments} = useDepartments({paged: false});
     const {municipalities} = useMunicipalities({paged: false});
 
     const canEdit = getUserRoles(user).some((role) => staffRoles.includes(role));
+    const canManageAssignments = getUserRoles(user).some((role) => managementRoles.includes(role));
 
     const handleDelete = async () => {
         await deleteRequest(request.id, () => {
@@ -146,7 +152,16 @@ const RequestDetailsPage = () => {
                 secondaryBackLabel="Back to Requests"
                 onEdit={canEdit ? () => navigate(`/requests/${request.id}/edit`) : undefined}
                 onDelete={handleDelete}
-            />
+            >
+                <Button
+                    variant="outlined"
+                    startIcon={<Download />}
+                    onClick={() => exportRequestPdf(request.id)}
+                    disabled={isExecuting}
+                >
+                    Export PDF
+                </Button>
+            </ActionBar>
 
             <Stack spacing={3}>
                 <Paper elevation={2} sx={{p: {xs: 2, md: 4}, borderRadius: 3}}>
@@ -216,19 +231,14 @@ const RequestDetailsPage = () => {
                                 </Card>
                             </Grid>
 
-                            <Grid size={{xs: 12, md: 4}}>
-                                <Card variant="outlined" sx={{height: "100%", borderRadius: 2}}>
-                                    <CardContent>
-                                        <Typography variant="h6" fontWeight={700} sx={{mb: 2}}>
-                                            Request Info
-                                        </Typography>
-                                        <Stack spacing={2}>
-                                            <InfoRow icon={<Badge color="primary" />} label="Request ID" value={request.id} />
-                                            <InfoRow icon={<Person color="primary" />} label="Citizen ID" value={request.userId} />
-                                        </Stack>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
+                            {request.routingStatus !== "PENDING_REVIEW" && (
+                                <Grid size={{ xs: 12, md: 4 }}>
+                                    <RequestAssignmentPanel
+                                        request={request}
+                                        canManage={canManageAssignments}
+                                    />
+                                </Grid>
+                            )}
 
                             <Grid size={{xs: 12, md: 4}}>
                                 <Card variant="outlined" sx={{height: "100%", borderRadius: 2}}>
@@ -252,8 +262,35 @@ const RequestDetailsPage = () => {
                                             Location
                                         </Typography>
                                         <Stack spacing={2}>
+                                            {request.location?.latitude && request.location?.longitude ? (
+                                                <Box sx={{border: "1px solid", borderColor: "divider", borderRadius: 1, overflow: "hidden"}}>
+                                                    <LocationPicker
+                                                        initialLocation={request.location}
+                                                        readOnly
+                                                        height={260}
+                                                    />
+                                                </Box>
+                                            ) : (
+                                                <Typography variant="body2" color="text.secondary">
+                                                    No location provided.
+                                                </Typography>
+                                            )}
                                             <InfoRow icon={<LocationOn color="primary" />} label="Latitude" value={request.location?.latitude} />
                                             <InfoRow icon={<LocationOn color="primary" />} label="Longitude" value={request.location?.longitude} />
+                                        </Stack>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+
+                            <Grid size={{xs: 12, md: 4}}>
+                                <Card variant="outlined" sx={{height: "100%", borderRadius: 2}}>
+                                    <CardContent>
+                                        <Typography variant="h6" fontWeight={700} sx={{mb: 2}}>
+                                            Request Info
+                                        </Typography>
+                                        <Stack spacing={2}>
+                                            <InfoRow icon={<Badge color="primary" />} label="Request ID" value={request.id} />
+                                            <InfoRow icon={<Person color="primary" />} label="Citizen ID" value={request.userId} />
                                         </Stack>
                                     </CardContent>
                                 </Card>

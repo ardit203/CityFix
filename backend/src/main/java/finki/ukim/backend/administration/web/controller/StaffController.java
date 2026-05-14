@@ -6,15 +6,17 @@ import finki.ukim.backend.administration.model.dto.DisplayStaffDto;
 import finki.ukim.backend.administration.model.dto.DisplayStaffPageableDto;
 import finki.ukim.backend.administration.model.dto.filters.StaffFilterDto;
 import finki.ukim.backend.administration.service.application.StaffApplicationService;
+import finki.ukim.backend.reporting_and_export_import.service.domain.StaffImportService;
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.dto.DisplayUserPageableDto;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,6 +25,7 @@ import java.util.List;
 @RequestMapping("/api/staff")
 public class StaffController {
     private final StaffApplicationService staffApplicationService;
+    private final StaffImportService staffImportService;
 
     @GetMapping
     public ResponseEntity<List<DisplayBasicStaffDto>> findAll(@AuthenticationPrincipal User currentUser) {
@@ -78,6 +81,18 @@ public class StaffController {
     @PostMapping
     public ResponseEntity<DisplayStaffDto> create(@Valid @RequestBody CreateStaffDto createStaffDto, @AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok(staffApplicationService.create(currentUser, createStaffDto));
+    }
+
+    @PostMapping(
+            value = "/import/excel",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public ResponseEntity<String> importStaffFromExcel(
+            @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal User currentUser
+    ) {
+        int importedCount = staffImportService.importStaffFromExcel(file, currentUser);
+        return ResponseEntity.ok("Imported " + importedCount + " staff members successfully");
     }
 
     @PutMapping("/{id}")

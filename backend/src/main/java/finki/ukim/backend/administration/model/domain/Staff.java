@@ -14,17 +14,22 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(name = "staff")
+@Table(
+        name = "staff",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_staff_user", columnNames = "user_id")
+        }
+)
 public class Staff extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id")
+    @JoinColumn(name = "department_id", nullable = false)
     private Department department;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "municipality_id")
+    @JoinColumn(name = "municipality_id", nullable = false)
     private Municipality municipality;
 }

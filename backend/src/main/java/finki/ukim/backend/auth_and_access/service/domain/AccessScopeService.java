@@ -60,6 +60,8 @@ public interface AccessScopeService {
     RequestAssignmentScopeFilters getRequestAssignmentFilters(
             User currentUser,
             Long employeeId,
-            Long assignedByUserId
+            Long assignedByUserId,
+            Long departmentId,
+            Long municipalityId
     );
 }

@@ -12,6 +12,8 @@ import java.util.List;
 public interface RequestAssignmentService {
     RequestAssignment findById(Long id);
 
+    RequestAssignment findById(Long id, User user);
+
     List<RequestAssignment> findAllByRequest(
             Request request,
             User user
@@ -19,6 +21,11 @@ public interface RequestAssignmentService {
 
     Page<RequestAssignmentPageableProjection> findAll(
             Request request,
+            User user,
+            RequestAssignmentFilterDto requestAssignmentFilterDto
+    );
+
+    Page<RequestAssignmentPageableProjection> findAll(
             User user,
             RequestAssignmentFilterDto requestAssignmentFilterDto
     );

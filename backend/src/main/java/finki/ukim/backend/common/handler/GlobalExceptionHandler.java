@@ -1,5 +1,7 @@
 package finki.ukim.backend.common.handler;
 
+import finki.ukim.backend.administration.model.dto.imports.ImportErrorResponse;
+import finki.ukim.backend.administration.model.exception.StaffImportException;
 import finki.ukim.backend.common.dto.ApiError;
 import finki.ukim.backend.common.exception.*;
 import lombok.extern.slf4j.Slf4j;
@@ -129,6 +131,18 @@ public class GlobalExceptionHandler {
                 .body(ApiError.of(
                         HttpStatus.BAD_REQUEST,
                         "Invalid parameter type for '" + exception.getName() + "'. Expected: " + requiredType
+                ));
+    }
+
+    @ExceptionHandler(StaffImportException.class)
+    public ResponseEntity<ImportErrorResponse> handleStaffImportException(StaffImportException exception) {
+        log.warn("Staff import failed with {} validation error(s)", exception.getErrors().size());
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ImportErrorResponse(
+                        "Excel import failed. No staff members were saved.",
+                        exception.getErrors()
                 ));
     }
 

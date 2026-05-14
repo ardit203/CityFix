@@ -16,6 +16,7 @@ import LoadingBar from "../../../common/ui/components/LoadingBar.jsx";
 import PaginatedDataView from "../../../common/ui/components/PaginatedDataView.jsx";
 import AdminTable from "../../../common/ui/components/AdminTable.jsx";
 import UserGrid from "../components/user/UserGrid.jsx";
+import PageHeader from "../../../common/ui/components/PageHeader.jsx";
 
 const UsersPage = () => {
     const navigate = useNavigate();
@@ -42,6 +43,11 @@ const UsersPage = () => {
 
     return (
         <Box>
+            <PageHeader
+                title="Users"
+                subtitle="Manage user accounts, roles, and access."
+            />
+
             <FilterBar
                 onSearch={handleSearch}
                 onClear={handleClearFilters}

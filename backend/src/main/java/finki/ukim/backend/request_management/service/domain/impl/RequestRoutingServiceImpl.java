@@ -16,6 +16,7 @@ import finki.ukim.backend.request_management.model.enums.Priority;
 import finki.ukim.backend.request_management.model.enums.RoutingStatus;
 import finki.ukim.backend.request_management.model.exception.RequestCannotGetConfirmedException;
 import finki.ukim.backend.request_management.repository.RequestRepository;
+import finki.ukim.backend.request_management.service.domain.RequestAssignmentService;
 import finki.ukim.backend.request_management.service.domain.RequestLogService;
 import finki.ukim.backend.request_management.service.domain.RequestRoutingService;
 import finki.ukim.backend.request_management.service.domain.RequestService;
@@ -34,11 +35,13 @@ public class RequestRoutingServiceImpl implements RequestRoutingService {
     private final CategoryRepository categoryRepository;
     private final DepartmentRepository departmentRepository;
     private final MunicipalityRepository municipalityRepository;
+    private final RequestAssignmentService requestAssignmentService;
 
     @Override
     public Request updateRouting(Long requestId, User currentUser, UpdateRequestRoutingDto dto) {
         accessScopeService.checkForManagement(currentUser);
         Request request = requestService.findById(requestId, currentUser);
+        boolean routingNeedsToChange = false;
 
         if (dto.categoryId() != null && (request.getCategory() == null || !request.getCategory().getId().equals(dto.categoryId()))) {
             String oldVal = request.getCategory() != null ? request.getCategory().getName() : "None";
@@ -46,18 +49,20 @@ public class RequestRoutingServiceImpl implements RequestRoutingService {
             request.setCategory(category);
             request.setDepartment(category.getDepartment());
             requestLogService.create(request, currentUser, LogAction.CATEGORY_CHANGED, oldVal, category.getName(), dto.note());
+            routingNeedsToChange = true;
         }
 
-        if (dto.departmentId() != null && (request.getDepartment() == null || !request.getDepartment().getId().equals(dto.departmentId()))) {
-            String oldVal = request.getDepartment() != null ? request.getDepartment().getName() : "None";
-            Department department = departmentRepository.findById(dto.departmentId()).orElseThrow();
-            request.setDepartment(department);
-            requestLogService.create(request, currentUser, LogAction.DEPARTMENT_CHANGED, oldVal, department.getName(), dto.note());
-        }
+//        if (dto.departmentId() != null && (request.getDepartment() == null || !request.getDepartment().getId().equals(dto.departmentId()))) {
+//            String oldVal = request.getDepartment() != null ? request.getDepartment().getName() : "None";
+//            Department department = departmentRepository.findById(dto.departmentId()).orElseThrow();
+//            request.setDepartment(department);
+//            requestLogService.create(request, currentUser, LogAction.DEPARTMENT_CHANGED, oldVal, department.getName(), dto.note());
+//        }
 
         if (dto.municipalityId() != null && (request.getMunicipality() == null || !request.getMunicipality().getId().equals(dto.municipalityId()))) {
             Municipality municipality = municipalityRepository.findById(dto.municipalityId()).orElseThrow();
             request.setMunicipality(municipality);
+            routingNeedsToChange = true;
             // Municipality doesn't have a specific log action requested, but we could log it.
         }
 
@@ -72,10 +77,11 @@ public class RequestRoutingServiceImpl implements RequestRoutingService {
         }
 
         // Whenever routing is manually updated, we return it to PENDING_REVIEW if it was rejected or confirmed
-        if (request.getRoutingStatus() != RoutingStatus.PENDING_REVIEW) {
+        if (routingNeedsToChange && request.getRoutingStatus() != RoutingStatus.PENDING_REVIEW) {
             String oldVal = request.getRoutingStatus() != null ? request.getRoutingStatus().name() : "None";
             request.setRoutingStatus(RoutingStatus.PENDING_REVIEW);
             requestLogService.create(request, currentUser, LogAction.ROUTING_REOPENED, oldVal, RoutingStatus.PENDING_REVIEW.name(), "Routing updated manually, returning to pending review.");
+            requestAssignmentService.removeAllAssignments(request, currentUser);
         }
 
         return requestRepository.save(request);

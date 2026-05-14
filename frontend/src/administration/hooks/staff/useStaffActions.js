@@ -1,9 +1,11 @@
 import {useCallback} from "react";
 import useActionHelper from "../../../common/hooks/useActionHelper.js";
 import staffService from "../../services/staffService.js";
+import useSnackbar from "../../../common/hooks/useSnackbar.js";
 
 const useStaffActions = () => {
     const {executeAction, isExecuting} = useActionHelper();
+    const {showSnackbar} = useSnackbar();
 
     const createStaff = useCallback((data, onSuccess = null) => {
         return executeAction({
@@ -40,7 +42,27 @@ const useStaffActions = () => {
         });
     }, [executeAction]);
 
-    return {createStaff, deleteStaff, updateStaff, deleteStaffBulk, isExecuting};
+    const importStaffExcel = useCallback(async (file, onSuccess = null) => {
+        try {
+            const response = await staffService.importExcel(file);
+            showSnackbar(response.data || "Staff imported successfully!", "success");
+            if (onSuccess) onSuccess(response.data);
+            return true;
+        } catch (error) {
+            const errors = error.response?.data?.errors;
+            const message = Array.isArray(errors) && errors.length > 0
+                ? errors
+                    .slice(0, 5)
+                    .map((item) => `Row ${item.row}, ${item.column}: ${item.message}`)
+                    .join("\n")
+                : error.response?.data?.message || error.message || "Staff import failed";
+
+            showSnackbar(message, "error");
+            return false;
+        }
+    }, [showSnackbar]);
+
+    return {createStaff, deleteStaff, updateStaff, deleteStaffBulk, importStaffExcel, isExecuting};
 };
 
 export default useStaffActions;

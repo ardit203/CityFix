@@ -26,6 +26,13 @@ public class RequestAssignmentApplicationServiceImpl implements RequestAssignmen
     private final UserService userService;
 
     @Override
+    public DisplayRequestAssignmentDto findById(Long assignmentId, User user) {
+        return DisplayRequestAssignmentDto.from(
+                requestAssignmentService.findById(assignmentId, user)
+        );
+    }
+
+    @Override
     public List<DisplayRequestAssignmentBasicDto> findAllByRequest(Long requestId, User user) {
         Request request = requestService.findById(requestId, user);
         return DisplayRequestAssignmentBasicDto.from(
@@ -43,13 +50,20 @@ public class RequestAssignmentApplicationServiceImpl implements RequestAssignmen
     }
 
     @Override
+    public Page<DisplayRequestAssignmentPageableDto> findAll(User user, RequestAssignmentFilterDto requestAssignmentFilterDto) {
+        return requestAssignmentService
+                .findAll(user, requestAssignmentFilterDto)
+                .map(DisplayRequestAssignmentPageableDto::from);
+    }
+
+    @Override
     public DisplayRequestAssignmentDto assignEmployee(Long requestId, User user, CreateRequestAssignmentDto createRequestAssignmentDto) {
         Request request = requestService.findById(requestId, user);
         User employee = userService.findById(createRequestAssignmentDto.employeeId());
         return DisplayRequestAssignmentDto.from(requestAssignmentService.assignEmployee(
                 request,
                 user,
-                createRequestAssignmentDto.toRequestAssignment(request, user, employee)
+                createRequestAssignmentDto.toRequestAssignment(request, employee, user)
         ));
     }
 

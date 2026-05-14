@@ -4,9 +4,11 @@ import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.request_management.model.dto.*;
 import finki.ukim.backend.request_management.model.dto.filter.RequestFilterDto;
 import finki.ukim.backend.request_management.service.application.RequestApplicationService;
+import finki.ukim.backend.reporting_and_export_import.service.domain.RequestExportService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,6 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 public class RequestController {
     private final RequestApplicationService requestApplicationService;
+    private final RequestExportService requestExportService;
 
     @GetMapping
     public ResponseEntity<List<DisplayBasicRequestDto>> findAll(@AuthenticationPrincipal User currentUser) {
@@ -46,6 +49,22 @@ public class RequestController {
         return ResponseEntity.ok(
                 requestApplicationService.findById(id, currentUser)
         );
+    }
+
+    @GetMapping("/{requestId}/export/pdf")
+    public ResponseEntity<byte[]> exportRequestAsPdf(
+            @PathVariable Long requestId,
+            @AuthenticationPrincipal User currentUser
+    ) {
+        byte[] pdf = requestExportService.exportRequestAsPdf(requestId, currentUser);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=request-" + requestId + ".pdf"
+                )
+                .body(pdf);
     }
 
 

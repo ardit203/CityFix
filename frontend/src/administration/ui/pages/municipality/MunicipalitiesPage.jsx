@@ -6,6 +6,7 @@ import FilterBar from "../../../../common/ui/components/FilterBar.jsx";
 import LoadingBar from "../../../../common/ui/components/LoadingBar.jsx";
 import AdminTable from "../../../../common/ui/components/AdminTable.jsx";
 import PaginatedDataView from "../../../../common/ui/components/PaginatedDataView.jsx";
+import PageHeader from "../../../../common/ui/components/PageHeader.jsx";
 import SortControls from "../../../../common/ui/components/SortControls.jsx";
 import {
     municipalityColumns,
@@ -40,6 +41,11 @@ const MunicipalitiesPage = () => {
 
     return (
         <Box>
+            <PageHeader
+                title="Municipalities"
+                subtitle="Manage municipalities and their identifying codes."
+            />
+
             <FilterBar
                 onSearch={handleSearch}
                 onClear={handleClearFilters}
