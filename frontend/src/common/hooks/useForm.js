@@ -36,7 +36,6 @@ const useForm = (initialState = {}) => {
 
     const handleSubmit = useCallback(async (event, validate, submitFun) => {
         event.preventDefault();
-        console.log("Form Data")
         if (validate()) await submitFun(formData);
     }, [formData])
 

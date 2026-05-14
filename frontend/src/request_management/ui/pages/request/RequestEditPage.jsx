@@ -31,7 +31,6 @@ import useRequestActions from "../../../hooks/request/useRequestActions.js";
 import useRequestDetails from "../../../hooks/request/useRequestDetails.js";
 import useAiSuggestionDetails from "../../../hooks/request/useAiSuggestionDetails.js";
 import useCategories from "../../../../administration/hooks/category/useCategories.js";
-import useDepartments from "../../../../administration/hooks/department/useDepartments.js";
 import useMunicipalities from "../../../../administration/hooks/municipality/useMunicipalities.js";
 
 import ActionBar from "../../../../common/ui/components/ActionBar.jsx";
@@ -85,7 +84,6 @@ const RequestEditPageContent = () => {
     } = useRequestActions();
 
     const {categories, loading: loadingCategories} = useCategories({paged: false});
-    const {departments, loading: loadingDepartments} = useDepartments({paged: false});
     const {municipalities, loading: loadingMunicipalities} = useMunicipalities({paged: false});
 
     const [routingForm, setRoutingForm] = useState({
@@ -106,6 +104,7 @@ const RequestEditPageContent = () => {
     useEffect(() => {
         if (!request) return;
 
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setRoutingForm({
             categoryId: request.categoryId || "",
             departmentId: request.departmentId || "",
@@ -181,7 +180,6 @@ const RequestEditPageContent = () => {
     const isAiSuggestionPending = (aiSuggestion?.status === "PENDING_REVIEW");
     const disableManualEditing = isExecuting || isAiSuggestionPending;
 
-    console.log("isAiSuggestionPending", isAiSuggestionPending, aiSuggestion.status)
     return (
         <Box>
             <ActionBar

@@ -1,9 +1,10 @@
 import React from 'react';
 import {useNavigate} from "react-router";
-import {Box, Button, Card, CardActions, CardContent, Typography} from "@mui/material";
+import {Box, Button, Card, CardActions, CardContent, Chip, Stack, Typography} from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import LocationCityIcon from "@mui/icons-material/LocationCity";
 import useMunicipalityActions from "../../../hooks/municipality/useMunicipalityActions.js";
 
 const MunicipalityCard = ({municipality, onDelete}) => {
@@ -16,23 +17,31 @@ const MunicipalityCard = ({municipality, onDelete}) => {
     };
 
     return (
-        <Card sx={{maxWidth: 300}}>
-            <CardContent>
-                <Typography variant="h5">
-                    {municipality.name}
-                </Typography>
+        <Card className="entity-card">
+            <CardContent className="entity-card-content">
+                <Box className="entity-card-header">
+                    <Box className="entity-card-icon">
+                        <LocationCityIcon />
+                    </Box>
+                    <Box sx={{minWidth: 0}}>
+                        <Typography variant="h6" noWrap title={municipality.name}>
+                            {municipality.name}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Municipality
+                        </Typography>
+                    </Box>
+                </Box>
 
-                <Typography variant="subtitle1">
-                    {municipality.name}
-                </Typography>
-
-                <Typography variant="h6" sx={{textAlign: "right"}}>
-                    {municipality.code}
-                </Typography>
+                <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                    <Chip size="small" color="primary" variant="outlined" label={municipality.code || "No code"} />
+                    <Chip size="small" variant="outlined" label={`ID ${municipality.id}`} />
+                </Stack>
             </CardContent>
 
-            <CardActions sx={{justifyContent: "space-between"}}>
+            <CardActions className="entity-card-actions" sx={{justifyContent: "space-between"}}>
                 <Button
+                    size="small"
                     startIcon={<InfoIcon/>}
                     onClick={() => navigate(`/municipalities/${municipality.id}`)}
                 >
@@ -41,6 +50,7 @@ const MunicipalityCard = ({municipality, onDelete}) => {
 
                 <Box>
                     <Button
+                        size="small"
                         startIcon={<EditIcon/>}
                         onClick={() => navigate(`/municipalities/${municipality.id}/edit`)}
                         color="warning"
@@ -49,6 +59,7 @@ const MunicipalityCard = ({municipality, onDelete}) => {
                     </Button>
 
                     <Button
+                        size="small"
                         startIcon={<DeleteIcon/>}
                         onClick={handleDelete}
                         color="error"

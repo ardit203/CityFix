@@ -92,15 +92,22 @@ const RequestAssignmentPanel = ({request, canManage}) => {
     };
 
     return (
-        <Card variant="outlined" sx={{height: "100%", borderRadius: 2}}>
+        <Card variant="outlined" className="entity-card" sx={{height: "100%"}}>
             <CardContent>
                 <Stack spacing={2}>
                     <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
                         <Stack direction="row" alignItems="center" spacing={1}>
-                            <AssignmentIndIcon color="primary" />
-                            <Typography variant="h6" fontWeight={700}>
-                                Assignment
-                            </Typography>
+                            <Box className="entity-card-icon" sx={{width: 40, height: 40, borderRadius: 2}}>
+                                <AssignmentIndIcon />
+                            </Box>
+                            <Box>
+                                <Typography variant="h6">
+                                    Assignment
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                    Employee ownership
+                                </Typography>
+                            </Box>
                         </Stack>
 
                         {canManage && (
@@ -132,7 +139,13 @@ const RequestAssignmentPanel = ({request, canManage}) => {
                                     alignItems="center"
                                     justifyContent="space-between"
                                     spacing={2}
-                                    sx={{border: "1px solid", borderColor: "divider", borderRadius: 1, p: 1.25}}
+                                    sx={{
+                                        border: "1px solid",
+                                        borderColor: "divider",
+                                        borderRadius: 2,
+                                        p: 1.5,
+                                        bgcolor: "background.default"
+                                    }}
                                 >
                                     <Box sx={{minWidth: 0}}>
                                         <Typography variant="body2" fontWeight={700} noWrap>

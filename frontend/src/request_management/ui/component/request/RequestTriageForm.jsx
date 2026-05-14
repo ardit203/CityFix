@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+    Box,
     Button,
     Card,
     CardContent,
@@ -36,6 +37,7 @@ const RequestTriageForm = ({ requestId, onTriageComplete }) => {
     // Pre-fill form when suggestion loads
     useEffect(() => {
         if (suggestion && suggestion.status === 'PENDING_REVIEW') {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setCategoryId(suggestion.categoryId || '');
             setPriority(suggestion.priority || '');
             setSummary(suggestion.aiSummary || '');
@@ -82,13 +84,24 @@ const RequestTriageForm = ({ requestId, onTriageComplete }) => {
     const isExecuting = isAiExecuting || isRoutingExecuting;
 
     return (
-        <Card variant="outlined" sx={{ height: '100%', borderColor: 'primary.main', borderWidth: 2 }}>
+        <Card
+            variant="outlined"
+            className="entity-card"
+            sx={{ height: '100%', borderColor: 'primary.main', borderWidth: 1 }}
+        >
             <CardContent>
                 <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
-                    <AutoAwesomeIcon color="primary" />
-                    <Typography variant="h6" color="primary.main" fontWeight={600}>
-                        AI Triage Assistant
-                    </Typography>
+                    <Box className="entity-card-icon" sx={{width: 40, height: 40, borderRadius: 2}}>
+                        <AutoAwesomeIcon />
+                    </Box>
+                    <Box>
+                        <Typography variant="h6" color="primary.main">
+                            AI Triage Assistant
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Suggested routing review
+                        </Typography>
+                    </Box>
                 </Stack>
 
                 <Alert severity="info" sx={{ mb: 3 }}>

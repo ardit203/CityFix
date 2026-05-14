@@ -20,7 +20,6 @@ const useActionHelper = () => {
             if (onSuccess) onSuccess(response?.data);
             return response?.data || true;
         } catch (error) {
-            console.log(error)
             const message = error.response?.data?.message || error.response?.data?.error || error.message || "Something went wrong";
             showSnackbar(message, "error");
             return false;

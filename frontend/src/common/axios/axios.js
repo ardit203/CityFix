@@ -16,14 +16,19 @@ axiosInstance.interceptors.request.use(
         }
         return config;
     },
+    (error) => Promise.reject(error),
+);
+
+axiosInstance.interceptors.response.use(
+    (response) => response,
     (error) => {
-        if (error.response.status === 401 || error.response.status === 403) {
-            console.log("Invalid token");
+        const status = error.response?.status;
+        if (status === 401 || status === 403) {
             localStorage.removeItem("token");
             window.location.href = "/login";
         }
         return Promise.reject(error);
-    },
+    }
 );
 
 export default axiosInstance;

@@ -8,7 +8,7 @@ const Layout = () => {
     return (
         <Box className='layout-box'>
             <Header/>
-            <Container className='outlet-container' sx={{ my: 2 }} maxWidth='lg'>
+            <Container className='outlet-container page-surface' maxWidth='xl'>
                 <Outlet/>
             </Container>
         </Box>

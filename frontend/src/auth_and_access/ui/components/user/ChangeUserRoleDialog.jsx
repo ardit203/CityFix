@@ -19,6 +19,7 @@ const ChangeUserRoleDialog = ({ open, onClose, user, onSubmit}) => {
             if (initialRole && !initialRole.startsWith("ROLE_")) {
                 initialRole = "ROLE_" + initialRole;
             }
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setSelectedRole(initialRole);
         }
     }, [user]);

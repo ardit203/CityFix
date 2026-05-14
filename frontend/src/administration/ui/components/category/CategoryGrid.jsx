@@ -4,9 +4,9 @@ import CategoryCard from "./CategoryCard.jsx";
 
 const CategoryGrid = ({categories, onDelete}) => {
     return (
-        <Grid container spacing={{xs: 2, md: 3}}>
+        <Grid container spacing={{xs: 2, md: 2.5}} className="entity-grid">
             {categories.map((category) => (
-                <Grid key={category.id} size={{xs: 12, sm: 6, md: 4, lg: 3}}>
+                <Grid key={category.id} size={{xs: 12, sm: 6, lg: 4, xl: 3}}>
                     <CategoryCard category={category} onDelete={onDelete}/>
                 </Grid>
             ))}

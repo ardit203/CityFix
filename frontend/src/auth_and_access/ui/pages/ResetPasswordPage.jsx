@@ -48,8 +48,6 @@ const ResetPasswordPage = () => {
             confirmPassword: formData.confirmPassword
         }
 
-        console.log(data)
-
         if (validate()) {
             // The API DTO expects { token, newPassword, confirmPassword }
             await resetPassword(data);
@@ -58,100 +56,108 @@ const ResetPasswordPage = () => {
 
     if (!token) {
         return (
-            <Container maxWidth="sm">
-                <Paper elevation={3} sx={{padding: 4, mt: 8}}>
-                    <Typography variant="h5" align="center" gutterBottom color="error">
-                        Invalid Reset Link
-                    </Typography>
+            <Box className="auth-page">
+                <Container maxWidth="sm">
+                    <Paper elevation={3} className="auth-card" sx={{p: {xs: 3, sm: 4.5}}}>
+                        <Box className="auth-heading">
+                            <Box className="auth-logo">C</Box>
+                            <Box>
+                                <Typography variant="h4" color="error">
+                                    Invalid reset link
+                                </Typography>
+                            </Box>
+                        </Box>
 
-                    <Typography color="text.secondary" align="center" sx={{mb: 3}}>
-                        The reset link is missing a token. Please request a new password reset email.
-                    </Typography>
+                        <Typography color="text.secondary" align="center" sx={{mb: 3}}>
+                            The reset link is missing a token. Please request a new password reset email.
+                        </Typography>
 
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        onClick={() => navigate("/forgot-password")}
-                    >
-                        Request New Reset Link
-                    </Button>
-                </Paper>
-            </Container>
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            onClick={() => navigate("/forgot-password")}
+                        >
+                            Request New Reset Link
+                        </Button>
+                    </Paper>
+                </Container>
+            </Box>
         );
     }
 
     return (
-        <Container maxWidth="sm">
-            <Paper elevation={3} sx={{padding: 4, mt: 8}}>
-                <Typography variant="h5" align="center" gutterBottom>
-                    Reset Password
-                </Typography>
+        <Box className="auth-page">
+            <Container maxWidth="sm">
+                <Paper elevation={3} className="auth-card" sx={{p: {xs: 3, sm: 4.5}}}>
+                    <Box className="auth-heading">
+                        <Box className="auth-logo">C</Box>
+                        <Box>
+                            <Typography variant="h4">
+                                Choose a new password
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                Enter and confirm your new CityFix password.
+                            </Typography>
+                        </Box>
+                    </Box>
 
-                <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    align="center"
-                    sx={{mb: 3}}
-                >
-                    Enter your new password below.
-                </Typography>
+                    {apiError && (
+                        <Alert severity="error" sx={{mb: 3}}>
+                            {apiError}
+                        </Alert>
+                    )}
 
-                {apiError && (
-                    <Alert severity="error" sx={{mb: 3}}>
-                        {apiError}
-                    </Alert>
-                )}
+                    <Box component="form" onSubmit={handleFormSubmit} noValidate>
+                        <TextField
+                            fullWidth
+                            label="New Password"
+                            name="newPassword"
+                            type="password"
+                            margin="normal"
+                            required
+                            value={formData.newPassword}
+                            onChange={handleChange}
+                            error={!!validationErrors.newPassword}
+                            helperText={validationErrors.newPassword}
+                            autoFocus
+                        />
 
-                <Box component="form" onSubmit={handleFormSubmit} noValidate>
-                    <TextField
-                        fullWidth
-                        label="New Password"
-                        name="newPassword"
-                        type="password"
-                        margin="normal"
-                        required
-                        value={formData.newPassword}
-                        onChange={handleChange}
-                        error={!!validationErrors.newPassword}
-                        helperText={validationErrors.newPassword}
-                        autoFocus
-                    />
+                        <TextField
+                            fullWidth
+                            label="Confirm Password"
+                            name="confirmPassword"
+                            type="password"
+                            margin="normal"
+                            required
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
+                            error={!!validationErrors.confirmPassword}
+                            helperText={validationErrors.confirmPassword}
+                        />
 
-                    <TextField
-                        fullWidth
-                        label="Confirm Password"
-                        name="confirmPassword"
-                        type="password"
-                        margin="normal"
-                        required
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
-                        error={!!validationErrors.confirmPassword}
-                        helperText={validationErrors.confirmPassword}
-                    />
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            type="submit"
+                            sx={{mt: 3}}
+                            disabled={loading}
+                        >
+                            {loading ? "Resetting..." : "Reset Password"}
+                        </Button>
 
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        type="submit"
-                        sx={{mt: 3}}
-                        disabled={loading}
-                    >
-                        {loading ? "Resetting..." : "Reset Password"}
-                    </Button>
-
-                    <Button
-                        fullWidth
-                        variant="outlined"
-                        sx={{mt: 1}}
-                        onClick={() => navigate("/login")}
-                        disabled={loading}
-                    >
-                        Back to Login
-                    </Button>
-                </Box>
-            </Paper>
-        </Container>
+                        <Button
+                            fullWidth
+                            variant="outlined"
+                            sx={{mt: 1}}
+                            onClick={() => navigate("/login")}
+                            disabled={loading}
+                        >
+                            Back to Login
+                        </Button>
+                    </Box>
+                </Paper>
+            </Container>
+        </Box>
     );
 };
 

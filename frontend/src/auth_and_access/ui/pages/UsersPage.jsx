@@ -39,8 +39,6 @@ const UsersPage = () => {
             setViewMode(nextView);
         }
     };
-    console.log(users)
-
     return (
         <Box>
             <PageHeader

@@ -14,13 +14,8 @@ const RequestCreatePage = () => {
     const {createRequest} = useRequestActions();
 
     const handleCreate = async (data) => {
-        const createdRequest = await createRequest(data);
+        await createRequest(data);
         navigate("/requests");
-        // if (createdRequest?.id) {
-        //     navigate(`/requests/${createdRequest.id}`);
-        // } else {
-        //     navigate("/requests");
-        // }
     };
 
     return (

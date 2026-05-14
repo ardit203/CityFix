@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-    Paper, Checkbox, IconButton, Menu, MenuItem, Toolbar, Typography, Button, Box, alpha
+    Paper, Checkbox, IconButton, Menu, MenuItem, Toolbar, Typography, Button, alpha
 } from '@mui/material';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -44,13 +44,12 @@ const AdminTable = ({ data, columns, onInfo, onEdit, onDelete, onBulkDelete }) =
 
     return (
         <Paper
+            elevation={0}
+            className="section-card"
             sx={{
                 width: '100%',
                 overflow: 'hidden',
-                borderRadius: 2,
-                border: '1px solid',
-                borderColor: 'divider',
-                boxShadow: 2 // Premium shadow
+                borderRadius: 3
             }}
         >
             {/* The Toolbar that appears when checkboxes are selected! */}
@@ -59,7 +58,9 @@ const AdminTable = ({ data, columns, onInfo, onEdit, onDelete, onBulkDelete }) =
                     sx={{
                         backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.1),
                         display: 'flex',
-                        justifyContent: 'space-between'
+                        justifyContent: 'space-between',
+                        borderBottom: '1px solid',
+                        borderColor: 'divider'
                     }}
                 >
                     <Typography color="primary" variant="subtitle1" component="div">
@@ -82,9 +83,9 @@ const AdminTable = ({ data, columns, onInfo, onEdit, onDelete, onBulkDelete }) =
                 </Toolbar>
             )}
 
-            <TableContainer>
+            <TableContainer sx={{maxWidth: '100%'}}>
                 <Table size="medium">
-                    <TableHead sx={{ backgroundColor: 'background.default' }}>
+                    <TableHead>
                         <TableRow>
                             {/* Select All Checkbox */}
                             <TableCell padding="checkbox">
@@ -117,7 +118,11 @@ const AdminTable = ({ data, columns, onInfo, onEdit, onDelete, onBulkDelete }) =
                                     hover
                                     key={item.id}
                                     selected={isItemSelected}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }} // Clean bottom border
+                                    sx={{
+                                        '&:last-child td, &:last-child th': { border: 0 },
+                                        '&:hover': {backgroundColor: 'rgba(15, 143, 206, 0.05)'},
+                                        transition: 'background-color 0.16s ease'
+                                    }}
                                 >
                                     <TableCell padding="checkbox">
                                         <Checkbox
@@ -136,7 +141,11 @@ const AdminTable = ({ data, columns, onInfo, onEdit, onDelete, onBulkDelete }) =
                                     ))}
 
                                     <TableCell align="right">
-                                        <IconButton size="small" onClick={(e) => handleMenuOpen(e, item)}>
+                                        <IconButton
+                                            size="small"
+                                            onClick={(e) => handleMenuOpen(e, item)}
+                                            sx={{border: '1px solid', borderColor: 'divider', borderRadius: 2}}
+                                        >
                                             <MoreVertIcon />
                                         </IconButton>
                                     </TableCell>

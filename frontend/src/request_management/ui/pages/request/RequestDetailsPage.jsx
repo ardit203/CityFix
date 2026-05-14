@@ -164,13 +164,21 @@ const RequestDetailsPage = () => {
             </ActionBar>
 
             <Stack spacing={3}>
-                <Paper elevation={2} sx={{p: {xs: 2, md: 4}, borderRadius: 3}}>
+                <Paper elevation={0} className="request-case-file">
                     <Stack spacing={3}>
-                        <Stack direction={{xs: "column", md: "row"}} spacing={2} alignItems={{xs: "flex-start", md: "center"}} justifyContent="space-between">
+                        <Stack
+                            className="request-case-header"
+                            direction={{xs: "column", md: "row"}}
+                            spacing={2}
+                            alignItems={{xs: "flex-start", md: "center"}}
+                            justifyContent="space-between"
+                        >
                             <Stack direction="row" spacing={2} alignItems="center">
-                                <ReportProblem color="primary" sx={{fontSize: 42}} />
+                                <Box className="request-case-icon">
+                                    <ReportProblem />
+                                </Box>
                                 <Box>
-                                    <Typography variant="h4" fontWeight={700}>
+                                    <Typography variant="h4">
                                         {request.title || "Untitled Request"}
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary">
@@ -196,12 +204,12 @@ const RequestDetailsPage = () => {
 
                         <Grid container spacing={2.5}>
                             <Grid size={{xs: 12, md: 7}}>
-                                <Card variant="outlined" sx={{height: "100%", borderRadius: 2}}>
+                                <Card variant="outlined" className="detail-card" sx={{height: "100%"}}>
                                     <CardContent>
                                         <Stack spacing={2}>
                                             <Stack direction="row" spacing={1} alignItems="center">
                                                 <Description color="primary" />
-                                                <Typography variant="h6" fontWeight={700}>
+                                                <Typography variant="h6">
                                                     Description
                                                 </Typography>
                                             </Stack>
@@ -214,12 +222,12 @@ const RequestDetailsPage = () => {
                             </Grid>
 
                             <Grid size={{xs: 12, md: 5}}>
-                                <Card variant="outlined" sx={{height: "100%", borderRadius: 2}}>
+                                <Card variant="outlined" className="detail-card" sx={{height: "100%"}}>
                                     <CardContent>
                                         <Stack spacing={2}>
                                             <Stack direction="row" spacing={1} alignItems="center">
                                                 <Psychology color="primary" />
-                                                <Typography variant="h6" fontWeight={700}>
+                                                <Typography variant="h6">
                                                     Summary
                                                 </Typography>
                                             </Stack>
@@ -241,9 +249,9 @@ const RequestDetailsPage = () => {
                             )}
 
                             <Grid size={{xs: 12, md: 4}}>
-                                <Card variant="outlined" sx={{height: "100%", borderRadius: 2}}>
+                                <Card variant="outlined" className="detail-card" sx={{height: "100%"}}>
                                     <CardContent>
-                                        <Typography variant="h6" fontWeight={700} sx={{mb: 2}}>
+                                        <Typography variant="h6" sx={{mb: 2}}>
                                             Routing
                                         </Typography>
                                         <Stack spacing={2}>
@@ -256,14 +264,14 @@ const RequestDetailsPage = () => {
                             </Grid>
 
                             <Grid size={{xs: 12, md: 4}}>
-                                <Card variant="outlined" sx={{height: "100%", borderRadius: 2}}>
+                                <Card variant="outlined" className="detail-card" sx={{height: "100%"}}>
                                     <CardContent>
-                                        <Typography variant="h6" fontWeight={700} sx={{mb: 2}}>
+                                        <Typography variant="h6" sx={{mb: 2}}>
                                             Location
                                         </Typography>
                                         <Stack spacing={2}>
                                             {request.location?.latitude && request.location?.longitude ? (
-                                                <Box sx={{border: "1px solid", borderColor: "divider", borderRadius: 1, overflow: "hidden"}}>
+                                                <Box className="map-frame">
                                                     <LocationPicker
                                                         initialLocation={request.location}
                                                         readOnly
@@ -283,9 +291,9 @@ const RequestDetailsPage = () => {
                             </Grid>
 
                             <Grid size={{xs: 12, md: 4}}>
-                                <Card variant="outlined" sx={{height: "100%", borderRadius: 2}}>
+                                <Card variant="outlined" className="detail-card" sx={{height: "100%"}}>
                                     <CardContent>
-                                        <Typography variant="h6" fontWeight={700} sx={{mb: 2}}>
+                                        <Typography variant="h6" sx={{mb: 2}}>
                                             Request Info
                                         </Typography>
                                         <Stack spacing={2}>

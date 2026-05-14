@@ -106,7 +106,7 @@ const RequestCommentsSection = ({requestId}) => {
     };
 
     return (
-        <Card variant="outlined" sx={{borderRadius: 2}}>
+        <Card variant="outlined" className="comments-panel">
             <CardContent>
                 <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{mb: 2}}>
                     <Box>
@@ -184,7 +184,7 @@ const RequestCommentsSection = ({requestId}) => {
                         const isEditing = editingId === comment.id;
 
                         return (
-                            <Box key={comment.id} sx={{p: 2, border: "1px solid", borderColor: "divider", borderRadius: 2}}>
+                            <Box key={comment.id} className="comment-item">
                                 <Stack direction="row" spacing={1.5} justifyContent="space-between" alignItems="flex-start">
                                     <Box sx={{minWidth: 0, flexGrow: 1}}>
                                         <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap sx={{mb: 1}}>

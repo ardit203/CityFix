@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, CircularProgress, Button } from "@mui/material";
+import { Box, Button, LinearProgress, Paper, Stack, Typography } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import EmptyState from "./EmptyState.jsx";
@@ -17,8 +17,16 @@ const AsyncDataView = ({
     // 1. The Loading State
     if (loading) {
         return (
-            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
-                <CircularProgress />
+            <Box className="async-state-shell">
+                <Paper elevation={0} className="async-state-card">
+                    <Stack spacing={2}>
+                        <Typography variant="h6">Loading workspace</Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Preparing the latest CityFix data for this view.
+                        </Typography>
+                        <LinearProgress />
+                    </Stack>
+                </Paper>
             </Box>
         );
     }
@@ -26,7 +34,7 @@ const AsyncDataView = ({
     // 2. The Error or "Not Found" State
     if (error || !data) {
         return (
-            <Box sx={{ pt: 4 }}>
+            <Box className="async-state-shell">
                 <EmptyState
                     message={error ? "An error occurred" : notFoundMessage}
                     subMessage={error || "This record may have been deleted or does not exist."}

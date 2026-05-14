@@ -11,10 +11,8 @@ import AdminTable from "../../../../common/ui/components/AdminTable.jsx";
 import PaginatedDataView from "../../../../common/ui/components/PaginatedDataView.jsx";
 import PageHeader from "../../../../common/ui/components/PageHeader.jsx";
 import SortControls from "../../../../common/ui/components/SortControls.jsx";
-import {emptyRequestFilter, emptyRequestLogFilters} from "../../../dtos/filterDto.js";
-import {requestColumns, requestSortOptions} from "../../component/request/RequestConfig.jsx";
-import RequestGrid from "../../component/request/RequestGrid.jsx";
-import RequireRole from "../../../../auth_and_access/ui/components/auth/RequireRole.jsx";
+import {emptyRequestLogFilters} from "../../../dtos/filterDto.js";
+import {requestSortOptions} from "../../component/request/RequestConfig.jsx";
 import useRequestLogs from "../../../hooks/requestLogs/useRequestLogs.js";
 import RequestLogGrid from "../../component/requestLogs/RequestLogGrid.jsx";
 import {requestLogColumns} from "../../component/requestLogs/RequestConfig.jsx";
@@ -71,8 +69,6 @@ const RequestLogsPage = () => {
             setViewMode(nextView);
         }
     };
-
-    console.log(requestLogs)
 
     return (
         <Box>

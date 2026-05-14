@@ -38,8 +38,6 @@ const DepartmentsPage = () => {
             setViewMode(nextView);
         }
     };
-    console.log(departments)
-
     return (
         <Box>
             <PageHeader

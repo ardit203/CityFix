@@ -58,29 +58,35 @@ const RegisterPage = () => {
     };
 
     return (
-        <Container maxWidth="md">
-            {/* Matches the exact Paper elevation and padding from LoginPage */}
-            <Paper elevation={3} sx={{ padding: { xs: 3, md: 4 }, mt: 8, mb: 8 }}>
-
-                <Typography variant="h5" align="center" gutterBottom sx={{ mb: 4 }}>
-                    Register
-                </Typography>
-
-                {apiError && (
-                    <Alert severity="error" sx={{ mb: 3 }}>
-                        {apiError}
-                    </Alert>
-                )}
-
-                <Box component="form" onSubmit={(event) => handleSubmit(event, validate, register)} noValidate>
-                    <Grid container spacing={3}>
-
-                        {/* --- LEFT COLUMN: Account Information --- */}
-                        <Grid item xs={12} md={6}>
-                            <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 2, textTransform: 'uppercase', letterSpacing: 1 }}>
-                                Account Details
+        <Box className="auth-page">
+            <Container maxWidth="md">
+                <Paper elevation={3} className="auth-card" sx={{ p: { xs: 3, md: 4.5 } }}>
+                    <Box className="auth-heading">
+                        <Box className="auth-logo">C</Box>
+                        <Box>
+                            <Typography variant="h4">
+                                Create your account
                             </Typography>
-                            <Stack spacing={2.5}>
+                            <Typography variant="body2" color="text.secondary">
+                                Join CityFix to report issues and follow their progress.
+                            </Typography>
+                        </Box>
+                    </Box>
+
+                    {apiError && (
+                        <Alert severity="error" sx={{ mb: 3 }}>
+                            {apiError}
+                        </Alert>
+                    )}
+
+                    <Box component="form" onSubmit={(event) => handleSubmit(event, validate, register)} noValidate>
+                        <Grid container spacing={3}>
+
+                            <Grid item xs={12} md={6}>
+                                <Typography className="form-section-title" sx={{ mb: 2 }}>
+                                    Account Details
+                                </Typography>
+                                <Stack spacing={2.5}>
                                 <TextField
                                     label="Username" name="username"
                                     value={formData.username} onChange={handleChange}
@@ -106,16 +112,15 @@ const RegisterPage = () => {
                                     helperText={validationErrors.confirmPassword}
                                     fullWidth required
                                 />
-                            </Stack>
-                        </Grid>
+                                </Stack>
+                            </Grid>
 
-                        {/* --- RIGHT COLUMN: Personal Information --- */}
-                        <Grid item xs={12} md={6}>
-                            <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 2, textTransform: 'uppercase', letterSpacing: 1 }}>
-                                Personal Details
-                            </Typography>
-                            <Stack spacing={2.5}>
-                                <Stack direction="row" spacing={2}>
+                            <Grid item xs={12} md={6}>
+                                <Typography className="form-section-title" sx={{ mb: 2 }}>
+                                    Personal Details
+                                </Typography>
+                                <Stack spacing={2.5}>
+                                <Stack direction={{xs: "column", sm: "row"}} spacing={2}>
                                     <TextField
                                         label="First Name" name="name"
                                         value={formData.name} onChange={handleChange}
@@ -130,7 +135,7 @@ const RegisterPage = () => {
                                     />
                                 </Stack>
 
-                                <Stack direction="row" spacing={2}>
+                                <Stack direction={{xs: "column", sm: "row"}} spacing={2}>
                                     <TextField
                                         label="Date of Birth" name="dateOfBirth" type="date"
                                         value={formData.dateOfBirth} onChange={handleChange}
@@ -158,16 +163,15 @@ const RegisterPage = () => {
                                     helperText={validationErrors.phoneNumber || "e.g. +38970123456"}
                                     fullWidth
                                 />
-                            </Stack>
-                        </Grid>
+                                </Stack>
+                            </Grid>
 
-                        {/* --- FULL WIDTH: Address Information --- */}
-                        <Grid item xs={12}>
-                            <Divider sx={{ my: 1 }} />
-                            <Typography variant="subtitle2" color="text.secondary" sx={{ mt: 1, mb: 2, textTransform: 'uppercase', letterSpacing: 1 }}>
-                                Address (Optional)
-                            </Typography>
-                            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                            <Grid item xs={12}>
+                                <Divider sx={{ my: 1 }} />
+                                <Typography className="form-section-title" sx={{ mt: 1, mb: 2 }}>
+                                    Address (Optional)
+                                </Typography>
+                                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                                 <TextField
                                     label="Street Address" name="address.street"
                                     value={formData.address.street} onChange={handleChange}
@@ -183,37 +187,37 @@ const RegisterPage = () => {
                                     value={formData.address.postalCode} onChange={handleChange}
                                     sx={{ width: { sm: '200px' } }}
                                 />
-                            </Stack>
+                                </Stack>
+                            </Grid>
+
                         </Grid>
 
-                    </Grid>
+                        <Box sx={{ mt: 5 }}>
+                            <Button
+                                fullWidth
+                                variant="contained"
+                                type="submit"
+                                disabled={loading}
+                                sx={{ mt: 2 }}
+                            >
+                                {loading ? "Registering..." : "Register"}
+                            </Button>
 
-                    {/* Stacked buttons matching LoginPage */}
-                    <Box sx={{ mt: 5 }}>
-                        <Button
-                            fullWidth
-                            variant="contained"
-                            type="submit"
-                            disabled={loading}
-                            sx={{ mt: 2 }}
-                        >
-                            {loading ? "Registering..." : "Register"}
-                        </Button>
+                            <Button
+                                fullWidth
+                                variant="outlined"
+                                sx={{ mt: 1 }}
+                                disabled={loading}
+                                onClick={() => navigate("/login")}
+                            >
+                                Already have an account? Login
+                            </Button>
+                        </Box>
 
-                        <Button
-                            fullWidth
-                            variant="outlined"
-                            sx={{ mt: 1 }}
-                            disabled={loading}
-                            onClick={() => navigate("/login")}
-                        >
-                            Already have an account? Login
-                        </Button>
                     </Box>
-
-                </Box>
-            </Paper>
-        </Container>
+                </Paper>
+            </Container>
+        </Box>
     );
 };
 

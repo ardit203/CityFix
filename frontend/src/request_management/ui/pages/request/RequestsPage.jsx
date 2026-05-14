@@ -62,9 +62,6 @@ const RequestsPage = () => {
             ["ROLE_ADMINISTRATOR", "ROLE_CITIZEN"].includes(role)
         ) === true;
 
-    console.log(canLoadFilters)
-
-    console.log("isAdmin",canLoadFilters)
     const {departments, loading: loadingDepartments} = useDepartments({
         paged: false,
         enabled:canLoadFilters});

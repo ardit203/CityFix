@@ -1,5 +1,5 @@
 import React from 'react';
-import {Box, CircularProgress, MenuItem, Pagination, Select, Typography} from "@mui/material";
+import {Box, Chip, CircularProgress, MenuItem, Pagination, Select, Typography} from "@mui/material";
 import EmptyState from "./EmptyState.jsx";
 
 const PaginatedDataView = ({
@@ -35,20 +35,50 @@ const PaginatedDataView = ({
     return (
         <>
             <Box
+                className="data-view-frame"
                 sx={{
                     opacity: loading ? 0.6 : 1,
                     pointerEvents: loading ? 'none' : 'auto',
                     transition: 'opacity 0.2s ease-in-out'
                 }}
             >
+                {pagination && (
+                    <Box className="data-view-summary">
+                        <Box>
+                            <Typography variant="subtitle2">
+                                Results workspace
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                Showing {data.length} record{data.length === 1 ? "" : "s"} on page {pagination.page + 1}
+                            </Typography>
+                        </Box>
+                        <Chip
+                            size="small"
+                            color="primary"
+                            variant="outlined"
+                            label={`${pagination.totalElements ?? data.length} total`}
+                        />
+                    </Box>
+                )}
                 {children}
             </Box>
 
             {pagination && onPageChange && (
 
-                <Box sx={{display: "flex", justifyContent: "center", mt: 3}}>
+                <Box
+                    className="section-card"
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        gap: 2,
+                        mt: 3,
+                        p: 1.5,
+                        flexWrap: "wrap"
+                    }}
+                >
                     {/* The Page Size Dropdown */}
-                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1.25}}>
                         <Typography variant="body2" color="text.secondary">
                             Rows per page:
                         </Typography>
@@ -58,7 +88,7 @@ const PaginatedDataView = ({
                                 value={pagination.size}
                                 onChange={onSizeChange}
                                 disabled={loading}
-                                sx={{height: 32}} // keeps it compact
+                                sx={{height: 36, borderRadius: 2}}
                             >
                                 <MenuItem value={5}>5</MenuItem>
                                 <MenuItem value={10}>10</MenuItem>

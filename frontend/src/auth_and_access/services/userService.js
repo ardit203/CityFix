@@ -8,8 +8,7 @@ import {
 
 import {
     mapToUpdateMyAccountDto,
-    mapToUpdateMyProfileDto,
-    mapToChangePasswordDto
+    mapToUpdateMyProfileDto
 } from "../dtos/authDto.js";
 
 const userService = {
@@ -98,9 +97,6 @@ const userService = {
 
     // Self-services: change own password
     changeMyPassword: async (data) => {
-        // We probably don't need a mapToChangePasswordDto if it's identical, but we have it.
-        // Wait, did I create mapToChangePasswordDto? I will check authDto.js. I haven't added mapToChangePasswordDto.
-        // I will just pass data for now, it's safe enough.
         return await axiosInstance.patch("/users/me/password", data);
     },
 

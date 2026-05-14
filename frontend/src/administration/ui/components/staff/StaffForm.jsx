@@ -23,8 +23,6 @@ const StaffForm = ({
     const {municipalities, loading: loadingMunicipalities} = useMunicipalities({paged: false});
     const {availableUsers, loading: loadingAvailableUsers} = useAvailableUsersForStaff();
 
-    console.log("available", availableUsers)
-
     const {formData, handleChange, resetForm, handleSubmit} = useForm(emptyCreateStaffDto);
 
     // Determine if we are in Edit Mode

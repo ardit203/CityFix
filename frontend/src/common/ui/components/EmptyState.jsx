@@ -15,12 +15,14 @@ const EmptyState = ({
                 alignItems: "center",
                 justifyContent: "center",
                 py: 8,
+                px: 3,
                 textAlign: "center",
-                backgroundColor: 'background.paper',
-                borderRadius: 2,
+                background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(248, 251, 253, 0.92))',
+                borderRadius: 4,
                 border: '1px dashed',
                 borderColor: 'divider',
-                mt: 2
+                mt: 2,
+                boxShadow: "0 16px 40px rgba(23, 32, 51, 0.07)"
             }}
         >
             {icon}

@@ -1,3 +1,389 @@
 a {
     text-decoration: none;
 }
+
+.site-header-shell {
+    position: sticky;
+    top: 0;
+    z-index: 1100;
+    padding: 12px 18px 0;
+}
+
+.site-header {
+    color: #142033 !important;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(248, 251, 253, 0.94)) !important;
+    border: 1px solid rgba(20, 32, 51, 0.08);
+    border-radius: 18px;
+    box-shadow:
+        0 18px 54px rgba(20, 32, 51, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(18px);
+}
+
+.site-toolbar {
+    min-height: 68px !important;
+    gap: 18px;
+    padding-inline: 18px !important;
+}
+
+.brand-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    color: #172033;
+    font-size: 1.18rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0 !important;
+}
+
+.brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #0f8fce 0%, #2563eb 100%);
+    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.28);
+}
+
+.desktop-nav {
+    align-items: center;
+    flex: 1;
+    gap: 6px;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.desktop-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.nav-link-wrapper {
+    flex-shrink: 0;
+}
+
+.nav-link {
+    min-width: 0 !important;
+    height: 42px;
+    padding: 0 14px !important;
+    border-radius: 12px !important;
+    color: #4a5568 !important;
+    font-size: 0.78rem !important;
+    font-weight: 750 !important;
+    letter-spacing: 0 !important;
+    line-height: 1 !important;
+    text-transform: capitalize !important;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease !important;
+}
+
+.nav-link:hover {
+    color: #0f8fce !important;
+    background: rgba(15, 143, 206, 0.09) !important;
+    transform: translateY(-1px);
+}
+
+.nav-link.active {
+    color: #ffffff !important;
+    background: #0f8fce !important;
+    box-shadow: 0 10px 22px rgba(15, 143, 206, 0.24);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.auth-button {
+    height: 42px;
+    padding: 0 18px !important;
+    border-radius: 12px !important;
+    font-size: 0.8rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0 !important;
+    text-transform: capitalize !important;
+    box-shadow: none !important;
+}
+
+.auth-button.logged-in {
+    color: #b42318 !important;
+    background: #fff3f0 !important;
+    border: 1px solid rgba(180, 35, 24, 0.18) !important;
+}
+
+.auth-button.logged-in:hover {
+    color: #ffffff !important;
+    background: #d92d20 !important;
+    box-shadow: 0 10px 22px rgba(217, 45, 32, 0.22) !important;
+}
+
+.auth-button.logged-out {
+    color: #ffffff !important;
+    background: #172033 !important;
+}
+
+.auth-button.logged-out:hover {
+    background: #0f8fce !important;
+    box-shadow: 0 10px 22px rgba(15, 143, 206, 0.24) !important;
+}
+
+.account-menu-button {
+    min-width: 0 !important;
+    height: 48px;
+    padding: 5px 10px 5px 6px !important;
+    border: 1px solid rgba(20, 32, 51, 0.1) !important;
+    border-radius: 16px !important;
+    color: #172033 !important;
+    background: rgba(255, 255, 255, 0.78) !important;
+    box-shadow: 0 12px 28px rgba(20, 32, 51, 0.08) !important;
+    text-transform: none !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, background-color 0.2s ease !important;
+}
+
+.account-menu-button:hover {
+    border-color: rgba(15, 143, 206, 0.32) !important;
+    background: #ffffff !important;
+    box-shadow: 0 16px 34px rgba(15, 143, 206, 0.16) !important;
+    transform: translateY(-1px);
+}
+
+.account-menu-button .MuiButton-endIcon {
+    margin-left: 8px;
+    color: #667085;
+}
+
+.account-avatar,
+.account-menu-avatar {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    background: linear-gradient(135deg, #0f8fce 0%, #2563eb 100%) !important;
+    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.24);
+}
+
+.account-avatar {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 0.9rem !important;
+}
+
+.account-button-copy {
+    display: grid;
+    min-width: 92px;
+    margin-left: 10px;
+    text-align: left;
+    line-height: 1.15;
+}
+
+.account-button-label {
+    overflow: hidden;
+    color: #172033;
+    font-size: 0.82rem !important;
+    font-weight: 850 !important;
+    letter-spacing: 0 !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 128px;
+}
+
+.account-button-role {
+    color: #667085;
+    font-size: 0.68rem !important;
+    font-weight: 750 !important;
+    letter-spacing: 0 !important;
+    text-transform: capitalize;
+}
+
+.account-menu-paper {
+    width: 292px;
+    margin-top: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(20, 32, 51, 0.1);
+    border-radius: 18px !important;
+    background:
+        linear-gradient(180deg, #ffffff 0%, #f8fbfd 100%) !important;
+    box-shadow: 0 24px 64px rgba(20, 32, 51, 0.2) !important;
+}
+
+.account-menu-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 16px 12px;
+}
+
+.account-menu-avatar {
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 1rem !important;
+}
+
+.account-menu-name {
+    color: #172033;
+    font-size: 0.94rem !important;
+    font-weight: 850 !important;
+    letter-spacing: 0 !important;
+}
+
+.account-menu-role {
+    color: #667085;
+    font-size: 0.76rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0 !important;
+    text-transform: capitalize;
+}
+
+.account-menu-divider {
+    margin: 4px 12px !important;
+}
+
+.account-menu-item {
+    align-items: center !important;
+    gap: 4px;
+    min-height: 64px;
+    margin: 4px 10px !important;
+    border-radius: 14px !important;
+    color: #172033 !important;
+}
+
+.account-menu-item:hover {
+    background: rgba(15, 143, 206, 0.08) !important;
+}
+
+.account-menu-item .MuiListItemIcon-root {
+    min-width: 34px !important;
+    color: #0f8fce !important;
+}
+
+.account-menu-item .MuiListItemText-primary {
+    color: #172033;
+    font-size: 0.86rem;
+    font-weight: 850;
+}
+
+.account-menu-item .MuiListItemText-secondary {
+    color: #667085;
+    font-size: 0.72rem;
+}
+
+.account-menu-item.danger .MuiListItemIcon-root,
+.account-menu-item.danger .MuiListItemText-primary {
+    color: #b42318 !important;
+}
+
+.account-menu-item.danger:hover {
+    background: #fff3f0 !important;
+}
+
+.mobile-menu-button {
+    width: 42px;
+    height: 42px;
+    margin-right: 0 !important;
+    border-radius: 12px !important;
+    color: #172033 !important;
+    background: rgba(15, 143, 206, 0.08) !important;
+}
+
+.mobile-drawer {
+    width: 292px;
+    padding: 18px;
+    border-radius: 0 18px 18px 0;
+    background: #f8fbfd !important;
+}
+
+.drawer-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 4px 18px;
+    color: #172033;
+    font-size: 1.12rem;
+    font-weight: 800;
+}
+
+.drawer-list {
+    display: grid;
+    gap: 6px;
+}
+
+.drawer-link {
+    border-radius: 12px !important;
+    color: #42526a !important;
+    text-transform: capitalize;
+}
+
+.drawer-link.active {
+    color: #ffffff !important;
+    background: #0f8fce !important;
+}
+
+@media (max-width: 899px) {
+    .site-header-shell {
+        padding: 10px 10px 0;
+    }
+
+    .site-toolbar {
+        min-height: 62px !important;
+        gap: 12px;
+        padding-inline: 12px !important;
+    }
+
+    .brand-logo {
+        font-size: 1.06rem !important;
+    }
+
+    .brand-mark {
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+    }
+
+    .auth-button {
+        min-width: 42px !important;
+        width: 42px;
+        padding: 0 !important;
+    }
+
+    .auth-button .MuiButton-startIcon {
+        margin: 0 !important;
+    }
+
+    .auth-button-label {
+        display: none;
+    }
+
+    .account-menu-button {
+        width: 44px;
+        height: 44px;
+        padding: 4px !important;
+        border-radius: 14px !important;
+    }
+
+    .account-menu-button .MuiButton-endIcon,
+    .account-button-copy {
+        display: none;
+    }
+
+    .account-avatar {
+        width: 34px !important;
+        height: 34px !important;
+    }
+}
+
+@media (max-width: 420px) {
+    .site-toolbar {
+        gap: 8px;
+    }
+
+    .brand-logo {
+        gap: 8px;
+    }
+}

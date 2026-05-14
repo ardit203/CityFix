@@ -51,14 +51,20 @@ const RequestCard = ({request, onDelete}) => {
             height: '100%', 
             display: 'flex', 
             flexDirection: 'column', 
-            minWidth: 310
-        }}>
-            <CardContent sx={{flexGrow: 1}}>
-                <Typography variant="h6" gutterBottom noWrap title={request.title || "Untitled Request"}>
-                    {request.title || "Untitled Request"}
-                </Typography>
+            minWidth: 0,
+            width: '100%'
+        }} className="entity-card">
+            <CardContent className="entity-card-content">
+                <Box>
+                    <Typography variant="h6" noWrap title={request.title || "Untitled Request"}>
+                        {request.title || "Untitled Request"}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                        Request #{request.id}
+                    </Typography>
+                </Box>
 
-                <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap sx={{ mb: 2, mt: 1 }}>
+                <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
                     <Tooltip title="Status">
                         <Chip 
                             label={request.status || "Unknown Status"} 
@@ -86,22 +92,22 @@ const RequestCard = ({request, onDelete}) => {
                     </Tooltip>
                 </Stack>
 
-                <Stack spacing={1} sx={{ mt: 2 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'text.secondary' }}>
+                <Stack spacing={1} className="entity-card-meta">
+                    <Box className="entity-card-row">
                         <CategoryIcon fontSize="small" />
                         <Typography variant="body2" noWrap>
                             {request.categoryName === "Unassigned" ? "No Category" : request.categoryName}
                         </Typography>
                     </Box>
 
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'text.secondary' }}>
+                    <Box className="entity-card-row">
                         <BusinessIcon fontSize="small" />
                         <Typography variant="body2" noWrap>
                             {request.departmentName === "Unassigned" ? "No Department" : request.departmentName}
                         </Typography>
                     </Box>
 
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'text.secondary' }}>
+                    <Box className="entity-card-row">
                         <LocationCityIcon fontSize="small" />
                         <Typography variant="body2" noWrap>
                             {request.municipalityCode === "Unassigned" ? "No Municipality" : request.municipalityCode}
@@ -110,8 +116,9 @@ const RequestCard = ({request, onDelete}) => {
                 </Stack>
             </CardContent>
 
-            <CardActions sx={{justifyContent: "space-between"}}>
+            <CardActions className="entity-card-actions" sx={{justifyContent: "space-between"}}>
                 <Button
+                    size="small"
                     startIcon={<InfoIcon/>}
                     onClick={() => navigate(`/requests/${request.id}`)}
                 >
@@ -120,6 +127,7 @@ const RequestCard = ({request, onDelete}) => {
 
                 <Box>
                     <Button
+                        size="small"
                         startIcon={<EditIcon/>}
                         onClick={() => navigate(`/requests/${request.id}/edit`)}
                         color="warning"
@@ -128,6 +136,7 @@ const RequestCard = ({request, onDelete}) => {
                     </Button>
 
                     <Button
+                        size="small"
                         startIcon={<DeleteIcon/>}
                         onClick={handleDelete}
                         color="error"

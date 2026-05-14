@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {Box, Button, Card, CardContent, Stack, TextField} from "@mui/material";
 import useForm from "../../../../common/hooks/useForm.js";
 
@@ -6,10 +6,10 @@ import { emptyCreateMunicipalityDto } from "../../../dtos/municipalityDto.js";
 
 const MunicipalityForm = ({
                               initialValues,
-                              submitLabel = "Save",
-                              onSubmit
-                          }) => {
-    const [errors, setErrors] = useState({});
+                          submitLabel = "Save",
+                          onSubmit
+                      }) => {
+    const errors = {};
     const {formData, handleChange, resetForm, handleSubmit} = useForm(emptyCreateMunicipalityDto);
 
     useEffect(() => {
@@ -26,7 +26,7 @@ const MunicipalityForm = ({
     return (
         <Card variant="outlined">
             <CardContent>
-                <Box component="form" onSubmit={() => handleSubmit(event, validate, onSubmit)} noValidate>
+                <Box component="form" onSubmit={(event) => handleSubmit(event, validate, onSubmit)} noValidate>
                     <Stack spacing={3}>
 
                         <TextField

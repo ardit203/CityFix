@@ -9,15 +9,19 @@ import {
     InputLabel,
     LinearProgress,
     MenuItem,
-    Paper,
     Select,
     Stack,
     TextField,
     Typography
 } from "@mui/material";
+import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
+import GroupsIcon from "@mui/icons-material/Groups";
+import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 
 import FilterBar from "../../../common/ui/components/FilterBar.jsx";
 import LoadingBar from "../../../common/ui/components/LoadingBar.jsx";
+import PageHeader from "../../../common/ui/components/PageHeader.jsx";
+import MetricCard from "../../../common/ui/components/MetricCard.jsx";
 import useFilters from "../../../common/hooks/useFilters.js";
 import useDepartments from "../../../administration/hooks/department/useDepartments.js";
 import useMunicipalities from "../../../administration/hooks/municipality/useMunicipalities.js";
@@ -34,26 +38,18 @@ const formatLabel = (value) => {
     return value.replaceAll("_", " ").toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
 };
 
-const StatCard = ({label, value}) => (
-    <Card variant="outlined" sx={{height: "100%", borderRadius: 2}}>
-        <CardContent>
-            <Typography variant="body2" color="text.secondary">
-                {label}
-            </Typography>
-            <Typography variant="h4" fontWeight={700}>
-                {value ?? 0}
-            </Typography>
-        </CardContent>
-    </Card>
-);
-
 const CountList = ({title, rows, total}) => (
-    <Card variant="outlined" sx={{height: "100%", borderRadius: 2}}>
+    <Card variant="outlined" className="insight-card" sx={{height: "100%"}}>
         <CardContent>
             <Stack spacing={2}>
-                <Typography variant="h6" fontWeight={700}>
-                    {title}
-                </Typography>
+                <Box>
+                    <Typography variant="h6">
+                        {title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                        Distribution across current filters
+                    </Typography>
+                </Box>
 
                 {rows.length === 0 ? (
                     <Typography variant="body2" color="text.secondary">
@@ -67,7 +63,7 @@ const CountList = ({title, rows, total}) => (
                                 <Typography variant="body2">{formatLabel(row.label)}</Typography>
                                 <Typography variant="body2" fontWeight={700}>{row.count}</Typography>
                             </Stack>
-                            <LinearProgress variant="determinate" value={percent} sx={{mt: 0.75, height: 7, borderRadius: 1}} />
+                            <LinearProgress variant="determinate" value={percent} sx={{mt: 0.75, height: 8, borderRadius: 1}} />
                         </Box>
                     );
                 })}
@@ -91,14 +87,10 @@ const ReportsPage = () => {
 
     return (
         <Box>
-            <Paper elevation={2} sx={{p: {xs: 2, md: 3}, borderRadius: 3, mb: 3}}>
-                <Typography variant="h4" fontWeight={700}>
-                    Reports
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    Request volume, routing, priority, and workload overview.
-                </Typography>
-            </Paper>
+            <PageHeader
+                title="Reports"
+                subtitle="Request volume, routing, priority, and workload overview."
+            />
 
             <FilterBar onSearch={handleSearch} onClear={handleClearFilters}>
                 <TextField label="Search" name="text" value={filters.text} onChange={handleFilterChange} size="small" />
@@ -157,15 +149,32 @@ const ReportsPage = () => {
 
             <LoadingBar loading={loading} />
 
-            <Grid container spacing={2.5}>
+            <Grid container spacing={2.5} className="report-metric-grid">
                 <Grid size={{xs: 12, md: 4}}>
-                    <StatCard label="Total Requests" value={summary.totalRequests} />
+                    <MetricCard
+                        label="Total Requests"
+                        value={summary.totalRequests}
+                        helper="All matched service requests"
+                        icon={<AssignmentTurnedInIcon />}
+                    />
                 </Grid>
                 <Grid size={{xs: 12, md: 4}}>
-                    <StatCard label="Assigned Requests" value={summary.assignedRequests} />
+                    <MetricCard
+                        label="Assigned Requests"
+                        value={summary.assignedRequests}
+                        helper="Currently owned by staff"
+                        icon={<GroupsIcon />}
+                        accent="success"
+                    />
                 </Grid>
                 <Grid size={{xs: 12, md: 4}}>
-                    <StatCard label="Unassigned Requests" value={summary.unassignedRequests} />
+                    <MetricCard
+                        label="Unassigned Requests"
+                        value={summary.unassignedRequests}
+                        helper="Need routing or ownership"
+                        icon={<ReportProblemIcon />}
+                        accent="warning"
+                    />
                 </Grid>
 
                 <Grid size={{xs: 12, md: 4}}>

@@ -31,9 +31,6 @@ const UserEditPage = () => {
     const [roleDialogOpen, setRoleDialogOpen] = useState(false);
     const [lockDialogOpen, setLockDialogOpen] = useState(false);
 
-    console.log(user)
-    console.log(mapDisplayToAdminUpdateUserDto(user))
-
     const handleUnlock = async () => {
         return await unlockUser(id, fetchUser);
     };

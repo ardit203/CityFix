@@ -43,7 +43,6 @@ const useDepartments = ({paged = true, fetchOnMount = true, enabled = true} = {}
 
         if (fetchOnMount) {
             if (paged) {
-                console.log("paged")
                 void fetchDepartmentsPaged();
             } else {
                 void fetchDepartmentsAll();

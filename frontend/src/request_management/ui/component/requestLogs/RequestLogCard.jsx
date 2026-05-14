@@ -52,7 +52,6 @@ const formatDateTime = (value) => {
 
 const RequestLogCard = ({ log, requestId }) => {
     const navigate = useNavigate();
-    console.log(requestId)
 
     const handleInfo = () => {
         navigate(`/requests/${requestId}/logs/${log.id}`);
@@ -60,19 +59,22 @@ const RequestLogCard = ({ log, requestId }) => {
 
     return (
         <Card
+            className="entity-card"
             sx={{
-                maxWidth: 380,
+                width: "100%",
                 display: "flex",
                 flexDirection: "column",
                 height: "100%"
             }}
         >
-            <CardContent sx={{ flexGrow: 1 }}>
+            <CardContent className="entity-card-content">
                 <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
-                    <HistoryIcon color="primary" sx={{ fontSize: 38 }} />
+                    <Box className="entity-card-icon">
+                        <HistoryIcon />
+                    </Box>
 
                     <Box sx={{ flexGrow: 1, overflow: "hidden" }}>
-                        <Typography variant="h6" fontWeight={600} noWrap>
+                        <Typography variant="h6" noWrap>
                             Log #{log.id}
                         </Typography>
 
@@ -130,7 +132,7 @@ const RequestLogCard = ({ log, requestId }) => {
                 </Stack>
             </CardContent>
 
-            <CardActions sx={{ justifyContent: "flex-end", px: 2, pb: 2 }}>
+            <CardActions className="entity-card-actions" sx={{ justifyContent: "flex-end" }}>
                 <Button
                     size="small"
                     startIcon={<InfoIcon />}

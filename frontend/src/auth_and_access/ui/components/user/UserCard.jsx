@@ -63,21 +63,21 @@ const UserCard = ({ user, onDelete }) => {
 
     return (
         <Card sx={{
-            maxWidth: 350,
+            width: '100%',
             display: 'flex',
             flexDirection: 'column',
             height: '100%' // Ensures all cards in a grid are exactly the same height!
-        }}>
-            <CardContent sx={{ flexGrow: 1 }}>
+        }} className="entity-card">
+            <CardContent className="entity-card-content">
 
                 {/* 1. Profile Header: Avatar + Name + Username */}
-                <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 3 }}>
-                    <Avatar sx={{ bgcolor: 'primary.main', width: 48, height: 48 }}>
+                <Stack direction="row" spacing={2} alignItems="center">
+                    <Avatar sx={{ bgcolor: 'primary.main', width: 50, height: 50, fontWeight: 800 }}>
                         {user.name?.charAt(0)}{user.surname?.charAt(0)}
                     </Avatar>
 
-                    <Box sx={{ overflow: 'hidden' }}>
-                        <Typography variant="h6" fontWeight={600} lineHeight={1.2} noWrap>
+                    <Box sx={{ overflow: 'hidden', minWidth: 0 }}>
+                        <Typography variant="h6" lineHeight={1.2} noWrap title={`${user.name} ${user.surname}`}>
                             {user.name} {user.surname}
                         </Typography>
                         <Typography variant="body2" color="text.secondary" noWrap>
@@ -100,8 +100,8 @@ const UserCard = ({ user, onDelete }) => {
                 </Stack>
             </CardContent>
 
-            {/* 3. Actions Section */}
-            <CardActions sx={{ justifyContent: "space-between", px: 2, pb: 2 }}>
+                {/* 3. Actions Section */}
+            <CardActions className="entity-card-actions" sx={{ justifyContent: "space-between" }}>
                 <Button
                     size="small"
                     startIcon={<InfoIcon />}

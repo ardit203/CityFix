@@ -129,6 +129,7 @@ const LocationPicker = ({ onLocationSelect, initialLocation = null, readOnly = f
             return;
         }
 
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setPosition({
             lat: initialLocation.latitude,
             lng: initialLocation.longitude

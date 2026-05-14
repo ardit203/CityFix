@@ -15,11 +15,13 @@ const ActionBar = ({
                    }) => {
     return (
         <Stack
-            direction="row"
-            sx={{ mb: 3, justifyContent: 'space-between', alignItems: 'center' }}
+            direction={{xs: "column", sm: "row"}}
+            spacing={1.5}
+            className="section-card"
+            sx={{ mb: 3, p: 1.5, justifyContent: 'space-between', alignItems: {xs: 'stretch', sm: 'center'} }}
         >
             {/* 1. The Left Side (Back Buttons) */}
-            <Stack direction="row" spacing={2}>
+            <Stack direction="row" spacing={1.25} flexWrap="wrap" useFlexGap>
                 {onBack && (
                     <Button
                         variant="outlined"
@@ -43,7 +45,7 @@ const ActionBar = ({
             </Stack>
 
             {/* 2. The Right Side (Action Buttons) */}
-            <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+            <Stack direction="row" spacing={1.25} flexWrap="wrap" useFlexGap sx={{ alignItems: 'center', justifyContent: {xs: "flex-start", sm: "flex-end"} }}>
                 {children}
 
                 {onEdit && (

@@ -27,7 +27,6 @@ const UserForm = ({
 
     useEffect(() => {
         if (initialValues) {
-            console.log("Initial User Form Values", initialValues)
             resetForm(initialValues);
         }
     }, [initialValues, resetForm]);

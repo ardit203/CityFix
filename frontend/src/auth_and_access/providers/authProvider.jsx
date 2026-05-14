@@ -1,56 +1,54 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import AuthContext from "../contexts/authContext.js";
 
 const decode = (jwtToken) => {
     try {
         return JSON.parse(atob(jwtToken.split(".")[1]));
-    } catch (error) {
-        console.log(error);
+    } catch {
         return null;
     }
 };
 
+const getInitialAuthState = () => {
+    const jwtToken = localStorage.getItem("token");
+    const payload = jwtToken ? decode(jwtToken) : null;
+
+    if (jwtToken && !payload) {
+        localStorage.removeItem("token");
+    }
+
+    return {
+        user: payload,
+        loading: false
+    };
+};
+
 const AuthProvider = ({children}) => {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [authState, setAuthState] = useState(getInitialAuthState);
 
     const login = (jwtToken) => {
         const payload = decode(jwtToken);
         if (payload) {
             localStorage.setItem("token", jwtToken);
-            setUser(payload);
-            setLoading(false);
+            setAuthState({user: payload, loading: false});
         }
     };
 
     const logout = () => {
-        const jwtToken = localStorage.getItem("token");
-        if (jwtToken) {
-            localStorage.removeItem("token");
-            setUser(null);
-            setLoading(false);
-        }
+        localStorage.removeItem("token");
+        setAuthState({user: null, loading: false});
     };
 
-    useEffect(() => {
-        const jwtToken = localStorage.getItem("token");
-        if (jwtToken) {
-            const payload = decode(jwtToken);
-            if (payload) {
-                setUser(payload);
-                setLoading(false);
-            } else {
-                setUser(null);
-                setLoading(false);
-            }
-        } else {
-            setUser(null);
-            setLoading(false);
-        }
-    }, []);
-
     return (
-        <AuthContext.Provider value={{login, logout, user, loading, isLoggedIn: !!user}}>
+        <AuthContext.Provider
+            value={{
+                login,
+                logout,
+                user: authState.user,
+                loading: authState.loading,
+                isLoggedIn: !!authState.user
+            }}
+        >
             {children}
         </AuthContext.Provider>
     );
