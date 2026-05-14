@@ -215,6 +215,77 @@ const RequestEditPageContent = () => {
                 </Paper>
 
                 <Grid container spacing={3}>
+                    <Grid size={{xs: 12}}>
+                        <Card variant="outlined" sx={{borderRadius: 2}}>
+                            <CardContent>
+                                <Stack spacing={2.5}>
+                                    <Typography variant="h6" fontWeight={700}>
+                                        Status Change
+                                    </Typography>
+
+                                    {isAiSuggestionPending && (
+                                        <Alert severity="warning">
+                                            Status changes are disabled until the pending AI triage is processed.
+                                        </Alert>
+                                    )}
+
+                                    <Grid container spacing={2}>
+                                        <Grid size={{xs: 12, md: 4}}>
+                                            <FormControl fullWidth>
+                                                <InputLabel>Status</InputLabel>
+                                                <Select
+                                                    name="status"
+                                                    value={statusForm.status}
+                                                    label="Status"
+                                                    onChange={handleStatusChange}
+                                                    disabled={disableManualEditing}
+                                                >
+                                                    {statusOptions.map((status) => (
+                                                        <MenuItem key={status} value={status}>
+                                                            {formatLabel(status)}
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+
+                                        <Grid size={{xs: 12, md: 4}}>
+                                            <TextField
+                                                name="reason"
+                                                label="Reason"
+                                                value={statusForm.reason}
+                                                onChange={handleStatusChange}
+                                                disabled={disableManualEditing}
+                                                fullWidth
+                                            />
+                                        </Grid>
+
+                                        <Grid size={{xs: 12, md: 4}}>
+                                            <TextField
+                                                name="note"
+                                                label="Timeline note"
+                                                value={statusForm.note}
+                                                onChange={handleStatusChange}
+                                                disabled={disableManualEditing}
+                                                fullWidth
+                                            />
+                                        </Grid>
+                                    </Grid>
+
+                                    <Box>
+                                        <Button
+                                            variant="contained"
+                                            startIcon={<Save />}
+                                            onClick={handleChangeStatus}
+                                            disabled={disableManualEditing || !statusForm.status || statusForm.status === request.status}
+                                        >
+                                            Update Status
+                                        </Button>
+                                    </Box>
+                                </Stack>
+                            </CardContent>
+                        </Card>
+                    </Grid>
                     <Grid size={{xs: 12, lg: 6}}>
                         {request.routingStatus === "PENDING_REVIEW" ? (
                             <RequestTriageForm requestId={request.id} onTriageComplete={fetchRequest} />
@@ -283,26 +354,6 @@ const RequestEditPageContent = () => {
                                                 </Select>
                                             </FormControl>
                                         </Grid>
-
-                                        {/*<Grid size={{xs: 12, md: 6}}>*/}
-                                        {/*    <FormControl fullWidth>*/}
-                                        {/*        <InputLabel>Department</InputLabel>*/}
-                                        {/*        <Select*/}
-                                        {/*            name="departmentId"*/}
-                                        {/*            value={routingForm.departmentId}*/}
-                                        {/*            label="Department"*/}
-                                        {/*            onChange={handleRoutingChange}*/}
-                                        {/*            disabled={isExecuting || loadingDepartments}*/}
-                                        {/*        >*/}
-                                        {/*            <MenuItem value=""><em>Unassigned</em></MenuItem>*/}
-                                        {/*            {departments.map((department) => (*/}
-                                        {/*                <MenuItem key={department.id} value={department.id}>*/}
-                                        {/*                    {department.name}*/}
-                                        {/*                </MenuItem>*/}
-                                        {/*            ))}*/}
-                                        {/*        </Select>*/}
-                                        {/*    </FormControl>*/}
-                                        {/*</Grid>*/}
 
                                         <Grid size={{xs: 12, md: 6}}>
                                             <FormControl fullWidth>
@@ -408,78 +459,6 @@ const RequestEditPageContent = () => {
                                             Reject Routing
                                         </Button>
                                     </Stack>
-                                </Stack>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-
-                    <Grid size={{xs: 12}}>
-                        <Card variant="outlined" sx={{borderRadius: 2}}>
-                            <CardContent>
-                                <Stack spacing={2.5}>
-                                    <Typography variant="h6" fontWeight={700}>
-                                        Status Change
-                                    </Typography>
-
-                                    {isAiSuggestionPending && (
-                                        <Alert severity="warning">
-                                            Status changes are disabled until the pending AI triage is processed.
-                                        </Alert>
-                                    )}
-
-                                    <Grid container spacing={2}>
-                                        <Grid size={{xs: 12, md: 4}}>
-                                            <FormControl fullWidth>
-                                                <InputLabel>Status</InputLabel>
-                                                <Select
-                                                    name="status"
-                                                    value={statusForm.status}
-                                                    label="Status"
-                                                    onChange={handleStatusChange}
-                                                    disabled={disableManualEditing}
-                                                >
-                                                    {statusOptions.map((status) => (
-                                                        <MenuItem key={status} value={status}>
-                                                            {formatLabel(status)}
-                                                        </MenuItem>
-                                                    ))}
-                                                </Select>
-                                            </FormControl>
-                                        </Grid>
-
-                                        <Grid size={{xs: 12, md: 4}}>
-                                            <TextField
-                                                name="reason"
-                                                label="Reason"
-                                                value={statusForm.reason}
-                                                onChange={handleStatusChange}
-                                                disabled={disableManualEditing}
-                                                fullWidth
-                                            />
-                                        </Grid>
-
-                                        <Grid size={{xs: 12, md: 4}}>
-                                            <TextField
-                                                name="note"
-                                                label="Timeline note"
-                                                value={statusForm.note}
-                                                onChange={handleStatusChange}
-                                                disabled={disableManualEditing}
-                                                fullWidth
-                                            />
-                                        </Grid>
-                                    </Grid>
-
-                                    <Box>
-                                        <Button
-                                            variant="contained"
-                                            startIcon={<Save />}
-                                            onClick={handleChangeStatus}
-                                            disabled={disableManualEditing || !statusForm.status || statusForm.status === request.status}
-                                        >
-                                            Update Status
-                                        </Button>
-                                    </Box>
                                 </Stack>
                             </CardContent>
                         </Card>
