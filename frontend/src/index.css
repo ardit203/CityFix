@@ -1,3 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;600;700;800&display=swap');
+
+:root {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Outfit', system-ui, -apple-system, sans-serif;
+}
+
 html,
 body {
   height: 100%;
@@ -5,6 +12,7 @@ body {
   padding: 0;
   display: flex;
   flex-direction: column;
+  font-family: var(--font-sans);
 }
 
 body {
