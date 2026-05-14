@@ -8,6 +8,9 @@ const PageHeader = ({title, subtitle}) => (
         sx={{
             position: "relative",
             overflow: "hidden",
+            width: "100%",
+            boxSizing: "border-box",
+            flex: 1,
             p: {xs: 2.5, md: 3.5},
             mb: 3,
             display: "flex",

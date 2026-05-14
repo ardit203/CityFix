@@ -51,11 +51,13 @@ const CategoriesPage = () => {
     };
 
     return (
-        <Box>
-            <PageHeader
-                title="Categories"
-                subtitle="Manage request categories and their department routing."
-            />
+        <Box className="filtered-page">
+            <Box className="filtered-page-header">
+                <PageHeader
+                    title="Categories"
+                    subtitle="Manage request categories and their department routing."
+                />
+            </Box>
 
             <FilterBar
                 onSearch={handleSearch}
@@ -106,37 +108,39 @@ const CategoriesPage = () => {
                 />
             </FilterBar>
 
-            <LoadingBar loading={loading}/>
+            <Box className="filtered-page-content">
+                <LoadingBar loading={loading}/>
 
-            <PaginatedDataView
-                loading={loading}
-                data={categories}
-                pagination={pagination}
-                onPageChange={handlePageChange}
-                onSizeChange={handleSizeChange}
-                emptyMessage="No categories found."
-                emptySubMessage="Try clearing your filters or creating a new category."
-            >
-                {viewMode === 'table' ? (
-                    <AdminTable
-                        data={categories}
-                        columns={categoryColumns}
-                        onInfo={(category) => navigate(`/categories/${category.id}`)}
-                        onEdit={(category) => navigate(`/categories/${category.id}/edit`)}
-                        onDelete={async (category) => {
-                            await deleteCategory(category.id, () => fetchCategoriesPaged(filters));
-                        }}
-                        onBulkDelete={async (selectedIds) => {
-                            await deleteCategoriesBulk(selectedIds, () => fetchCategoriesPaged(filters));
-                        }}
-                    />
-                ) : (
-                    <CategoryGrid
-                        categories={categories}
-                        onDelete={() => fetchCategoriesPaged(filters)}
-                    />
-                )}
-            </PaginatedDataView>
+                <PaginatedDataView
+                    loading={loading}
+                    data={categories}
+                    pagination={pagination}
+                    onPageChange={handlePageChange}
+                    onSizeChange={handleSizeChange}
+                    emptyMessage="No categories found."
+                    emptySubMessage="Try clearing your filters or creating a new category."
+                >
+                    {viewMode === 'table' ? (
+                        <AdminTable
+                            data={categories}
+                            columns={categoryColumns}
+                            onInfo={(category) => navigate(`/categories/${category.id}`)}
+                            onEdit={(category) => navigate(`/categories/${category.id}/edit`)}
+                            onDelete={async (category) => {
+                                await deleteCategory(category.id, () => fetchCategoriesPaged(filters));
+                            }}
+                            onBulkDelete={async (selectedIds) => {
+                                await deleteCategoriesBulk(selectedIds, () => fetchCategoriesPaged(filters));
+                            }}
+                        />
+                    ) : (
+                        <CategoryGrid
+                            categories={categories}
+                            onDelete={() => fetchCategoriesPaged(filters)}
+                        />
+                    )}
+                </PaginatedDataView>
+            </Box>
         </Box>
     );
 

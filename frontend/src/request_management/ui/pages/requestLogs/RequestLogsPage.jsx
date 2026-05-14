@@ -71,11 +71,13 @@ const RequestLogsPage = () => {
     };
 
     return (
-        <Box>
-            <PageHeader
-                title="Request Timeline"
-                subtitle={`Review changes and activity for request #${requestId}.`}
-            />
+        <Box className="filtered-page">
+            <Box className="filtered-page-header">
+                <PageHeader
+                    title="Request Timeline"
+                    subtitle={`Review changes and activity for request #${requestId}.`}
+                />
+            </Box>
 
             <FilterBar
                 onSearch={handleSearch}
@@ -128,30 +130,32 @@ const RequestLogsPage = () => {
                 />
             </FilterBar>
 
-            <LoadingBar loading={loading}/>
+            <Box className="filtered-page-content">
+                <LoadingBar loading={loading}/>
 
-            <PaginatedDataView
-                loading={loading}
-                data={requestLogs}
-                pagination={pagination}
-                onPageChange={handlePageChange}
-                onSizeChange={handleSizeChange}
-                emptyMessage="No requests found."
-                emptySubMessage="Try clearing your filters or creating a new request."
-            >
-                {viewMode === 'table' ? (
-                    <AdminTable
-                        data={requestLogs}
-                        columns={requestLogColumns}
-                        onInfo={(requestLog) => navigate(`/requests/${requestId}/logs/${requestLog.id}`)}
-                    />
-                ) : (
-                    <RequestLogGrid
-                        requestId={requestId}
-                        requestLogs={requestLogs}
-                    />
-                )}
-            </PaginatedDataView>
+                <PaginatedDataView
+                    loading={loading}
+                    data={requestLogs}
+                    pagination={pagination}
+                    onPageChange={handlePageChange}
+                    onSizeChange={handleSizeChange}
+                    emptyMessage="No requests found."
+                    emptySubMessage="Try clearing your filters or creating a new request."
+                >
+                    {viewMode === 'table' ? (
+                        <AdminTable
+                            data={requestLogs}
+                            columns={requestLogColumns}
+                            onInfo={(requestLog) => navigate(`/requests/${requestId}/logs/${requestLog.id}`)}
+                        />
+                    ) : (
+                        <RequestLogGrid
+                            requestId={requestId}
+                            requestLogs={requestLogs}
+                        />
+                    )}
+                </PaginatedDataView>
+            </Box>
         </Box>
     );
 

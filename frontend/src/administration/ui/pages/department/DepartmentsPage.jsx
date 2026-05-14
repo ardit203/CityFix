@@ -39,11 +39,13 @@ const DepartmentsPage = () => {
         }
     };
     return (
-        <Box>
-            <PageHeader
-                title="Departments"
-                subtitle="Manage municipal departments used for routing requests."
-            />
+        <Box className="filtered-page">
+            <Box className="filtered-page-header">
+                <PageHeader
+                    title="Departments"
+                    subtitle="Manage municipal departments used for routing requests."
+                />
+            </Box>
 
             <FilterBar
                 onSearch={handleSearch}
@@ -63,37 +65,39 @@ const DepartmentsPage = () => {
                 />
             </FilterBar>
 
-            <LoadingBar loading={loading}/>
+            <Box className="filtered-page-content">
+                <LoadingBar loading={loading}/>
 
-            <PaginatedDataView
-                loading={loading}
-                data={departments}
-                pagination={pagination}
-                onPageChange={handlePageChange}
-                onSizeChange={handleSizeChange}
-                emptyMessage="No departments found."
-                emptySubMessage="Try clearing your filters or creating a new department."
-            >
-                {viewMode === 'table' ? (
-                    <AdminTable
-                        data={departments}
-                        columns={departmentColumns}
-                        onInfo={(department) => navigate(`/departments/${department.id}`)}
-                        onEdit={(department) => navigate(`/departments/${department.id}/edit`)}
-                        onDelete={async (department) => {
-                            await deleteDepartment(department.id, () => fetchDepartmentsPaged(filters));
-                        }}
-                        onBulkDelete={async (selectedIds) => {
-                            await deleteDepartmentsBulk(selectedIds, () => fetchDepartmentsPaged(filters));
-                        }}
-                    />
-                ) : (
-                    <DepartmentGrid
-                        departments={departments}
-                        onDelete={() => fetchDepartmentsPaged(filters)}
-                    />
-                )}
-            </PaginatedDataView>
+                <PaginatedDataView
+                    loading={loading}
+                    data={departments}
+                    pagination={pagination}
+                    onPageChange={handlePageChange}
+                    onSizeChange={handleSizeChange}
+                    emptyMessage="No departments found."
+                    emptySubMessage="Try clearing your filters or creating a new department."
+                >
+                    {viewMode === 'table' ? (
+                        <AdminTable
+                            data={departments}
+                            columns={departmentColumns}
+                            onInfo={(department) => navigate(`/departments/${department.id}`)}
+                            onEdit={(department) => navigate(`/departments/${department.id}/edit`)}
+                            onDelete={async (department) => {
+                                await deleteDepartment(department.id, () => fetchDepartmentsPaged(filters));
+                            }}
+                            onBulkDelete={async (selectedIds) => {
+                                await deleteDepartmentsBulk(selectedIds, () => fetchDepartmentsPaged(filters));
+                            }}
+                        />
+                    ) : (
+                        <DepartmentGrid
+                            departments={departments}
+                            onDelete={() => fetchDepartmentsPaged(filters)}
+                        />
+                    )}
+                </PaginatedDataView>
+            </Box>
         </Box>
     );
 

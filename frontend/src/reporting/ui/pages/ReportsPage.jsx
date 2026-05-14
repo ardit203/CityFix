@@ -86,11 +86,13 @@ const ReportsPage = () => {
     } = useFilters(emptyRequestFilter, fetchSummary);
 
     return (
-        <Box>
-            <PageHeader
-                title="Reports"
-                subtitle="Request volume, routing, priority, and workload overview."
-            />
+        <Box className="filtered-page">
+            <Box className="filtered-page-header">
+                <PageHeader
+                    title="Reports"
+                    subtitle="Request volume, routing, priority, and workload overview."
+                />
+            </Box>
 
             <FilterBar onSearch={handleSearch} onClear={handleClearFilters}>
                 <TextField label="Search" name="text" value={filters.text} onChange={handleFilterChange} size="small" />
@@ -147,55 +149,57 @@ const ReportsPage = () => {
                 </FormControl>
             </FilterBar>
 
-            <LoadingBar loading={loading} />
+            <Box className="filtered-page-content">
+                <LoadingBar loading={loading} />
 
-            <Grid container spacing={2.5} className="report-metric-grid">
-                <Grid size={{xs: 12, md: 4}}>
-                    <MetricCard
-                        label="Total Requests"
-                        value={summary.totalRequests}
-                        helper="All matched service requests"
-                        icon={<AssignmentTurnedInIcon />}
-                    />
-                </Grid>
-                <Grid size={{xs: 12, md: 4}}>
-                    <MetricCard
-                        label="Assigned Requests"
-                        value={summary.assignedRequests}
-                        helper="Currently owned by staff"
-                        icon={<GroupsIcon />}
-                        accent="success"
-                    />
-                </Grid>
-                <Grid size={{xs: 12, md: 4}}>
-                    <MetricCard
-                        label="Unassigned Requests"
-                        value={summary.unassignedRequests}
-                        helper="Need routing or ownership"
-                        icon={<ReportProblemIcon />}
-                        accent="warning"
-                    />
-                </Grid>
+                <Grid container spacing={2.5} className="report-metric-grid">
+                    <Grid size={{xs: 12, md: 4}}>
+                        <MetricCard
+                            label="Total Requests"
+                            value={summary.totalRequests}
+                            helper="All matched service requests"
+                            icon={<AssignmentTurnedInIcon />}
+                        />
+                    </Grid>
+                    <Grid size={{xs: 12, md: 4}}>
+                        <MetricCard
+                            label="Assigned Requests"
+                            value={summary.assignedRequests}
+                            helper="Currently owned by staff"
+                            icon={<GroupsIcon />}
+                            accent="success"
+                        />
+                    </Grid>
+                    <Grid size={{xs: 12, md: 4}}>
+                        <MetricCard
+                            label="Unassigned Requests"
+                            value={summary.unassignedRequests}
+                            helper="Need routing or ownership"
+                            icon={<ReportProblemIcon />}
+                            accent="warning"
+                        />
+                    </Grid>
 
-                <Grid size={{xs: 12, md: 4}}>
-                    <CountList title="By Status" rows={summary.byStatus} total={summary.totalRequests} />
+                    <Grid size={{xs: 12, md: 4}}>
+                        <CountList title="By Status" rows={summary.byStatus} total={summary.totalRequests} />
+                    </Grid>
+                    <Grid size={{xs: 12, md: 4}}>
+                        <CountList title="By Priority" rows={summary.byPriority} total={summary.totalRequests} />
+                    </Grid>
+                    <Grid size={{xs: 12, md: 4}}>
+                        <CountList title="By Routing" rows={summary.byRoutingStatus} total={summary.totalRequests} />
+                    </Grid>
+                    <Grid size={{xs: 12, md: 4}}>
+                        <CountList title="By Department" rows={summary.byDepartment} total={summary.totalRequests} />
+                    </Grid>
+                    <Grid size={{xs: 12, md: 4}}>
+                        <CountList title="By Municipality" rows={summary.byMunicipality} total={summary.totalRequests} />
+                    </Grid>
+                    <Grid size={{xs: 12, md: 4}}>
+                        <CountList title="By Category" rows={summary.byCategory} total={summary.totalRequests} />
+                    </Grid>
                 </Grid>
-                <Grid size={{xs: 12, md: 4}}>
-                    <CountList title="By Priority" rows={summary.byPriority} total={summary.totalRequests} />
-                </Grid>
-                <Grid size={{xs: 12, md: 4}}>
-                    <CountList title="By Routing" rows={summary.byRoutingStatus} total={summary.totalRequests} />
-                </Grid>
-                <Grid size={{xs: 12, md: 4}}>
-                    <CountList title="By Department" rows={summary.byDepartment} total={summary.totalRequests} />
-                </Grid>
-                <Grid size={{xs: 12, md: 4}}>
-                    <CountList title="By Municipality" rows={summary.byMunicipality} total={summary.totalRequests} />
-                </Grid>
-                <Grid size={{xs: 12, md: 4}}>
-                    <CountList title="By Category" rows={summary.byCategory} total={summary.totalRequests} />
-                </Grid>
-            </Grid>
+            </Box>
         </Box>
     );
 };

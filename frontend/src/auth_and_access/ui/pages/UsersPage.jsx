@@ -40,16 +40,17 @@ const UsersPage = () => {
         }
     };
     return (
-        <Box>
-            <PageHeader
-                title="Users"
-                subtitle="Manage user accounts, roles, and access."
-            />
+        <Box className="filtered-page">
+            <Box className="filtered-page-header">
+                <PageHeader
+                    title="Users"
+                    subtitle="Manage user accounts, roles, and access."
+                />
+            </Box>
 
             <FilterBar
                 onSearch={handleSearch}
                 onClear={handleClearFilters}
-                addLabel="Add Department"
                 viewMode={viewMode}
                 onViewChange={handleViewChange}
             >
@@ -80,37 +81,39 @@ const UsersPage = () => {
                 />
             </FilterBar>
 
-            <LoadingBar loading={loading}/>
+            <Box className="filtered-page-content">
+                <LoadingBar loading={loading}/>
 
-            <PaginatedDataView
-                loading={loading}
-                data={users}
-                pagination={pagination}
-                onPageChange={handlePageChange}
-                onSizeChange={handleSizeChange}
-                emptyMessage="No users found."
-                emptySubMessage="Try clearing your filters or refresh the page."
-            >
-                {viewMode === 'table' ? (
-                    <AdminTable
-                        data={users}
-                        columns={userColumns}
-                        onInfo={(department) => navigate(`/users/${department.id}`)}
-                        onEdit={(department) => navigate(`/users/${department.id}/edit`)}
-                        onDelete={async (user) => {
-                            await deleteUser(user.id, () => fetchUsersPaged(filters));
-                        }}
-                        onBulkDelete={async (selectedIds) => {
-                            await deleteUsersBulk(selectedIds, () => fetchUsersPaged(filters));
-                        }}
-                    />
-                ) : (
-                    <UserGrid
-                        users={users}
-                        onDelete={() => fetchUsersPaged(filters)}
-                    />
-                )}
-            </PaginatedDataView>
+                <PaginatedDataView
+                    loading={loading}
+                    data={users}
+                    pagination={pagination}
+                    onPageChange={handlePageChange}
+                    onSizeChange={handleSizeChange}
+                    emptyMessage="No users found."
+                    emptySubMessage="Try clearing your filters or refresh the page."
+                >
+                    {viewMode === 'table' ? (
+                        <AdminTable
+                            data={users}
+                            columns={userColumns}
+                            onInfo={(department) => navigate(`/users/${department.id}`)}
+                            onEdit={(department) => navigate(`/users/${department.id}/edit`)}
+                            onDelete={async (user) => {
+                                await deleteUser(user.id, () => fetchUsersPaged(filters));
+                            }}
+                            onBulkDelete={async (selectedIds) => {
+                                await deleteUsersBulk(selectedIds, () => fetchUsersPaged(filters));
+                            }}
+                        />
+                    ) : (
+                        <UserGrid
+                            users={users}
+                            onDelete={() => fetchUsersPaged(filters)}
+                        />
+                    )}
+                </PaginatedDataView>
+            </Box>
         </Box>
     );
 

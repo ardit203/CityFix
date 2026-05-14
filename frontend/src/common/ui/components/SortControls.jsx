@@ -8,8 +8,8 @@ const SortControls = ({
                           options = []
                       }) => {
     return (
-        <Box sx={{ display: 'flex', gap: 2 }}>
-            <FormControl size="small" sx={{ minWidth: 140 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, width: '100%' }}>
+            <FormControl size="small" sx={{ width: '100%' }}>
                 <InputLabel>Sort By</InputLabel>
                 <Select
                     name="sortBy"
@@ -25,7 +25,7 @@ const SortControls = ({
                 </Select>
             </FormControl>
 
-            <FormControl size="small" sx={{ minWidth: 120 }}>
+            <FormControl size="small" sx={{ width: '100%' }}>
                 <InputLabel>Order</InputLabel>
                 <Select
                     name="sortDir"

@@ -40,11 +40,13 @@ const MunicipalitiesPage = () => {
     };
 
     return (
-        <Box>
-            <PageHeader
-                title="Municipalities"
-                subtitle="Manage municipalities and their identifying codes."
-            />
+        <Box className="filtered-page">
+            <Box className="filtered-page-header">
+                <PageHeader
+                    title="Municipalities"
+                    subtitle="Manage municipalities and their identifying codes."
+                />
+            </Box>
 
             <FilterBar
                 onSearch={handleSearch}
@@ -65,37 +67,39 @@ const MunicipalitiesPage = () => {
                 />
             </FilterBar>
 
-            <LoadingBar loading={loading}/>
+            <Box className="filtered-page-content">
+                <LoadingBar loading={loading}/>
 
-            <PaginatedDataView
-                loading={loading}
-                data={municipalities}
-                pagination={pagination}
-                onPageChange={handlePageChange}
-                onSizeChange={handleSizeChange}
-                emptyMessage="No Municipalities found."
-                emptySubMessage="Try clearing your filters or creating a new municipality."
-            >
-                {viewMode === 'table' ? (
-                    <AdminTable
-                        data={municipalities}
-                        columns={municipalityColumns}
-                        onInfo={(municipality) => navigate(`/municipalities/${municipality.id}`)}
-                        onEdit={(municipality) => navigate(`/municipalities/${municipality.id}/edit`)}
-                        onDelete={async (municipality) => {
-                            await deleteMunicipality(municipality.id, () => fetchMunicipalitiesPaged(filters));
-                        }}
-                        onBulkDelete={async (selectedIds) => {
-                            await deleteMunicipalitiesBulk(selectedIds, () => fetchMunicipalitiesPaged(filters));
-                        }}
-                    />
-                ) : (
-                    <MunicipalityGrid
-                        municipalities={municipalities}
-                        onDelete={() => fetchMunicipalitiesPaged(filters)}
-                    />
-                )}
-            </PaginatedDataView>
+                <PaginatedDataView
+                    loading={loading}
+                    data={municipalities}
+                    pagination={pagination}
+                    onPageChange={handlePageChange}
+                    onSizeChange={handleSizeChange}
+                    emptyMessage="No Municipalities found."
+                    emptySubMessage="Try clearing your filters or creating a new municipality."
+                >
+                    {viewMode === 'table' ? (
+                        <AdminTable
+                            data={municipalities}
+                            columns={municipalityColumns}
+                            onInfo={(municipality) => navigate(`/municipalities/${municipality.id}`)}
+                            onEdit={(municipality) => navigate(`/municipalities/${municipality.id}/edit`)}
+                            onDelete={async (municipality) => {
+                                await deleteMunicipality(municipality.id, () => fetchMunicipalitiesPaged(filters));
+                            }}
+                            onBulkDelete={async (selectedIds) => {
+                                await deleteMunicipalitiesBulk(selectedIds, () => fetchMunicipalitiesPaged(filters));
+                            }}
+                        />
+                    ) : (
+                        <MunicipalityGrid
+                            municipalities={municipalities}
+                            onDelete={() => fetchMunicipalitiesPaged(filters)}
+                        />
+                    )}
+                </PaginatedDataView>
+            </Box>
         </Box>
     );
 

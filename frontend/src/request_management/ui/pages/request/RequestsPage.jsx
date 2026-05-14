@@ -91,11 +91,13 @@ const RequestsPage = () => {
     };
 
     return (
-        <Box>
-            <PageHeader
-                title="Requests"
-                subtitle="Browse, filter, and manage citizen service requests."
-            />
+        <Box className="filtered-page">
+            <Box className="filtered-page-header">
+                <PageHeader
+                    title="Requests"
+                    subtitle="Browse, filter, and manage citizen service requests."
+                />
+            </Box>
 
             <FilterBar
                 onSearch={handleSearch}
@@ -277,37 +279,39 @@ const RequestsPage = () => {
                 />
             </FilterBar>
 
-            <LoadingBar loading={loading}/>
+            <Box className="filtered-page-content">
+                <LoadingBar loading={loading}/>
 
-            <PaginatedDataView
-                loading={loading}
-                data={requests}
-                pagination={pagination}
-                onPageChange={handlePageChange}
-                onSizeChange={handleSizeChange}
-                emptyMessage="No requests found."
-                emptySubMessage="Try clearing your filters or creating a new request."
-            >
-                {viewMode === 'table' ? (
-                    <AdminTable
-                        data={requests}
-                        columns={requestColumns}
-                        onInfo={(request) => navigate(`/requests/${request.id}`)}
-                        onEdit={(request) => navigate(`/requests/${request.id}/edit`)}
-                        onDelete={async (request) => {
-                            await deleteRequest(request.id, () => fetchRequestsPaged(filters));
-                        }}
-                        onBulkDelete={async (selectedIds) => {
-                            await deleteRequestsBulk(selectedIds, () => fetchRequestsPaged(filters));
-                        }}
-                    />
-                ) : (
-                    <RequestGrid
-                        requests={requests}
-                        onDelete={() => fetchRequestsPaged(filters)}
-                    />
-                )}
-            </PaginatedDataView>
+                <PaginatedDataView
+                    loading={loading}
+                    data={requests}
+                    pagination={pagination}
+                    onPageChange={handlePageChange}
+                    onSizeChange={handleSizeChange}
+                    emptyMessage="No requests found."
+                    emptySubMessage="Try clearing your filters or creating a new request."
+                >
+                    {viewMode === 'table' ? (
+                        <AdminTable
+                            data={requests}
+                            columns={requestColumns}
+                            onInfo={(request) => navigate(`/requests/${request.id}`)}
+                            onEdit={(request) => navigate(`/requests/${request.id}/edit`)}
+                            onDelete={async (request) => {
+                                await deleteRequest(request.id, () => fetchRequestsPaged(filters));
+                            }}
+                            onBulkDelete={async (selectedIds) => {
+                                await deleteRequestsBulk(selectedIds, () => fetchRequestsPaged(filters));
+                            }}
+                        />
+                    ) : (
+                        <RequestGrid
+                            requests={requests}
+                            onDelete={() => fetchRequestsPaged(filters)}
+                        />
+                    )}
+                </PaginatedDataView>
+            </Box>
         </Box>
     );
 

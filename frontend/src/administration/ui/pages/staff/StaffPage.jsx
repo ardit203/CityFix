@@ -77,11 +77,13 @@ const StaffPage = () => {
     };
 
     return (
-        <Box>
-            <PageHeader
-                title="Staff"
-                subtitle="Manage staff assignments to departments and municipalities."
-            />
+        <Box className="filtered-page">
+            <Box className="filtered-page-header">
+                <PageHeader
+                    title="Staff"
+                    subtitle="Manage staff assignments to departments and municipalities."
+                />
+            </Box>
 
             <FilterBar
                 onSearch={handleSearch}
@@ -90,6 +92,33 @@ const StaffPage = () => {
                 addLabel="Add Staff"
                 viewMode={viewMode}
                 onViewChange={handleViewChange}
+                actions={(
+                    <>
+                        <Button
+                            variant="outlined"
+                            startIcon={<InfoOutlinedIcon />}
+                            onClick={() => setRulesOpen(true)}
+                        >
+                            Import Rules
+                        </Button>
+
+                        <Button
+                            variant="outlined"
+                            startIcon={<UploadFileIcon />}
+                            onClick={handleImportClick}
+                            disabled={isExecuting}
+                        >
+                            Import Excel
+                        </Button>
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            hidden
+                            accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+                            onChange={handleImportFileChange}
+                        />
+                    </>
+                )}
             >
                 <TextField label="ID" name="id" value={filters.id} onChange={handleFilterChange} size="small"/>
                 <TextField label="Search" name="text" value={filters.text} onChange={handleFilterChange} size="small"/>
@@ -165,29 +194,6 @@ const StaffPage = () => {
                     options={staffSortOptions}
                 />
 
-                <Button
-                    variant="outlined"
-                    startIcon={<InfoOutlinedIcon />}
-                    onClick={() => setRulesOpen(true)}
-                >
-                    Import Rules
-                </Button>
-
-                <Button
-                    variant="outlined"
-                    startIcon={<UploadFileIcon />}
-                    onClick={handleImportClick}
-                    disabled={isExecuting}
-                >
-                    Import Excel
-                </Button>
-                <input
-                    ref={fileInputRef}
-                    type="file"
-                    hidden
-                    accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
-                    onChange={handleImportFileChange}
-                />
             </FilterBar>
 
             <Dialog open={rulesOpen} onClose={() => setRulesOpen(false)} fullWidth maxWidth="sm">
@@ -235,37 +241,39 @@ const StaffPage = () => {
                 </DialogActions>
             </Dialog>
 
-            <LoadingBar loading={loading}/>
+            <Box className="filtered-page-content">
+                <LoadingBar loading={loading}/>
 
-            <PaginatedDataView
-                loading={loading}
-                data={staff}
-                pagination={pagination}
-                onPageChange={handlePageChange}
-                onSizeChange={handleSizeChange}
-                emptyMessage="No staff found."
-                emptySubMessage="Try clearing your filters or creating a new staff."
-            >
-                {viewMode === 'table' ? (
-                    <AdminTable
-                        data={staff}
-                        columns={staffColumns}
-                        onInfo={(staff) => navigate(`/staff/${staff.id}`)}
-                        onEdit={(staff) => navigate(`/staff/${staff.id}/edit`)}
-                        onDelete={async (staff) => {
-                            await deleteStaff(staff.id, () => fetchStaffPaged(filters));
-                        }}
-                        onBulkDelete={async (selectedIds) => {
-                            await deleteStaffBulk(selectedIds, () => fetchStaffPaged(filters));
-                        }}
-                    />
-                ) : (
-                    <StaffGrid
-                        staff={staff}
-                        onDelete={() => fetchStaffPaged(filters)}
-                    />
-                )}
-            </PaginatedDataView>
+                <PaginatedDataView
+                    loading={loading}
+                    data={staff}
+                    pagination={pagination}
+                    onPageChange={handlePageChange}
+                    onSizeChange={handleSizeChange}
+                    emptyMessage="No staff found."
+                    emptySubMessage="Try clearing your filters or creating a new staff."
+                >
+                    {viewMode === 'table' ? (
+                        <AdminTable
+                            data={staff}
+                            columns={staffColumns}
+                            onInfo={(staff) => navigate(`/staff/${staff.id}`)}
+                            onEdit={(staff) => navigate(`/staff/${staff.id}/edit`)}
+                            onDelete={async (staff) => {
+                                await deleteStaff(staff.id, () => fetchStaffPaged(filters));
+                            }}
+                            onBulkDelete={async (selectedIds) => {
+                                await deleteStaffBulk(selectedIds, () => fetchStaffPaged(filters));
+                            }}
+                        />
+                    ) : (
+                        <StaffGrid
+                            staff={staff}
+                            onDelete={() => fetchStaffPaged(filters)}
+                        />
+                    )}
+                </PaginatedDataView>
+            </Box>
         </Box>
     );
 
