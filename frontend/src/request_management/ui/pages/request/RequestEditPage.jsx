@@ -177,7 +177,7 @@ const RequestEditPageContent = () => {
         );
     }
 
-    const isAiSuggestionPending = (aiSuggestion?.status === "PENDING_REVIEW");
+    const isAiSuggestionPending = (aiSuggestion?.status === "PENDING_REVIEW" || aiSuggestion?.status === "NOT_GENERATED");
     const disableManualEditing = isExecuting || isAiSuggestionPending;
 
     return (
