@@ -4,7 +4,7 @@ import userService from "../../services/userService.js";
 
 const useProfile = () => {
     const [user, setUser] = useState(null);
-    const {loading, error, handleError, startAsync, finishAsync} = useAsyncState();
+    const {loading, error, handleError, startAsync, finishAsync} = useAsyncState(false);
 
 
     const fetchProfile = useCallback(async () => {

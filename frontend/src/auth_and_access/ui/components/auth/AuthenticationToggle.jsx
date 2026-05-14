@@ -18,6 +18,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import {useState} from "react";
 import useAuth from "../../../hooks/auth/useAuth.js";
+import useProfile from "../../../hooks/profile/useProfile.js";
 
 const AuthenticationToggle = () => {
     const {logout, isLoggedIn, user} = useAuth();
@@ -27,7 +28,12 @@ const AuthenticationToggle = () => {
 
     const accountName = user?.username || user?.sub || user?.email || "Account";
     const roleLabel = user?.roles?.[0]?.replace("ROLE_", "")?.toLowerCase() || "cityfix";
-    const initial = accountName.charAt(0).toUpperCase();
+
+    const {user: userProfile} = useProfile();
+    console.log(userProfile)
+    const src = userProfile?.profile?.profilePictureUrl;
+    const initial =accountName.charAt(0).toUpperCase()
+
 
     const handleLogin = () => {
         navigate("/login");
@@ -74,7 +80,7 @@ const AuthenticationToggle = () => {
                 aria-haspopup="true"
                 aria-expanded={menuOpen ? "true" : undefined}
             >
-                <Avatar className="account-avatar">{initial}</Avatar>
+                <Avatar src={src} className="account-avatar">{initial}</Avatar>
                 <Box className="account-button-copy">
                     <Typography component="span" className="account-button-label">
                         {accountName}
@@ -99,7 +105,7 @@ const AuthenticationToggle = () => {
                 }}
             >
                 <Box className="account-menu-header">
-                    <Avatar className="account-menu-avatar">{initial}</Avatar>
+                    <Avatar src={src} className="account-menu-avatar">{initial}</Avatar>
                     <Box>
                         <Typography className="account-menu-name">{accountName}</Typography>
                         <Typography className="account-menu-role">{roleLabel}</Typography>

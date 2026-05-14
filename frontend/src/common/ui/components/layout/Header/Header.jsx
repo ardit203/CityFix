@@ -1,6 +1,17 @@
 import './Header.css';
 import {
-    AppBar, Box, Button, Drawer, IconButton, List, ListItem, ListItemButton, ListItemText, Toolbar, Typography
+    AppBar,
+    Box,
+    Button,
+    Container,
+    Drawer,
+    IconButton,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemText,
+    Toolbar,
+    Typography
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import {Link, useLocation} from 'react-router';
@@ -36,46 +47,47 @@ const Header = () => {
     return (
         <Box className='site-header-shell'>
             <AppBar position='sticky' elevation={0} className='site-header'>
-                <Toolbar className='site-toolbar'>
-                    <IconButton
-                        size='large'
-                        edge='start'
-                        color='inherit'
-                        aria-label='menu'
-                        className='mobile-menu-button'
-                        sx={{ display: { md: 'none' } }}
-                        onClick={() => setDrawerOpen(true)}
-                    >
-                        <MenuIcon />
-                    </IconButton>
+                <Container maxWidth="xl" sx={{ width: "100%" }}>
+                    <Toolbar className='site-toolbar'>
+                        <IconButton
+                            size='large'
+                            edge='start'
+                            color='inherit'
+                            aria-label='menu'
+                            className='mobile-menu-button'
+                            sx={{ display: { md: 'none' } }}
+                            onClick={() => setDrawerOpen(true)}
+                        >
+                            <MenuIcon />
+                        </IconButton>
 
-                    <Typography variant='h6' component={Link} to='/' className='brand-logo'>
-                        <Box component='span' className='brand-mark'>C</Box>
-                        CityFix
-                    </Typography>
+                        <Typography variant='h6' component={Link} to='/' className='brand-logo'>
+                            {/*<Box component='span' className='brand-mark'>C</Box>*/}
+                            CityFix
+                        </Typography>
 
-                    <Box className='desktop-nav' sx={{ display: { xs: 'none', md: 'flex' } }}>
-                        {visiblePages.map((page) => {
-                            const isActive = page.path === '/'
-                                ? pathname === '/'
-                                : pathname === page.path || pathname.startsWith(`${page.path}/`);
+                        <Box className='desktop-nav' sx={{ display: { xs: 'none', md: 'flex' } }}>
+                            {visiblePages.map((page) => {
+                                const isActive = page.path === '/'
+                                    ? pathname === '/'
+                                    : pathname === page.path || pathname.startsWith(`${page.path}/`);
 
-                            return (
-                                <Link key={page.name} to={page.path} className='nav-link-wrapper'>
-                                    <Button className={`nav-link ${isActive ? 'active' : ''}`}>
-                                        {page.name}
-                                    </Button>
-                                </Link>
-                            );
-                        })}
-                    </Box>
+                                return (
+                                    <Link key={page.name} to={page.path} className='nav-link-wrapper'>
+                                        <Button className={`nav-link ${isActive ? 'active' : ''}`}>
+                                            {page.name}
+                                        </Button>
+                                    </Link>
+                                );
+                            })}
+                        </Box>
 
-                    <Box className='header-actions'>
-                        <AuthenticationToggle />
-                    </Box>
-                </Toolbar>
+                        <Box className='header-actions'>
+                            <AuthenticationToggle />
+                        </Box>
+                    </Toolbar>
+                </Container>
             </AppBar>
-
             <Drawer
                 anchor='left'
                 open={drawerOpen}

@@ -2,6 +2,8 @@ package finki.ukim.backend.request_management.service.domain.impl;
 
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.service.domain.AccessScopeService;
+import finki.ukim.backend.notification.model.events.PasswordResetEvent;
+import finki.ukim.backend.notification.model.events.RequestCommentAdded;
 import finki.ukim.backend.request_management.model.domain.Request;
 import finki.ukim.backend.request_management.model.domain.RequestComment;
 import finki.ukim.backend.request_management.model.enums.LogAction;
@@ -11,6 +13,7 @@ import finki.ukim.backend.request_management.service.domain.RequestCommentServic
 import finki.ukim.backend.request_management.service.domain.RequestLogService;
 import finki.ukim.backend.request_management.service.domain.RequestService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +25,7 @@ public class RequestCommentServiceImpl implements RequestCommentService {
     private final RequestService requestService;
     private final AccessScopeService accessScopeService;
     private final RequestLogService requestLogService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public List<RequestComment> findAllByRequest(Long requestId, User currentUser) {
@@ -57,6 +61,8 @@ public class RequestCommentServiceImpl implements RequestCommentService {
                         ? "Internal comment added."
                         : "Public comment added."
         );
+
+        eventPublisher.publishEvent(new RequestCommentAdded(currentUser, requestId, request.getTitle(), content));
 
 
         return savedComment;

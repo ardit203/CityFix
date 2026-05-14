@@ -7,6 +7,9 @@ import finki.ukim.backend.auth_and_access.service.domain.AccessScopeService;
 import finki.ukim.backend.file_handling.constants.FileConstants;
 import finki.ukim.backend.file_handling.model.domain.File;
 import finki.ukim.backend.file_handling.service.domain.FileService;
+import finki.ukim.backend.notification.model.events.RequestCommentAdded;
+import finki.ukim.backend.notification.model.events.RequestCreatedEvent;
+import finki.ukim.backend.notification.model.events.RequestStatusChangedEvent;
 import finki.ukim.backend.request_management.model.domain.Request;
 import finki.ukim.backend.request_management.model.dto.ChangeRequestStatusDto;
 import finki.ukim.backend.request_management.model.dto.filter.RequestFilterDto;
@@ -20,6 +23,8 @@ import finki.ukim.backend.request_management.repository.RequestRepository;
 import finki.ukim.backend.request_management.service.domain.RequestLogService;
 import finki.ukim.backend.request_management.service.domain.RequestService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,12 +35,14 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class RequestServiceImpl implements RequestService {
     private final RequestRepository requestRepository;
     private final AccessScopeService accessScopeService;
     private final RequestLogService requestLogService;
     private final AiSuggestionService aiSuggestionService;
     private final FileService fileService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public List<Request> findAll(User user) {
@@ -80,8 +87,9 @@ public class RequestServiceImpl implements RequestService {
                     "File uploaded to request."
             );
         });
+
         aiSuggestionService.suggest(request);
-        //send mail
+        eventPublisher.publishEvent(new RequestCreatedEvent(created.getUser(), created.getId(), created.getTitle()));
         return created;
     }
 
@@ -98,13 +106,28 @@ public class RequestServiceImpl implements RequestService {
                 requestFilterDto.getAssignedEmployeeUserId()
         );
 
+        log.info(
+                "Filters: id={}, citizenId={}, departmentId={}, municipalityId={}, categoryId={}, status={}, routingStatus={}, priority={}, text={}, submittedFrom={}, submittedTo={}",
+                requestFilterDto.getId(),
+                scopeFilters.requestedUserId(),
+                scopeFilters.departmentId(),
+                scopeFilters.municipalityId(),
+                requestFilterDto.getCategoryId(),
+                requestFilterDto.getStatus(),
+                requestFilterDto.getRoutingStatus(),
+                requestFilterDto.getPriority(),
+                requestFilterDto.getText(),
+                requestFilterDto.getSubmittedFrom(),
+                requestFilterDto.getSubmittedTo()
+        );
+
         return requestRepository.findFiltered(
                 requestFilterDto.getId(),
                 scopeFilters.requestedUserId(),
                 scopeFilters.departmentId(),
                 scopeFilters.municipalityId(),
                 requestFilterDto.getCategoryId(),
-//                scopeFilters.assignedEmployeeUserId(),
+                scopeFilters.assignedEmployeeUserId(),
                 requestFilterDto.getStatus(),
                 requestFilterDto.getRoutingStatus(),
                 requestFilterDto.getPriority(),
@@ -142,6 +165,10 @@ public class RequestServiceImpl implements RequestService {
                 "Request was canceled by the citizen."
         );
 
+        eventPublisher.publishEvent(new RequestStatusChangedEvent(
+                savedRequest.getUser(), savedRequest.getId(), savedRequest.getTitle(), RequestStatus.CANCELED.name()
+        ));
+
         return savedRequest;
     }
 
@@ -166,6 +193,9 @@ public class RequestServiceImpl implements RequestService {
                 newStatus.name(),
                 dto.note() != null ? dto.note() : dto.reason()
         );
+        eventPublisher.publishEvent(new RequestStatusChangedEvent(
+                savedRequest.getUser(), savedRequest.getId(), savedRequest.getTitle(), newStatus.name()
+        ));
 
         return savedRequest;
     }

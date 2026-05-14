@@ -58,7 +58,7 @@ const ProfileEditPage = () => {
                     <Tab icon={<AddAPhoto/>} iconPosition="start" label="Profile Picture"/>
                 </Tabs>
 
-                <Box sx={{p: {xs: 3, md: 5}}}>
+                <Box sx={{p: {xs: 3, md: 5, minWidth: 700, maxWidth: 700}}}>
                     {activeTab === 0 && (
                         <AccountForm user={user} onSuccess={fetchProfile}/>
                     )}

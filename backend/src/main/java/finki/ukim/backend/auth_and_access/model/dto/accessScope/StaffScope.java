@@ -8,15 +8,27 @@ public record StaffScope(
         Long userId
 ) {
     public static StaffScope toAdminScope() {
-        return new StaffScope(true, null, null, null, null);
+        return new StaffScope(
+                true,
+                null,
+                null,
+                null,
+                null
+        );
     }
 
     public static StaffScope toStaffScope(
+            Long staffId,
             Long departmentId,
             Long municipalityId,
-            Long staffId,
             Long userId
     ) {
-        return new StaffScope(false, staffId, departmentId, municipalityId, userId);
+        return new StaffScope(
+                false,
+                staffId,
+                departmentId,
+                municipalityId,
+                userId
+        );
     }
 }

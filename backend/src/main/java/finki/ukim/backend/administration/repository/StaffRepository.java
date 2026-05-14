@@ -143,4 +143,6 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
     );
 
     boolean existsByUser_Id(Long userId);
+
+    boolean existsByUserId(Long id);
 }

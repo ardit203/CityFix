@@ -146,6 +146,20 @@ public class AiSuggestionServiceImpl implements AiSuggestionService {
 
         } catch (Exception e) {
             log.error("Async AI suggestion failed for Request ID: {} — {}", request.getId(), e.getMessage(), e);
+            AiSuggestion suggestion = new AiSuggestion();
+            suggestion.setRequest(request);
+            suggestion.setSuggestionStatus(SuggestionStatus.NOT_GENERATED);
+            suggestion.setAiSummary("");
+
+            aiSuggestionRepository.save(suggestion);
+            requestLogService.create(
+                    request,
+                    request.getUser(),
+                    LogAction.AI_SUGGESTION_FAILED,
+                    "PENDING",
+                    "FAILED",
+                    "AI suggestion generation failed: " + e.getMessage()
+            );
         }
     }
 

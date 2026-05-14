@@ -61,7 +61,8 @@ public class JwtWebSecurityConfig {
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/api/auth/**",
-                                "/h2-console/**"
+                                "/h2-console/**",
+                                "/uploads/**"
                         ).permitAll()
 //
 //                        // Administration

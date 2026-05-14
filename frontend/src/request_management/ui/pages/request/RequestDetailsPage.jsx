@@ -38,6 +38,7 @@ import ActionBar from "../../../../common/ui/components/ActionBar.jsx";
 import RequestCommentsSection from "../../component/request/RequestCommentsSection.jsx";
 import RequestAssignmentPanel from "../../component/requestAssignments/RequestAssignmentPanel.jsx";
 import LocationPicker from "../../component/request/LocationPicker.jsx";
+import RequireRole from "../../../../auth_and_access/ui/components/auth/RequireRole.jsx";
 
 const staffRoles = ["ADMINISTRATOR", "MANAGER", "EMPLOYEE"];
 const managementRoles = ["ADMINISTRATOR", "MANAGER"];
@@ -240,12 +241,15 @@ const RequestDetailsPage = () => {
                             </Grid>
 
                             {request.routingStatus !== "PENDING_REVIEW" && (
-                                <Grid size={{ xs: 12, md: 4 }}>
-                                    <RequestAssignmentPanel
-                                        request={request}
-                                        canManage={canManageAssignments}
-                                    />
-                                </Grid>
+                                <RequireRole allowedRoles={['ADMINISTRATOR', 'MANAGER', 'EMPLOYEE']}>
+                                    <Grid size={{ xs: 12, md: 4 }}>
+                                        <RequestAssignmentPanel
+                                            request={request}
+                                            canManage={canManageAssignments}
+                                        />
+                                    </Grid>
+                                </RequireRole>
+
                             )}
 
                             <Grid size={{xs: 12, md: 4}}>

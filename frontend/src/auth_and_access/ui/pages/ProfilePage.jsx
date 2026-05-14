@@ -53,10 +53,11 @@ const ProfilePage = () => {
     return (
         <Box sx={{ maxWidth: 1200, mx: 'auto', p: 3 }}>
             <Stack
-                direction="row"
+                direction={{ xs: "column", sm: "row" }}
                 justifyContent="space-between"
-                alignItems="center"
-                sx={{ mb: 3 }}
+                alignItems={{ xs: "flex-start", sm: "center" }}
+                spacing={2}
+                sx={{ mb: 3, width: "100%" }}
             >
                 <Typography variant="h4" fontWeight={600}>
                     My Profile
