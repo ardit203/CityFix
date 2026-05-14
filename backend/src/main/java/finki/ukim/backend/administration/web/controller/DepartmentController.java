@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/departments")
-@PreAuthorize("hasRole('ADMINISTRATOR')")
+
 public class DepartmentController {
     private final DepartmentApplicationService departmentApplicationService;
 
@@ -25,6 +25,7 @@ public class DepartmentController {
         return ResponseEntity.ok(departmentApplicationService.findAll());
     }
 
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @GetMapping("/paged")
     public ResponseEntity<Page<DisplayDepartmentDto>> findAll(
             @ModelAttribute DepartmentFilterDto departmentFilterDto
@@ -36,31 +37,37 @@ public class DepartmentController {
         );
     }
 
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @GetMapping("/{id}")
     public ResponseEntity<DisplayDepartmentDto> findById(@PathVariable Long id) {
         return ResponseEntity.ok(departmentApplicationService.findById(id));
     }
 
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @GetMapping("/by-name/{name}")
     public ResponseEntity<DisplayDepartmentDto> findByName(@PathVariable String name) {
         return ResponseEntity.ok(departmentApplicationService.findByName(name));
     }
 
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @PostMapping
     public ResponseEntity<DisplayDepartmentDto> create(@Valid @RequestBody CreateDepartmentDto createDepartmentDto) {
         return ResponseEntity.ok(departmentApplicationService.create(createDepartmentDto));
     }
 
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @PutMapping("/{id}")
     public ResponseEntity<DisplayDepartmentDto> update(@PathVariable Long id, @Valid @RequestBody CreateDepartmentDto createDepartmentDto) {
         return ResponseEntity.ok(departmentApplicationService.update(id, createDepartmentDto));
     }
 
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<DisplayDepartmentDto> delete(@PathVariable Long id) {
         return ResponseEntity.ok(departmentApplicationService.deleteById(id));
     }
 
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @DeleteMapping("/bulk")
     public ResponseEntity<Void> deleteBulk(@RequestBody List<Long> ids) {
         departmentApplicationService.deleteAllById(ids);

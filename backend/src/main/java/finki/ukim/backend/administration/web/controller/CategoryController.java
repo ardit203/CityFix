@@ -18,15 +18,17 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/categories")
-@PreAuthorize("hasRole('ADMINISTRATOR')")
+
 public class CategoryController {
     private final CategoryApplicationService categoryApplicationService;
+
 
     @GetMapping
     public ResponseEntity<List<DisplayBasicCategoryDto>> findAll() {
         return ResponseEntity.ok(categoryApplicationService.findAll());
     }
 
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @GetMapping("/paged")
     public ResponseEntity<Page<DisplayCategoryPageableDto>> findAll(
             @ModelAttribute CategoryFilterDto categoryFilterDto
@@ -38,36 +40,43 @@ public class CategoryController {
         );
     }
 
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @GetMapping("/{id}")
     public ResponseEntity<DisplayCategoryDto> findById(@PathVariable Long id) {
         return ResponseEntity.ok(categoryApplicationService.findById(id));
     }
 
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @GetMapping("/by-name/{name}")
     public ResponseEntity<DisplayBasicCategoryDto> findByName(@PathVariable String name) {
         return ResponseEntity.ok(categoryApplicationService.findByName(name));
     }
 
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @GetMapping("/by-department/{departmentId}")
     public ResponseEntity<List<DisplayCategoryDto>> findByDepartmentId(@PathVariable Long departmentId) {
         return ResponseEntity.ok(categoryApplicationService.findByDepartmentId(departmentId));
     }
 
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @PostMapping
     public ResponseEntity<DisplayCategoryDto> create(@Valid @RequestBody CreateCategoryDto createCategoryDto) {
         return ResponseEntity.ok(categoryApplicationService.create(createCategoryDto));
     }
 
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @PutMapping("/{id}")
     public ResponseEntity<DisplayCategoryDto> update(@PathVariable Long id, @Valid @RequestBody CreateCategoryDto createCategoryDto) {
         return ResponseEntity.ok(categoryApplicationService.update(id, createCategoryDto));
     }
 
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<DisplayBasicCategoryDto> delete(@PathVariable Long id) {
         return ResponseEntity.ok(categoryApplicationService.deleteById(id));
     }
 
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @DeleteMapping("/bulk")
     public ResponseEntity<Void> deleteBulk(@RequestBody List<Long> ids) {
         categoryApplicationService.deleteAllById(ids);

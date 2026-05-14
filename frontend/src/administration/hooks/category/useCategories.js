@@ -1,23 +1,24 @@
 import {useCallback, useEffect, useState} from "react";
 import usePaginationState from "../../../common/hooks/usePaginationState.js";
 import useAsyncState from "../../../common/hooks/useAsyncState.js";
-import { mapToCleanQueryParams } from "../../../common/dtos/filterDto.js";
+import {mapToCleanQueryParams} from "../../../common/dtos/filterDto.js";
 import categoryService from "../../services/categoryService.js";
 
 
-const useCategories = ({paged = true, fetchOnMount = true} = {}) => {
+const useCategories = ({paged = true, fetchOnMount = true, enabled = true} = {}) => {
     const [categories, setCategories] = useState([]);
     const {loading, error, handleError, startAsync, finishAsync} = useAsyncState();
     const {pagination, updatePagination} = usePaginationState();
 
     const fetchCategoriesPaged = useCallback(async (filters = {}) => {
         startAsync();
+
         try {
             const safeFilters = mapToCleanQueryParams(filters);
             const response = await categoryService.findAllPaged(safeFilters);
+
             setCategories(response.data.content);
             updatePagination(response.data);
-            console.log(response)
         } catch (error) {
             handleError(error);
         } finally {
@@ -27,6 +28,7 @@ const useCategories = ({paged = true, fetchOnMount = true} = {}) => {
 
     const fetchCategoriesAll = useCallback(async () => {
         startAsync();
+
         try {
             const response = await categoryService.findAll();
             setCategories(response.data);
@@ -38,14 +40,16 @@ const useCategories = ({paged = true, fetchOnMount = true} = {}) => {
     }, [startAsync, finishAsync, handleError]);
 
     useEffect(() => {
-        if (fetchOnMount) {
-            if (paged) {
-                void fetchCategoriesPaged();
-            } else {
-                void fetchCategoriesAll();
-            }
+        if (!enabled || !fetchOnMount) {
+            return;
         }
-    }, [fetchOnMount, paged, fetchCategoriesPaged, fetchCategoriesAll]);
+
+        if (paged) {
+            void fetchCategoriesPaged();
+        } else {
+            void fetchCategoriesAll();
+        }
+    }, [enabled, fetchOnMount, paged, fetchCategoriesPaged, fetchCategoriesAll]);
 
     return {
         categories,

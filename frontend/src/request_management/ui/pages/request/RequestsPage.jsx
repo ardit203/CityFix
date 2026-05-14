@@ -20,6 +20,7 @@ import RequireRole from "../../../../auth_and_access/ui/components/auth/RequireR
 import useDepartments from "../../../../administration/hooks/department/useDepartments.js";
 import useCategories from "../../../../administration/hooks/category/useCategories.js";
 import useMunicipalities from "../../../../administration/hooks/municipality/useMunicipalities.js";
+import useAuth from "../../../../auth_and_access/hooks/auth/useAuth.js";
 
 
 const requestStatusOptions = [
@@ -52,13 +53,27 @@ const formatLabel = (value) => {
 };
 
 
-
 const RequestsPage = () => {
     const navigate = useNavigate();
     const {requests, loading, pagination, fetchRequestsPaged} = useRequests();
-    const {departments, loading: loadingDepartments} = useDepartments({paged: false})
-    const {categories, loading: loadingCategories} = useCategories({paged: false})
-    const {municipalities, loading: loadingMunicipalities} = useMunicipalities({paged: false})
+    const {user} = useAuth();
+    const canLoadFilters =
+        user?.roles?.some(role =>
+            ["ROLE_ADMINISTRATOR", "ROLE_CITIZEN"].includes(role)
+        ) === true;
+
+    console.log(canLoadFilters)
+
+    console.log("isAdmin",canLoadFilters)
+    const {departments, loading: loadingDepartments} = useDepartments({
+        paged: false,
+        enabled:canLoadFilters});
+    const {categories, loading: loadingCategories} = useCategories({
+        paged: false,
+        enabled:canLoadFilters});
+    const {municipalities, loading: loadingMunicipalities} = useMunicipalities({
+        paged: false,
+        enabled:canLoadFilters});
     const {deleteRequest, deleteRequestsBulk} = useRequestActions();
     const [viewMode, setViewMode] = useState('table');
 
@@ -95,9 +110,10 @@ const RequestsPage = () => {
             >
                 <TextField label="ID" name="id" value={filters.id} onChange={handleFilterChange} size="small"/>
                 <RequireRole allowedRoles={["ADMINISTRATOR", "MANAGER", "EMPLOYEE"]}>
-                    <TextField label="Citizen ID" name="citizenId" value={filters.citizenId} onChange={handleFilterChange} size="small"/>
+                    <TextField label="Citizen ID" name="citizenId" value={filters.citizenId}
+                               onChange={handleFilterChange} size="small"/>
                 </RequireRole>
-                <RequireRole allowedRoles={["ADMINISTRATOR"]}>
+                <RequireRole allowedRoles={["ADMINISTRATOR", "CITIZEN"]}>
                     <FormControl size="small" sx={{minWidth: 140}}>
                         <InputLabel>Department</InputLabel>
                         <Select
@@ -130,7 +146,7 @@ const RequestsPage = () => {
                         </Select>
                     </FormControl>
                 </RequireRole>
-                <RequireRole allowedRoles={["ADMINISTRATOR"]}>
+                <RequireRole allowedRoles={["ADMINISTRATOR", "CITIZEN"]}>
                     <FormControl size="small" sx={{minWidth: 140}}>
                         <InputLabel>Municipality</InputLabel>
                         <Select
@@ -163,7 +179,7 @@ const RequestsPage = () => {
                         </Select>
                     </FormControl>
                 </RequireRole>
-                <RequireRole allowedRoles={["ADMINISTRATOR"]}>
+                <RequireRole allowedRoles={["ADMINISTRATOR", "CITIZEN"]}>
                     <FormControl size="small" sx={{minWidth: 140}}>
                         <InputLabel>Category</InputLabel>
                         <Select
@@ -196,10 +212,12 @@ const RequestsPage = () => {
                         </Select>
                     </FormControl>
                 </RequireRole>
-                <RequireRole allowedRoles={["ADMINISTRATOR"]}>
-                    <TextField label="Assigned Employee ID" name="assignedEmployeeUserId" value={filters.assignedEmployeeUserId} onChange={handleFilterChange} size="small"/>
+                <RequireRole allowedRoles={["ADMINISTRATOR", "CITIZEN"]}>
+                    <TextField label="Assigned Employee ID" name="assignedEmployeeUserId"
+                               value={filters.assignedEmployeeUserId} onChange={handleFilterChange} size="small"/>
                 </RequireRole>
-                <TextField select label="Status" name="status" value={filters.status} onChange={handleFilterChange} size="small" sx={{minWidth: 140}}>
+                <TextField select label="Status" name="status" value={filters.status} onChange={handleFilterChange}
+                           size="small" sx={{minWidth: 140}}>
                     <MenuItem value="">All statuses</MenuItem>
 
                     {requestStatusOptions.map(status => (
@@ -208,7 +226,8 @@ const RequestsPage = () => {
                         </MenuItem>
                     ))}
                 </TextField>
-                <TextField select label="Routing status" name="routingStatus" value={filters.routingStatus} onChange={handleFilterChange} size="small" sx={{minWidth: 160}}>
+                <TextField select label="Routing status" name="routingStatus" value={filters.routingStatus}
+                           onChange={handleFilterChange} size="small" sx={{minWidth: 160}}>
                     <MenuItem value="">All statuses</MenuItem>
 
                     {routingStatusOptions.map(status => (
@@ -217,7 +236,8 @@ const RequestsPage = () => {
                         </MenuItem>
                     ))}
                 </TextField>
-                <TextField select label="Priority" name="priority" value={filters.priority} onChange={handleFilterChange} size="small" sx={{minWidth: 140}}>
+                <TextField select label="Priority" name="priority" value={filters.priority}
+                           onChange={handleFilterChange} size="small" sx={{minWidth: 140}}>
                     <MenuItem value="">All priorities</MenuItem>
 
                     {priorityOptions.map(priority => (
@@ -235,7 +255,7 @@ const RequestsPage = () => {
                     size="small"
                     sx={{minWidth: 130}}
                     slotProps={{
-                        inputLabel: { shrink: true }
+                        inputLabel: {shrink: true}
                     }}
                 />
                 <TextField
@@ -247,7 +267,7 @@ const RequestsPage = () => {
                     size="small"
                     sx={{minWidth: 130}}
                     slotProps={{
-                        inputLabel: { shrink: true }
+                        inputLabel: {shrink: true}
                     }}
                 />
                 <TextField label="Search" name="text" value={filters.text} onChange={handleFilterChange} size="small"/>

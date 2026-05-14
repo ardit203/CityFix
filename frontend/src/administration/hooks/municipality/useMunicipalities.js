@@ -5,7 +5,7 @@ import municipalityService from "../../services/municipalityService.js";
 import { mapToCleanQueryParams } from "../../../common/dtos/filterDto.js";
 
 
-const useMunicipalities = ({paged = true, fetchOnMount = true} = {}) => {
+const useMunicipalities = ({paged = true, fetchOnMount = true, enabled = true} = {}) => {
     const [municipalities, setMunicipalities] = useState([]);
     const {loading, error, handleError, startAsync, finishAsync} = useAsyncState();
     const {pagination, updatePagination} = usePaginationState();
@@ -37,6 +37,10 @@ const useMunicipalities = ({paged = true, fetchOnMount = true} = {}) => {
     }, [startAsync, finishAsync, handleError]);
 
     useEffect(() => {
+        if (!enabled || !fetchOnMount) {
+            return;
+        }
+
         if (fetchOnMount) {
             if (paged) {
                 void fetchMunicipalitiesPaged();
@@ -44,7 +48,7 @@ const useMunicipalities = ({paged = true, fetchOnMount = true} = {}) => {
                 void fetchMunicipalitiesAll();
             }
         }
-    }, [fetchOnMount, paged, fetchMunicipalitiesPaged, fetchMunicipalitiesAll]);
+    }, [fetchOnMount, paged, fetchMunicipalitiesPaged, fetchMunicipalitiesAll, enabled, finishAsync]);
 
     return {
         municipalities,

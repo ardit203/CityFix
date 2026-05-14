@@ -5,7 +5,7 @@ import departmentService from "../../services/departmentService.js";
 import { mapToCleanQueryParams } from "../../../common/dtos/filterDto.js";
 
 
-const useDepartments = ({paged = true, fetchOnMount = true} = {}) => {
+const useDepartments = ({paged = true, fetchOnMount = true, enabled = true} = {}) => {
     const [departments, setDepartments] = useState([]);
     const {loading, error, handleError, startAsync, finishAsync} = useAsyncState();
     const {pagination, updatePagination} = usePaginationState();
@@ -37,6 +37,10 @@ const useDepartments = ({paged = true, fetchOnMount = true} = {}) => {
     }, [startAsync, finishAsync, handleError]);
 
     useEffect(() => {
+        if (!enabled || !fetchOnMount) {
+            return;
+        }
+
         if (fetchOnMount) {
             if (paged) {
                 console.log("paged")
@@ -45,7 +49,7 @@ const useDepartments = ({paged = true, fetchOnMount = true} = {}) => {
                 void fetchDepartmentsAll();
             }
         }
-    }, [fetchOnMount, paged, fetchDepartmentsPaged, fetchDepartmentsAll]);
+    }, [fetchOnMount, paged, fetchDepartmentsPaged, fetchDepartmentsAll, enabled, finishAsync]);
 
     return {
         departments,
