@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +24,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/staff")
+@PreAuthorize("hasAnyRole('ADMINISTRATOR', 'MANAGER')")
 public class StaffController {
     private final StaffApplicationService staffApplicationService;
     private final StaffImportService staffImportService;
@@ -62,13 +64,13 @@ public class StaffController {
     }
 
     @GetMapping("/by-department/{departmentId}")
-//    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<List<DisplayBasicStaffDto>> findByDepartmentId(@PathVariable Long departmentId) {
         return ResponseEntity.ok(staffApplicationService.findByDepartmentId(departmentId));
     }
 
     @GetMapping("/by-municipality/{municipalityId}")
-//    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<List<DisplayBasicStaffDto>> findByMunicipalityId(@PathVariable Long municipalityId) {
         return ResponseEntity.ok(staffApplicationService.findByMunicipalityId(municipalityId));
     }
@@ -96,7 +98,7 @@ public class StaffController {
     }
 
     @PutMapping("/{id}")
-//    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<DisplayBasicStaffDto> update(@PathVariable Long id, @Valid @RequestBody CreateStaffDto createStaffDto) {
         return ResponseEntity.ok(staffApplicationService.update(id, createStaffDto));
     }

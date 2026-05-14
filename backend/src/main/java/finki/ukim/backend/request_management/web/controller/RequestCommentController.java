@@ -7,6 +7,7 @@ import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.request_management.service.application.RequestCommentApplicationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/requests/{requestId}/comments")
 @RequiredArgsConstructor
+@PreAuthorize("isAuthenticated()")
 public class RequestCommentController {
 
     private final RequestCommentApplicationService requestCommentApplicationService;

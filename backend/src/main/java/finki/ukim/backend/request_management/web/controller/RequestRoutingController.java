@@ -7,12 +7,14 @@ import finki.ukim.backend.request_management.model.dto.UpdateRequestRoutingDto;
 import finki.ukim.backend.request_management.service.application.RequestRoutingApplicationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/requests/{requestId}/routing")
 @AllArgsConstructor
+@PreAuthorize("hasAnyRole('ADMINISTRATOR', 'MANAGER')")
 public class RequestRoutingController {
 
     private final RequestRoutingApplicationService requestRoutingApplicationService;

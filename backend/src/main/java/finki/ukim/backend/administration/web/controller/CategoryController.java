@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/categories")
-//@PreAuthorize("hasRole('ADMINISTRATOR')")
+@PreAuthorize("hasRole('ADMINISTRATOR')")
 public class CategoryController {
     private final CategoryApplicationService categoryApplicationService;
 

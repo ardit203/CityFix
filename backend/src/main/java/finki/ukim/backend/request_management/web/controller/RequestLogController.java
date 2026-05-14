@@ -9,6 +9,7 @@ import finki.ukim.backend.request_management.service.application.RequestLogAppli
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/requests/{requestId}/logs")
 @RequiredArgsConstructor
+@PreAuthorize("isAuthenticated()")
 public class RequestLogController {
     private final RequestLogApplicationService requestLogApplicationService;
 

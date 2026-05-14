@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 @AllArgsConstructor
+@PreAuthorize("isAuthenticated()")
 public class UserController {
     private final UserApplicationService userApplicationService;
 
@@ -68,12 +70,14 @@ public class UserController {
     //ADMIN
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<List<DisplayUserBasicDto>> findAll() {
         return ResponseEntity.ok(userApplicationService.findAll());
     }
 
 
     @GetMapping("/paged")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<Page<DisplayUserPageableDto>> findAll(
             @ModelAttribute UserFilterDto userFilterDto
     ) {
@@ -83,17 +87,20 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<DisplayUserDto> findById(@PathVariable Long id) {
         return ResponseEntity.ok(userApplicationService.findById(id));
 
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<DisplayUserDto> deleteById(@PathVariable Long id) {
         return ResponseEntity.ok(userApplicationService.deleteById(id));
     }
 
     @DeleteMapping("/bulk")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<Void> deleteBulk(@RequestBody List<Long> ids) {
         userApplicationService.deleteAllById(ids);
         return ResponseEntity.noContent().build();
@@ -101,6 +108,7 @@ public class UserController {
 
 
     @PatchMapping("/{id}/role")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<DisplayUserDto> changeRole(
             @PathVariable Long id,
             @RequestParam Role role
@@ -109,6 +117,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}/lock")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<DisplayUserDto> lock(
             @PathVariable Long id,
             @RequestParam
@@ -119,11 +128,13 @@ public class UserController {
     }
 
     @PatchMapping("/{id}/unlock")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<DisplayUserDto> unlock(@PathVariable Long id) {
         return ResponseEntity.ok(userApplicationService.unlock(id));
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<DisplayUserDto> adminUpdate(
             @PathVariable Long id,
             @Valid @RequestBody AdminUpdateUserDto adminUpdateUserDto

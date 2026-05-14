@@ -7,6 +7,7 @@ import finki.ukim.backend.request_management.model.dto.filter.RequestFilterDto;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/reports")
 @AllArgsConstructor
+@PreAuthorize("isAuthenticated()")
 public class RequestReportController {
     private final RequestReportService requestReportService;
 

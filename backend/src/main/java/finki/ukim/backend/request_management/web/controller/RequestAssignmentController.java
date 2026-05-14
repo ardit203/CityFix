@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/requests/{requestId}/assignments")
 @AllArgsConstructor
+@PreAuthorize("isAuthenticated()")
 public class RequestAssignmentController {
     private final RequestAssignmentApplicationService requestAssignmentApplicationService;
 
@@ -47,6 +49,7 @@ public class RequestAssignmentController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'MANAGER')")
     public ResponseEntity<DisplayRequestAssignmentDto> assignEmployee(
             @PathVariable Long requestId,
             @AuthenticationPrincipal User user,
@@ -70,6 +73,7 @@ public class RequestAssignmentController {
 
 
     @DeleteMapping("/{assignmentId}")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'MANAGER')")
     public ResponseEntity<Void> removeAssignment(
             @PathVariable Long requestId,
             @AuthenticationPrincipal User user,
@@ -80,6 +84,7 @@ public class RequestAssignmentController {
     }
 
     @DeleteMapping("/bulk")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'MANAGER')")
     public ResponseEntity<Void> removeMultipleAssignments(
             @PathVariable Long requestId,
             @AuthenticationPrincipal User user,
@@ -90,6 +95,7 @@ public class RequestAssignmentController {
     }
 
     @DeleteMapping
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'MANAGER')")
     public ResponseEntity<Void> removeAllAssignments(
             @PathVariable Long requestId,
             @AuthenticationPrincipal User user

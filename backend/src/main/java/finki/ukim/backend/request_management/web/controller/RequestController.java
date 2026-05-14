@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/requests")
 @AllArgsConstructor
+@PreAuthorize("isAuthenticated()")
 public class RequestController {
     private final RequestApplicationService requestApplicationService;
     private final RequestExportService requestExportService;
@@ -80,6 +82,7 @@ public class RequestController {
     }
 
     @PatchMapping("/{id}/cancel")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'CITIZEN')")
     public ResponseEntity<?> cancel(
             @PathVariable Long id,
             @AuthenticationPrincipal User currentUser
@@ -88,6 +91,7 @@ public class RequestController {
     }
 
     @PatchMapping("/{id}/status")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'MANAGER', 'EMPLOYEE')")
     public ResponseEntity<DisplayRequestDto> changeStatus(
             @PathVariable Long id,
             @AuthenticationPrincipal User currentUser,
@@ -99,6 +103,7 @@ public class RequestController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<Void> deleteById(
             @PathVariable Long id
     ) {
@@ -107,6 +112,7 @@ public class RequestController {
     }
 
     @DeleteMapping("/bulk")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     public ResponseEntity<Void> deleteBulk(
             @RequestBody List<Long> ids
     ) {

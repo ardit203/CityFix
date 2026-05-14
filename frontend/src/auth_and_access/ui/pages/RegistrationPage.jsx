@@ -136,6 +136,9 @@ const RegisterPage = () => {
                                         value={formData.dateOfBirth} onChange={handleChange}
                                         InputLabelProps={{ shrink: true }}
                                         fullWidth
+                                        slotProps={{
+                                            inputLabel: { shrink: true }
+                                        }}
                                     />
                                     <TextField
                                         select label="Gender" name="gender"
