@@ -37,8 +37,7 @@ public class InitializerDev {
     public void init() {
         log.info("========== DOCKER USER INITIALIZER STARTED ==========");
 
-        createUser("ardit", "ardit", "arditselmani203@gmail.com", Role.ROLE_ADMINISTRATOR, "Ardit", "Selmani");
-        createUser("admin", "admin", "admin@cityfix.com", Role.ROLE_ADMINISTRATOR, "Admin", "Admin");
+        createUser("admin", "admin", "arditselmani203@gmail.com", Role.ROLE_ADMINISTRATOR, "Admin", "Admin");
         createUser("manager", "manager", "manager@cityfix.com", Role.ROLE_MANAGER, "Manager", "Manager");
         createUser("employee", "employee", "employee@cityfix.com", Role.ROLE_EMPLOYEE, "Employee", "Employee");
         createUser("citizen", "citizen", "citizen@cityfix.com", Role.ROLE_CITIZEN, "Citizen", "Citizen");

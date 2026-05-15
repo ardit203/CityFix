@@ -41,8 +41,8 @@ public interface RequestLogRepository extends JpaRepository<RequestLog, Long> {
                     or lower(coalesce(l.newValue, '')) like concat('%', :text, '%')
                     or lower(coalesce(l.note, '')) like concat('%', :text, '%')
                   )
-              and (:createdFrom is null or l.createdAt >= :createdFrom)
-              and (:createdTo is null or l.createdAt <= :createdTo)
+              and (cast(:createdFrom as timestamp) is null or l.createdAt >= :createdFrom)
+              and (cast(:createdTo as timestamp) is null or l.createdAt <= :createdTo)
             """)
     Page<RequestLogPageableProjection> findFiltered(
             @Param("id") Long id,

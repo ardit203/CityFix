@@ -130,8 +130,8 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
                 or lower(r.description) like concat('%', :text, '%')
                 or lower(r.summary) like concat('%', :text, '%')
               )
-          and (:submittedFrom is null or r.createdAt >= :submittedFrom)
-          and (:submittedTo is null or r.createdAt <= :submittedTo)
+          and (cast(:submittedFrom as timestamp) is null or r.createdAt >= :submittedFrom)
+          and (cast(:submittedTo as timestamp) is null or r.createdAt <= :submittedTo)
         """)
     Page<RequestPageableProjection> findFiltered(
             @Param("id") Long id,
@@ -152,27 +152,27 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
 
     @Query("""
-            select count(distinct r.id)
-            from Request r
-            left join r.municipality m
-            left join r.category c
-            left join r.department d
-            where (:citizenId is null or r.user.id = :citizenId)
-              and (:departmentId is null or d.id = :departmentId)
-              and (:municipalityId is null or m.id = :municipalityId)
-              and (:categoryId is null or c.id = :categoryId)
-              and (:status is null or r.status = :status)
-              and (:routingStatus is null or r.routingStatus = :routingStatus)
-              and (:priority is null or r.priority = :priority)
-              and (
-                    :text = ''
-                    or lower(r.title) like concat('%', :text, '%')
-                    or lower(r.description) like concat('%', :text, '%')
-                    or lower(r.summary) like concat('%', :text, '%')
-                  )
-              and (:submittedFrom is null or r.createdAt >= :submittedFrom)
-              and (:submittedTo is null or r.createdAt <= :submittedTo)
-            """)
+        select count(distinct r.id)
+        from Request r
+        left join r.municipality m
+        left join r.category c
+        left join r.department d
+        where (:citizenId is null or r.user.id = :citizenId)
+          and (:departmentId is null or d.id = :departmentId)
+          and (:municipalityId is null or m.id = :municipalityId)
+          and (:categoryId is null or c.id = :categoryId)
+          and (:status is null or r.status = :status)
+          and (:routingStatus is null or r.routingStatus = :routingStatus)
+          and (:priority is null or r.priority = :priority)
+          and (
+                :text = ''
+                or lower(r.title) like concat('%', :text, '%')
+                or lower(r.description) like concat('%', :text, '%')
+                or lower(r.summary) like concat('%', :text, '%')
+              )
+          and r.createdAt >= :submittedFrom
+          and r.createdAt <= :submittedTo
+        """)
     Long countFiltered(
             @Param("citizenId") Long citizenId,
             @Param("departmentId") Long departmentId,
@@ -187,32 +187,32 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     );
 
     @Query("""
-            select count(distinct r.id)
-            from Request r
-            left join r.municipality m
-            left join r.category c
-            left join r.department d
-            where (:citizenId is null or r.user.id = :citizenId)
-              and (:departmentId is null or d.id = :departmentId)
-              and (:municipalityId is null or m.id = :municipalityId)
-              and (:categoryId is null or c.id = :categoryId)
-              and (:status is null or r.status = :status)
-              and (:routingStatus is null or r.routingStatus = :routingStatus)
-              and (:priority is null or r.priority = :priority)
-              and (
-                    :text = ''
-                    or lower(r.title) like concat('%', :text, '%')
-                    or lower(r.description) like concat('%', :text, '%')
-                    or lower(r.summary) like concat('%', :text, '%')
-                  )
-              and (:submittedFrom is null or r.createdAt >= :submittedFrom)
-              and (:submittedTo is null or r.createdAt <= :submittedTo)
-              and exists (
-                    select a.id
-                    from RequestAssignment a
-                    where a.request.id = r.id
-                  )
-            """)
+        select count(distinct r.id)
+        from Request r
+        left join r.municipality m
+        left join r.category c
+        left join r.department d
+        where (:citizenId is null or r.user.id = :citizenId)
+          and (:departmentId is null or d.id = :departmentId)
+          and (:municipalityId is null or m.id = :municipalityId)
+          and (:categoryId is null or c.id = :categoryId)
+          and (:status is null or r.status = :status)
+          and (:routingStatus is null or r.routingStatus = :routingStatus)
+          and (:priority is null or r.priority = :priority)
+          and (
+                :text = ''
+                or lower(r.title) like concat('%', :text, '%')
+                or lower(r.description) like concat('%', :text, '%')
+                or lower(r.summary) like concat('%', :text, '%')
+              )
+          and r.createdAt >= :submittedFrom
+          and r.createdAt <= :submittedTo
+          and exists (
+                select a.id
+                from RequestAssignment a
+                where a.request.id = r.id
+              )
+        """)
     Long countAssignedFiltered(
             @Param("citizenId") Long citizenId,
             @Param("departmentId") Long departmentId,
@@ -227,28 +227,28 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     );
 
     @Query("""
-            select r.status, count(distinct r.id)
-            from Request r
-            left join r.municipality m
-            left join r.category c
-            left join r.department d
-            where (:citizenId is null or r.user.id = :citizenId)
-              and (:departmentId is null or d.id = :departmentId)
-              and (:municipalityId is null or m.id = :municipalityId)
-              and (:categoryId is null or c.id = :categoryId)
-              and (:status is null or r.status = :status)
-              and (:routingStatus is null or r.routingStatus = :routingStatus)
-              and (:priority is null or r.priority = :priority)
-              and (
-                    :text = ''
-                    or lower(r.title) like concat('%', :text, '%')
-                    or lower(r.description) like concat('%', :text, '%')
-                    or lower(r.summary) like concat('%', :text, '%')
-                  )
-              and (:submittedFrom is null or r.createdAt >= :submittedFrom)
-              and (:submittedTo is null or r.createdAt <= :submittedTo)
-            group by r.status
-            """)
+        select r.status, count(distinct r.id)
+        from Request r
+        left join r.municipality m
+        left join r.category c
+        left join r.department d
+        where (:citizenId is null or r.user.id = :citizenId)
+          and (:departmentId is null or d.id = :departmentId)
+          and (:municipalityId is null or m.id = :municipalityId)
+          and (:categoryId is null or c.id = :categoryId)
+          and (:status is null or r.status = :status)
+          and (:routingStatus is null or r.routingStatus = :routingStatus)
+          and (:priority is null or r.priority = :priority)
+          and (
+                :text = ''
+                or lower(r.title) like concat('%', :text, '%')
+                or lower(r.description) like concat('%', :text, '%')
+                or lower(r.summary) like concat('%', :text, '%')
+              )
+          and r.createdAt >= :submittedFrom
+          and r.createdAt <= :submittedTo
+        group by r.status
+        """)
     List<Object[]> countByStatus(
             @Param("citizenId") Long citizenId,
             @Param("departmentId") Long departmentId,
@@ -281,8 +281,8 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
                     or lower(r.description) like concat('%', :text, '%')
                     or lower(r.summary) like concat('%', :text, '%')
                   )
-              and (:submittedFrom is null or r.createdAt >= :submittedFrom)
-              and (:submittedTo is null or r.createdAt <= :submittedTo)
+              and r.createdAt >= :submittedFrom
+              and r.createdAt <= :submittedTo
             group by r.priority
             """)
     List<Object[]> countByPriority(
@@ -299,28 +299,28 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     );
 
     @Query("""
-            select r.routingStatus, count(distinct r.id)
-            from Request r
-            left join r.municipality m
-            left join r.category c
-            left join r.department d
-            where (:citizenId is null or r.user.id = :citizenId)
-              and (:departmentId is null or d.id = :departmentId)
-              and (:municipalityId is null or m.id = :municipalityId)
-              and (:categoryId is null or c.id = :categoryId)
-              and (:status is null or r.status = :status)
-              and (:routingStatus is null or r.routingStatus = :routingStatus)
-              and (:priority is null or r.priority = :priority)
-              and (
-                    :text = ''
-                    or lower(r.title) like concat('%', :text, '%')
-                    or lower(r.description) like concat('%', :text, '%')
-                    or lower(r.summary) like concat('%', :text, '%')
-                  )
-              and (:submittedFrom is null or r.createdAt >= :submittedFrom)
-              and (:submittedTo is null or r.createdAt <= :submittedTo)
-            group by r.routingStatus
-            """)
+        select r.routingStatus, count(distinct r.id)
+        from Request r
+        left join r.municipality m
+        left join r.category c
+        left join r.department d
+        where (:citizenId is null or r.user.id = :citizenId)
+          and (:departmentId is null or d.id = :departmentId)
+          and (:municipalityId is null or m.id = :municipalityId)
+          and (:categoryId is null or c.id = :categoryId)
+          and (:status is null or r.status = :status)
+          and (:routingStatus is null or r.routingStatus = :routingStatus)
+          and (:priority is null or r.priority = :priority)
+          and (
+                :text = ''
+                or lower(r.title) like concat('%', :text, '%')
+                or lower(r.description) like concat('%', :text, '%')
+                or lower(r.summary) like concat('%', :text, '%')
+              )
+          and r.createdAt >= :submittedFrom
+          and r.createdAt <= :submittedTo
+        group by r.routingStatus
+        """)
     List<Object[]> countByRoutingStatus(
             @Param("citizenId") Long citizenId,
             @Param("departmentId") Long departmentId,
@@ -335,28 +335,28 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     );
 
     @Query("""
-            select coalesce(d.name, 'Unassigned'), count(distinct r.id)
-            from Request r
-            left join r.municipality m
-            left join r.category c
-            left join r.department d
-            where (:citizenId is null or r.user.id = :citizenId)
-              and (:departmentId is null or d.id = :departmentId)
-              and (:municipalityId is null or m.id = :municipalityId)
-              and (:categoryId is null or c.id = :categoryId)
-              and (:status is null or r.status = :status)
-              and (:routingStatus is null or r.routingStatus = :routingStatus)
-              and (:priority is null or r.priority = :priority)
-              and (
-                    :text = ''
-                    or lower(r.title) like concat('%', :text, '%')
-                    or lower(r.description) like concat('%', :text, '%')
-                    or lower(r.summary) like concat('%', :text, '%')
-                  )
-              and (:submittedFrom is null or r.createdAt >= :submittedFrom)
-              and (:submittedTo is null or r.createdAt <= :submittedTo)
-            group by d.name
-            """)
+        select coalesce(d.name, 'Unassigned'), count(distinct r.id)
+        from Request r
+        left join r.municipality m
+        left join r.category c
+        left join r.department d
+        where (:citizenId is null or r.user.id = :citizenId)
+          and (:departmentId is null or d.id = :departmentId)
+          and (:municipalityId is null or m.id = :municipalityId)
+          and (:categoryId is null or c.id = :categoryId)
+          and (:status is null or r.status = :status)
+          and (:routingStatus is null or r.routingStatus = :routingStatus)
+          and (:priority is null or r.priority = :priority)
+          and (
+                :text = ''
+                or lower(r.title) like concat('%', :text, '%')
+                or lower(r.description) like concat('%', :text, '%')
+                or lower(r.summary) like concat('%', :text, '%')
+              )
+          and r.createdAt >= :submittedFrom
+          and r.createdAt <= :submittedTo
+        group by d.name
+        """)
     List<Object[]> countByDepartment(
             @Param("citizenId") Long citizenId,
             @Param("departmentId") Long departmentId,
@@ -371,28 +371,28 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     );
 
     @Query("""
-            select coalesce(m.code, 'Unassigned'), count(distinct r.id)
-            from Request r
-            left join r.municipality m
-            left join r.category c
-            left join r.department d
-            where (:citizenId is null or r.user.id = :citizenId)
-              and (:departmentId is null or d.id = :departmentId)
-              and (:municipalityId is null or m.id = :municipalityId)
-              and (:categoryId is null or c.id = :categoryId)
-              and (:status is null or r.status = :status)
-              and (:routingStatus is null or r.routingStatus = :routingStatus)
-              and (:priority is null or r.priority = :priority)
-              and (
-                    :text = ''
-                    or lower(r.title) like concat('%', :text, '%')
-                    or lower(r.description) like concat('%', :text, '%')
-                    or lower(r.summary) like concat('%', :text, '%')
-                  )
-              and (:submittedFrom is null or r.createdAt >= :submittedFrom)
-              and (:submittedTo is null or r.createdAt <= :submittedTo)
-            group by m.code
-            """)
+        select coalesce(m.code, 'Unassigned'), count(distinct r.id)
+        from Request r
+        left join r.municipality m
+        left join r.category c
+        left join r.department d
+        where (:citizenId is null or r.user.id = :citizenId)
+          and (:departmentId is null or d.id = :departmentId)
+          and (:municipalityId is null or m.id = :municipalityId)
+          and (:categoryId is null or c.id = :categoryId)
+          and (:status is null or r.status = :status)
+          and (:routingStatus is null or r.routingStatus = :routingStatus)
+          and (:priority is null or r.priority = :priority)
+          and (
+                :text = ''
+                or lower(r.title) like concat('%', :text, '%')
+                or lower(r.description) like concat('%', :text, '%')
+                or lower(r.summary) like concat('%', :text, '%')
+              )
+          and r.createdAt >= :submittedFrom
+          and r.createdAt <= :submittedTo
+        group by m.code
+        """)
     List<Object[]> countByMunicipality(
             @Param("citizenId") Long citizenId,
             @Param("departmentId") Long departmentId,
@@ -407,28 +407,28 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
     );
 
     @Query("""
-            select coalesce(c.name, 'Unassigned'), count(distinct r.id)
-            from Request r
-            left join r.municipality m
-            left join r.category c
-            left join r.department d
-            where (:citizenId is null or r.user.id = :citizenId)
-              and (:departmentId is null or d.id = :departmentId)
-              and (:municipalityId is null or m.id = :municipalityId)
-              and (:categoryId is null or c.id = :categoryId)
-              and (:status is null or r.status = :status)
-              and (:routingStatus is null or r.routingStatus = :routingStatus)
-              and (:priority is null or r.priority = :priority)
-              and (
-                    :text = ''
-                    or lower(r.title) like concat('%', :text, '%')
-                    or lower(r.description) like concat('%', :text, '%')
-                    or lower(r.summary) like concat('%', :text, '%')
-                  )
-              and (:submittedFrom is null or r.createdAt >= :submittedFrom)
-              and (:submittedTo is null or r.createdAt <= :submittedTo)
-            group by c.name
-            """)
+        select coalesce(c.name, 'Unassigned'), count(distinct r.id)
+        from Request r
+        left join r.municipality m
+        left join r.category c
+        left join r.department d
+        where (:citizenId is null or r.user.id = :citizenId)
+          and (:departmentId is null or d.id = :departmentId)
+          and (:municipalityId is null or m.id = :municipalityId)
+          and (:categoryId is null or c.id = :categoryId)
+          and (:status is null or r.status = :status)
+          and (:routingStatus is null or r.routingStatus = :routingStatus)
+          and (:priority is null or r.priority = :priority)
+          and (
+                :text = ''
+                or lower(r.title) like concat('%', :text, '%')
+                or lower(r.description) like concat('%', :text, '%')
+                or lower(r.summary) like concat('%', :text, '%')
+              )
+          and r.createdAt >= :submittedFrom
+          and r.createdAt <= :submittedTo
+        group by c.name
+        """)
     List<Object[]> countByCategory(
             @Param("citizenId") Long citizenId,
             @Param("departmentId") Long departmentId,

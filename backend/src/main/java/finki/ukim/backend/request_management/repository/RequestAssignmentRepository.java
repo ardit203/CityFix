@@ -79,8 +79,8 @@ public interface RequestAssignmentRepository extends JpaRepository<RequestAssign
               and (:departmentId is null or r.department.id = :departmentId)
               and (:municipalityId is null or r.municipality.id = :municipalityId)
               and (:requestStatus is null or r.status = :requestStatus)
-              and (:assignedFrom is null or a.assignedAt >= :assignedFrom)
-              and (:assignedTo is null or a.assignedAt <= :assignedTo)
+              and (cast(:assignedFrom as timestamp) is null or a.assignedAt >= :assignedFrom)
+              and (cast(:assignedTo as timestamp) is null or a.assignedAt <= :assignedTo)
             """)
     Page<RequestAssignmentPageableProjection> findFiltered(
             @Param("requestId") Long requestId,

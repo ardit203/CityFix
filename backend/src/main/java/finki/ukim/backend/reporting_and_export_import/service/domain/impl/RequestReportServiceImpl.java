@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -33,6 +34,10 @@ public class RequestReportServiceImpl implements RequestReportService {
                 filter.getAssignedEmployeeUserId()
         );
 
+        String text = normalizeText(filter.getText());
+        LocalDateTime submittedFrom = normalizeSubmittedFrom(filter.getSubmittedFrom());
+        LocalDateTime submittedTo = normalizeSubmittedTo(filter.getSubmittedTo());
+
         Long totalRequests = requestRepository.countFiltered(
                 scope.requestedUserId(),
                 scope.departmentId(),
@@ -41,9 +46,9 @@ public class RequestReportServiceImpl implements RequestReportService {
                 filter.getStatus(),
                 filter.getRoutingStatus(),
                 filter.getPriority(),
-                filter.getText(),
-                filter.getSubmittedFrom(),
-                filter.getSubmittedTo()
+                text,
+                submittedFrom,
+                submittedTo
         );
 
         Long assignedRequests = requestRepository.countAssignedFiltered(
@@ -54,46 +59,119 @@ public class RequestReportServiceImpl implements RequestReportService {
                 filter.getStatus(),
                 filter.getRoutingStatus(),
                 filter.getPriority(),
-                filter.getText(),
-                filter.getSubmittedFrom(),
-                filter.getSubmittedTo()
+                text,
+                submittedFrom,
+                submittedTo
         );
+
+        totalRequests = safeCount(totalRequests);
+        assignedRequests = safeCount(assignedRequests);
 
         return new RequestReportSummaryDto(
                 totalRequests,
                 totalRequests - assignedRequests,
                 assignedRequests,
                 mapCounts(requestRepository.countByStatus(
-                        scope.requestedUserId(), scope.departmentId(), scope.municipalityId(),
-                        filter.getCategoryId(), filter.getStatus(), filter.getRoutingStatus(), filter.getPriority(),
-                        filter.getText(), filter.getSubmittedFrom(), filter.getSubmittedTo()
+                        scope.requestedUserId(),
+                        scope.departmentId(),
+                        scope.municipalityId(),
+                        filter.getCategoryId(),
+                        filter.getStatus(),
+                        filter.getRoutingStatus(),
+                        filter.getPriority(),
+                        text,
+                        submittedFrom,
+                        submittedTo
                 )),
                 mapCounts(requestRepository.countByPriority(
-                        scope.requestedUserId(), scope.departmentId(), scope.municipalityId(),
-                        filter.getCategoryId(), filter.getStatus(), filter.getRoutingStatus(), filter.getPriority(),
-                        filter.getText(), filter.getSubmittedFrom(), filter.getSubmittedTo()
+                        scope.requestedUserId(),
+                        scope.departmentId(),
+                        scope.municipalityId(),
+                        filter.getCategoryId(),
+                        filter.getStatus(),
+                        filter.getRoutingStatus(),
+                        filter.getPriority(),
+                        text,
+                        submittedFrom,
+                        submittedTo
                 )),
                 mapCounts(requestRepository.countByRoutingStatus(
-                        scope.requestedUserId(), scope.departmentId(), scope.municipalityId(),
-                        filter.getCategoryId(), filter.getStatus(), filter.getRoutingStatus(), filter.getPriority(),
-                        filter.getText(), filter.getSubmittedFrom(), filter.getSubmittedTo()
+                        scope.requestedUserId(),
+                        scope.departmentId(),
+                        scope.municipalityId(),
+                        filter.getCategoryId(),
+                        filter.getStatus(),
+                        filter.getRoutingStatus(),
+                        filter.getPriority(),
+                        text,
+                        submittedFrom,
+                        submittedTo
                 )),
                 mapCounts(requestRepository.countByDepartment(
-                        scope.requestedUserId(), scope.departmentId(), scope.municipalityId(),
-                        filter.getCategoryId(), filter.getStatus(), filter.getRoutingStatus(), filter.getPriority(),
-                        filter.getText(), filter.getSubmittedFrom(), filter.getSubmittedTo()
+                        scope.requestedUserId(),
+                        scope.departmentId(),
+                        scope.municipalityId(),
+                        filter.getCategoryId(),
+                        filter.getStatus(),
+                        filter.getRoutingStatus(),
+                        filter.getPriority(),
+                        text,
+                        submittedFrom,
+                        submittedTo
                 )),
                 mapCounts(requestRepository.countByMunicipality(
-                        scope.requestedUserId(), scope.departmentId(), scope.municipalityId(),
-                        filter.getCategoryId(), filter.getStatus(), filter.getRoutingStatus(), filter.getPriority(),
-                        filter.getText(), filter.getSubmittedFrom(), filter.getSubmittedTo()
+                        scope.requestedUserId(),
+                        scope.departmentId(),
+                        scope.municipalityId(),
+                        filter.getCategoryId(),
+                        filter.getStatus(),
+                        filter.getRoutingStatus(),
+                        filter.getPriority(),
+                        text,
+                        submittedFrom,
+                        submittedTo
                 )),
                 mapCounts(requestRepository.countByCategory(
-                        scope.requestedUserId(), scope.departmentId(), scope.municipalityId(),
-                        filter.getCategoryId(), filter.getStatus(), filter.getRoutingStatus(), filter.getPriority(),
-                        filter.getText(), filter.getSubmittedFrom(), filter.getSubmittedTo()
+                        scope.requestedUserId(),
+                        scope.departmentId(),
+                        scope.municipalityId(),
+                        filter.getCategoryId(),
+                        filter.getStatus(),
+                        filter.getRoutingStatus(),
+                        filter.getPriority(),
+                        text,
+                        submittedFrom,
+                        submittedTo
                 ))
         );
+    }
+
+    private String normalizeText(String text) {
+        if (text == null || text.isBlank()) {
+            return "";
+        }
+
+        return text.toLowerCase();
+    }
+
+    private LocalDateTime normalizeSubmittedFrom(LocalDateTime submittedFrom) {
+        if (submittedFrom == null) {
+            return LocalDateTime.of(1900, 1, 1, 0, 0);
+        }
+
+        return submittedFrom;
+    }
+
+    private LocalDateTime normalizeSubmittedTo(LocalDateTime submittedTo) {
+        if (submittedTo == null) {
+            return LocalDateTime.of(9999, 12, 31, 23, 59, 59);
+        }
+
+        return submittedTo;
+    }
+
+    private Long safeCount(Long count) {
+        return count == null ? 0L : count;
     }
 
     private List<ReportCountDto> mapCounts(List<Object[]> rows) {
