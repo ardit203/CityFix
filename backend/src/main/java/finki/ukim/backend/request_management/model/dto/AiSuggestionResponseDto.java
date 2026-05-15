@@ -22,7 +22,7 @@ public record AiSuggestionResponseDto(
         return new AiSuggestionResponseDto(
                 aiSuggestion.getId(),
                 aiSuggestion.getRequest().getId(),
-                aiSuggestion.getCategory().getId(),
+                aiSuggestion.getCategory() == null ? null : aiSuggestion.getCategory().getId(),
                 aiSuggestion.getPriority(),
                 aiSuggestion.getAiSummary(),
                 aiSuggestion.getSuggestionStatus()

@@ -53,6 +53,7 @@ public class AiSuggestionServiceImpl implements AiSuggestionService {
     public void suggest(Request request) {
         try {
             log.info("Starting async AI suggestion generation for Request ID: {}", request.getId());
+//            throw new RuntimeException("Testing AI suggestion failure");
 
             // 2. Fetch available categories
             List<Category> categories = categoryService.findAll();
@@ -78,16 +79,16 @@ public class AiSuggestionServiceImpl implements AiSuggestionService {
                 1. A classification into exactly ONE of the following existing categories: [%s]
                 2. A priority level (LOW, MEDIUM, HIGH)
                 3. A short summary of the issue (max 3 sentences)
-                
+
                 If images are provided, use them as additional visual context to improve your analysis.
-                
+
                 You must return your response in JSON format exactly like this:
                 {
                    "category_name": "The chosen category name",
                    "priority": "HIGH",
                    "ai_summary": "Summary text here"
                 }
-                
+
                 If you are unsure or none of the categories fit perfectly, choose the one that fits best.
                 """, categoryNames);
 
@@ -155,8 +156,8 @@ public class AiSuggestionServiceImpl implements AiSuggestionService {
             suggestion.setRequest(request);
             suggestion.setSuggestionStatus(SuggestionStatus.NOT_GENERATED);
             suggestion.setAiSummary("");
-
             aiSuggestionRepository.save(suggestion);
+
             requestLogService.create(
                     request,
                     request.getUser(),

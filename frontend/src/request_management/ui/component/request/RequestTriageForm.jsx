@@ -77,6 +77,11 @@ const RequestTriageForm = ({ requestId, onTriageComplete }) => {
         return <Alert severity="warning">No pending AI suggestion found for this request.</Alert>;
     }
 
+    console.log(suggestion)
+    if (suggestion.status === 'NOT_GENERATED') {
+        return <Alert severity="warning">AI could not generate a suggestion for this request. Please review the request manually and choose the category and priority yourself.</Alert>;
+    }
+
     if (suggestion.status !== 'PENDING_REVIEW') {
          return <Alert severity="info">This AI suggestion has already been {suggestion.status}.</Alert>;
     }

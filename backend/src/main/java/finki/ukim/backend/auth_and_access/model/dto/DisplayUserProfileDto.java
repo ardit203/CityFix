@@ -22,7 +22,7 @@ public record DisplayUserProfileDto(
                 userProfile.getDateOfBirth(),
                 userProfile.getGender(),
                 userProfile.getPhoneNumber(),
-                "http://localhost:8080/"+ userProfile.getProfilePicture().getFileUrl()
+                userProfile.getProfilePicture() == null ? null : "http://localhost:8080/"+ userProfile.getProfilePicture().getFileUrl()
         );
     }
 }

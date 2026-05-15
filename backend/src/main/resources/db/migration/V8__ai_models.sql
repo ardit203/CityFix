@@ -2,7 +2,7 @@ CREATE TABLE ai_suggestions (
                                 id BIGSERIAL PRIMARY KEY,
 
                                 request_id BIGINT NOT NULL,
-                                category_id BIGINT NOT NULL,
+                                category_id BIGINT,
 
                                 priority VARCHAR(50),
                                 ai_summary VARCHAR(2000),

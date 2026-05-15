@@ -24,10 +24,11 @@ public class AiSuggestion extends BaseAuditableEntity {
     private Request request;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id", nullable = true)
     private Category category;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
     private Priority priority;
 
     @Column(length = 2000)

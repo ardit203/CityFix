@@ -182,10 +182,10 @@ const RequestEditPageContent = () => {
         );
     }
 
-    const isAiSuggestionPending = (aiSuggestion?.status === "PENDING_REVIEW" || aiSuggestion?.status === "NOT_GENERATED");
+    const isAiSuggestionPending = (aiSuggestion?.status === "PENDING_REVIEW");
     const disableManualEditing = isExecuting || isAiSuggestionPending || !isAdminOrManager;
 
-    console.log(disableManualEditing, isAdminOrManager)
+    console.log(disableManualEditing, isAdminOrManager, isAiSuggestionPending)
 
 
     return (
@@ -217,7 +217,7 @@ const RequestEditPageContent = () => {
                         </Stack>
 
                         <Alert severity="info">
-                            Use this page for staff decisions: triage, routing, and status changes. Request text and citizen-submitted details stay read-only on the details page.
+                            Staff decisions: triage, routing, and status changes. Request text and citizen-submitted details stay read-only on the details page.
                         </Alert>
                     </Stack>
                 </Paper>
