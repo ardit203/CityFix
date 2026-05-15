@@ -24,7 +24,7 @@ create table categories
 create table staff
 (
     id              bigserial primary key,
-    user_id         bigserial not null,
+    user_id         bigserial not null unique,
     department_id   bigserial not null,
     municipality_id bigserial not null,
     foreign key (user_id) references users (id) on delete cascade,
@@ -32,7 +32,7 @@ create table staff
     foreign key (municipality_id) references municipalities (id) on delete cascade
 );
 
--- create index idx_categories_department_id on categories (department_id);
--- create index idx_staff_user_id on staff (user_id);
--- create index idx_staff_department_id on staff (department_id);
--- create index idx_staff_municipality_id on staff (municipality_id);
+create index idx_categories_department_id on categories (department_id);
+create index idx_staff_user_id on staff (user_id);
+create index idx_staff_department_id on staff (department_id);
+create index idx_staff_municipality_id on staff (municipality_id);

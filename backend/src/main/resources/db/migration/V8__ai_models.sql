@@ -20,11 +20,11 @@ CREATE TABLE ai_suggestions (
                                         REFERENCES categories(id)
 );
 
--- CREATE INDEX idx_ai_suggestions_request_id
---     ON ai_suggestions(request_id);
---
--- CREATE INDEX idx_ai_suggestions_category_id
---     ON ai_suggestions(category_id);
---
--- CREATE INDEX idx_ai_suggestions_status
---     ON ai_suggestions(suggestion_status);
+CREATE INDEX idx_ai_suggestions_request_id
+    ON ai_suggestions(request_id);
+
+CREATE INDEX idx_ai_suggestions_category_id
+    ON ai_suggestions(category_id);
+
+CREATE INDEX idx_ai_suggestions_status
+    ON ai_suggestions(suggestion_status);
