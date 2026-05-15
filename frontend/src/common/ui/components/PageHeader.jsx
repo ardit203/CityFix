@@ -27,7 +27,7 @@ const PageHeader = ({title, subtitle}) => (
         }}
     >
         <Box sx={{pl: {xs: 1, md: 1.5}}}>
-            <Typography variant="h4" sx={{fontSize: {xs: "1.75rem", md: "2.2rem"}, mb: 0.65}}>
+            <Typography variant="h5" sx={{fontSize: {xs: "1.4rem", md: "1.75rem"}, mb: 0.65}}>
                 {title}
             </Typography>
             {subtitle && (

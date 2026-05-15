@@ -34,17 +34,29 @@ const FilterBar = ({
             sx={{
                 display: "flex",
                 flexDirection: "column",
-                gap: 1.5,
-                p: {xs: 1.5, md: 2},
+                gap: 1.1,
+                p: 1.75,
                 position: {lg: "sticky"},
-                top: {lg: 18},
-                maxHeight: {lg: "calc(100svh - 36px)"},
+                top: {lg: 14},
+                maxHeight: {lg: "calc(100svh - 28px)"},
                 overflowY: {lg: "auto"},
                 "& .MuiButton-root": {
-                    minHeight: 44
+                    minHeight: 38,
+                    borderRadius: 1.25,
+                    fontSize: "0.8rem",
+                    fontWeight: 750,
+                    py: 0.6
                 },
                 "& .MuiToggleButtonGroup-root": {
-                    height: 44
+                    height: 36
+                },
+                "& .MuiToggleButton-root": {
+                    minHeight: 36,
+                    py: 0,
+                    borderRadius: 1.25,
+                    "& svg": {
+                        fontSize: "1.08rem"
+                    }
                 },
                 "& .MuiTextField-root": {
                     width: "100%"
@@ -52,17 +64,48 @@ const FilterBar = ({
                 "& .MuiFormControl-root": {
                     width: "100%"
                 },
+                "& .MuiInputBase-root": {
+                    minHeight: 38,
+                    borderRadius: 1.25,
+                    fontSize: "0.84rem"
+                },
+                "& .MuiInputBase-input": {
+                    py: 0.9
+                },
+                "& .MuiSelect-select": {
+                    py: "8px !important"
+                },
+                "& .MuiInputLabel-root": {
+                    fontSize: "0.82rem"
+                },
+                "& .MuiInputLabel-sizeSmall:not(.MuiInputLabel-shrink)": {
+                    transform: "translate(14px, 8px) scale(1)"
+                },
                 "& .MuiButton-root:not(.MuiToggleButton-root)": {
                     width: "100%"
+                },
+                "& .MuiDivider-root": {
+                    borderColor: "rgba(23, 32, 51, 0.08)"
                 }
             }}
         >
             <Box>
-                <Typography variant="overline" color="text.secondary">
+                <Typography
+                    variant="overline"
+                    color="text.secondary"
+                    sx={{
+                        display: "block",
+                        fontSize: "0.64rem",
+                        fontWeight: 750,
+                        lineHeight: 1.15,
+                        letterSpacing: 0.4,
+                        opacity: 0.78
+                    }}
+                >
                     Filters
                 </Typography>
 
-                <Typography variant="h6" fontWeight={700}>
+                <Typography variant="subtitle1" fontWeight={800} sx={{fontSize: "1.05rem", lineHeight: 1.25, mt: 0.25}}>
                     Refine Results
                 </Typography>
             </Box>
@@ -71,7 +114,7 @@ const FilterBar = ({
 
             {hasActions && (
                 <>
-                    <Stack spacing={1}>
+                    <Stack spacing={0.75}>
                         {actions}
 
                         {viewMode && onViewChange && (
@@ -114,7 +157,7 @@ const FilterBar = ({
                 </>
             )}
 
-            <Stack spacing={1}>
+            <Stack spacing={0.65}>
                 <Button variant="contained" startIcon={<SearchIcon />} onClick={onSearch}>
                     Search
                 </Button>
@@ -126,7 +169,7 @@ const FilterBar = ({
 
             <Divider/>
 
-            <Stack spacing={1.5}>
+            <Stack spacing={1}>
                 {children}
             </Stack>
         </Paper>
