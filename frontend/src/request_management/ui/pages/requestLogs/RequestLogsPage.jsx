@@ -16,6 +16,7 @@ import {requestSortOptions} from "../../component/request/RequestConfig.jsx";
 import useRequestLogs from "../../../hooks/requestLogs/useRequestLogs.js";
 import RequestLogGrid from "../../component/requestLogs/RequestLogGrid.jsx";
 import {requestLogColumns} from "../../component/requestLogs/RequestConfig.jsx";
+import useAuth from "../../../../auth_and_access/hooks/auth/useAuth.js";
 
 const actionOptions = [
     "REQUEST_CREATED",
@@ -52,7 +53,9 @@ const RequestLogsPage = () => {
     const {requestId} = useParams();
     const navigate = useNavigate();
     const {requestLogs, loading, pagination, fetchRequestsLogsPaged} = useRequestLogs(requestId);
-    const [viewMode, setViewMode] = useState('table');
+    const {user} = useAuth();
+    const isCitizen = user?.roles?.some(role => ["ROLE_CITIZEN"].includes(role)) === true;
+    const [viewMode, setViewMode] = useState(!isCitizen ? 'table' : 'card');
 
     const {
         filters,

@@ -17,6 +17,7 @@ import {
     requestAssignmentSortOptions
 } from "../../component/requestAssignments/RequestAssignmentConfig.jsx";
 import {emptyRequestAssignmentFilter} from "../../../dtos/requestAssignmentDto.js";
+import RequireRole from "../../../../auth_and_access/ui/components/auth/RequireRole.jsx";
 
 const requestStatuses = [
     "SUBMITTED",
@@ -57,9 +58,12 @@ const RequestAssignmentsPage = () => {
                 onSearch={handleSearch}
                 onClear={handleClearFilters}
             >
-                <TextField label="Assignment ID" name="id" value={filters.id} onChange={handleFilterChange} size="small" />
-                <TextField label="Request ID" name="requestId" value={filters.requestId} onChange={handleFilterChange} size="small" />
-                <TextField label="Employee User ID" name="employeeId" value={filters.employeeId} onChange={handleFilterChange} size="small" />
+                <TextField label="Assignment ID" name="id" value={filters.id} onChange={handleFilterChange}
+                           size="small"/>
+                <TextField label="Request ID" name="requestId" value={filters.requestId} onChange={handleFilterChange}
+                           size="small"/>
+                <TextField label="Employee User ID" name="employeeId" value={filters.employeeId}
+                           onChange={handleFilterChange} size="small"/>
 
                 <FormControl size="small" sx={{minWidth: 150}}>
                     <InputLabel>Status</InputLabel>
@@ -80,54 +84,56 @@ const RequestAssignmentsPage = () => {
                     </Select>
                 </FormControl>
 
-                <FormControl size="small" sx={{minWidth: 160}}>
-                    <InputLabel>Department</InputLabel>
-                    <Select
-                        name="departmentId"
-                        value={filters.departmentId}
-                        label="Department"
-                        onChange={handleFilterChange}
-                        disabled={loadingDepartments}
-                    >
-                        <MenuItem value="">
-                            <em>All Departments</em>
-                        </MenuItem>
-                        {loadingDepartments ? (
-                            <MenuItem disabled value="loading">
-                                <CircularProgress size={20} sx={{mr: 2}} /> Loading...
+                <RequireRole allowedRoles={["ADMINISTRATOR", "CITIZEN"]}>
+                    <FormControl size="small" sx={{minWidth: 160}}>
+                        <InputLabel>Department</InputLabel>
+                        <Select
+                            name="departmentId"
+                            value={filters.departmentId}
+                            label="Department"
+                            onChange={handleFilterChange}
+                            disabled={loadingDepartments}
+                        >
+                            <MenuItem value="">
+                                <em>All Departments</em>
                             </MenuItem>
-                        ) : departments.map((department) => (
-                            <MenuItem key={department.id} value={department.id}>
-                                {department.name}
+                            {loadingDepartments ? (
+                                <MenuItem disabled value="loading">
+                                    <CircularProgress size={20} sx={{mr: 2}}/> Loading...
+                                </MenuItem>
+                            ) : departments.map((department) => (
+                                <MenuItem key={department.id} value={department.id}>
+                                    {department.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </RequireRole>
+                <RequireRole allowedRoles={["ADMINISTRATOR", "CITIZEN"]}>
+                    <FormControl size="small" sx={{minWidth: 160}}>
+                        <InputLabel>Municipality</InputLabel>
+                        <Select
+                            name="municipalityId"
+                            value={filters.municipalityId}
+                            label="Municipality"
+                            onChange={handleFilterChange}
+                            disabled={loadingMunicipalities}
+                        >
+                            <MenuItem value="">
+                                <em>All Municipalities</em>
                             </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-
-                <FormControl size="small" sx={{minWidth: 160}}>
-                    <InputLabel>Municipality</InputLabel>
-                    <Select
-                        name="municipalityId"
-                        value={filters.municipalityId}
-                        label="Municipality"
-                        onChange={handleFilterChange}
-                        disabled={loadingMunicipalities}
-                    >
-                        <MenuItem value="">
-                            <em>All Municipalities</em>
-                        </MenuItem>
-                        {loadingMunicipalities ? (
-                            <MenuItem disabled value="loading">
-                                <CircularProgress size={20} sx={{mr: 2}} /> Loading...
-                            </MenuItem>
-                        ) : municipalities.map((municipality) => (
-                            <MenuItem key={municipality.id} value={municipality.id}>
-                                {municipality.code || municipality.name}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-
+                            {loadingMunicipalities ? (
+                                <MenuItem disabled value="loading">
+                                    <CircularProgress size={20} sx={{mr: 2}}/> Loading...
+                                </MenuItem>
+                            ) : municipalities.map((municipality) => (
+                                <MenuItem key={municipality.id} value={municipality.id}>
+                                    {municipality.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </RequireRole>
                 <SortControls
                     sortByValue={filters.sortBy}
                     sortDirValue={filters.sortDir}
@@ -137,7 +143,7 @@ const RequestAssignmentsPage = () => {
             </FilterBar>
 
             <Box className="filtered-page-content">
-                <LoadingBar loading={loading} />
+                <LoadingBar loading={loading}/>
 
                 <PaginatedDataView
                     loading={loading}

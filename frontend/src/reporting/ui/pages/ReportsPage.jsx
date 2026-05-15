@@ -28,6 +28,7 @@ import useMunicipalities from "../../../administration/hooks/municipality/useMun
 import useCategories from "../../../administration/hooks/category/useCategories.js";
 import useRequestReportSummary from "../../hooks/useRequestReportSummary.js";
 import {emptyRequestFilter} from "../../../request_management/dtos/filterDto.js";
+import RequireRole from "../../../auth_and_access/ui/components/auth/RequireRole.jsx";
 
 const statuses = ["SUBMITTED", "IN_REVIEW", "ASSIGNED", "IN_PROGRESS", "RESOLVED", "REJECTED", "CANCELED"];
 const priorities = ["LOW", "MEDIUM", "HIGH"];
@@ -63,7 +64,8 @@ const CountList = ({title, rows, total}) => (
                                 <Typography variant="body2">{formatLabel(row.label)}</Typography>
                                 <Typography variant="body2" fontWeight={700}>{row.count}</Typography>
                             </Stack>
-                            <LinearProgress variant="determinate" value={percent} sx={{mt: 0.75, height: 8, borderRadius: 1}} />
+                            <LinearProgress variant="determinate" value={percent}
+                                            sx={{mt: 0.75, height: 8, borderRadius: 1}}/>
                         </Box>
                     );
                 })}
@@ -95,13 +97,14 @@ const ReportsPage = () => {
             </Box>
 
             <FilterBar onSearch={handleSearch} onClear={handleClearFilters}>
-                <TextField label="Search" name="text" value={filters.text} onChange={handleFilterChange} size="small" />
+                <TextField label="Search" name="text" value={filters.text} onChange={handleFilterChange} size="small"/>
 
                 <FormControl size="small" sx={{minWidth: 150}}>
                     <InputLabel>Status</InputLabel>
                     <Select name="status" value={filters.status} label="Status" onChange={handleFilterChange}>
                         <MenuItem value=""><em>All Statuses</em></MenuItem>
-                        {statuses.map((status) => <MenuItem key={status} value={status}>{formatLabel(status)}</MenuItem>)}
+                        {statuses.map((status) => <MenuItem key={status}
+                                                            value={status}>{formatLabel(status)}</MenuItem>)}
                     </Select>
                 </FormControl>
 
@@ -109,48 +112,61 @@ const ReportsPage = () => {
                     <InputLabel>Priority</InputLabel>
                     <Select name="priority" value={filters.priority} label="Priority" onChange={handleFilterChange}>
                         <MenuItem value=""><em>All Priorities</em></MenuItem>
-                        {priorities.map((priority) => <MenuItem key={priority} value={priority}>{formatLabel(priority)}</MenuItem>)}
+                        {priorities.map((priority) => <MenuItem key={priority}
+                                                                value={priority}>{formatLabel(priority)}</MenuItem>)}
                     </Select>
                 </FormControl>
 
                 <FormControl size="small" sx={{minWidth: 170}}>
                     <InputLabel>Routing</InputLabel>
-                    <Select name="routingStatus" value={filters.routingStatus} label="Routing" onChange={handleFilterChange}>
+                    <Select name="routingStatus" value={filters.routingStatus} label="Routing"
+                            onChange={handleFilterChange}>
                         <MenuItem value=""><em>All Routing</em></MenuItem>
-                        {routingStatuses.map((status) => <MenuItem key={status} value={status}>{formatLabel(status)}</MenuItem>)}
+                        {routingStatuses.map((status) => <MenuItem key={status}
+                                                                   value={status}>{formatLabel(status)}</MenuItem>)}
                     </Select>
                 </FormControl>
 
-                <FormControl size="small" sx={{minWidth: 160}}>
-                    <InputLabel>Department</InputLabel>
-                    <Select name="departmentId" value={filters.departmentId} label="Department" onChange={handleFilterChange} disabled={loadingDepartments}>
-                        <MenuItem value=""><em>All Departments</em></MenuItem>
-                        {loadingDepartments ? <MenuItem disabled value="loading"><CircularProgress size={18} sx={{mr: 1}} /> Loading...</MenuItem> :
-                            departments.map((item) => <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>)}
-                    </Select>
-                </FormControl>
-
-                <FormControl size="small" sx={{minWidth: 160}}>
-                    <InputLabel>Municipality</InputLabel>
-                    <Select name="municipalityId" value={filters.municipalityId} label="Municipality" onChange={handleFilterChange} disabled={loadingMunicipalities}>
-                        <MenuItem value=""><em>All Municipalities</em></MenuItem>
-                        {loadingMunicipalities ? <MenuItem disabled value="loading"><CircularProgress size={18} sx={{mr: 1}} /> Loading...</MenuItem> :
-                            municipalities.map((item) => <MenuItem key={item.id} value={item.id}>{item.code || item.name}</MenuItem>)}
-                    </Select>
-                </FormControl>
-
+                <RequireRole allowedRoles={["ADMINISTRATOR", "CITIZEN"]}>
+                    <FormControl size="small" sx={{minWidth: 160}}>
+                        <InputLabel>Department</InputLabel>
+                        <Select name="departmentId" value={filters.departmentId} label="Department"
+                                onChange={handleFilterChange} disabled={loadingDepartments}>
+                            <MenuItem value=""><em>All Departments</em></MenuItem>
+                            {loadingDepartments ? <MenuItem disabled value="loading"><CircularProgress size={18}
+                                                                                                       sx={{mr: 1}}/> Loading...</MenuItem> :
+                                departments.map((item) => <MenuItem key={item.id}
+                                                                    value={item.id}>{item.name}</MenuItem>)}
+                        </Select>
+                    </FormControl>
+                </RequireRole>
+                <RequireRole allowedRoles={["ADMINISTRATOR", "CITIZEN"]}>
+                    <FormControl size="small" sx={{minWidth: 160}}>
+                        <InputLabel>Municipality</InputLabel>
+                        <Select name="municipalityId" value={filters.municipalityId} label="Municipality"
+                                onChange={handleFilterChange} disabled={loadingMunicipalities}>
+                            <MenuItem value=""><em>All Municipalities</em></MenuItem>
+                            {loadingMunicipalities ?
+                                <MenuItem disabled value="loading"><CircularProgress size={18} sx={{mr: 1}}/> Loading...</MenuItem> :
+                                municipalities.map((item) => <MenuItem key={item.id}
+                                                                       value={item.id}>{item.name}</MenuItem>)}
+                        </Select>
+                    </FormControl>
+                </RequireRole>
                 <FormControl size="small" sx={{minWidth: 150}}>
                     <InputLabel>Category</InputLabel>
-                    <Select name="categoryId" value={filters.categoryId} label="Category" onChange={handleFilterChange} disabled={loadingCategories}>
+                    <Select name="categoryId" value={filters.categoryId} label="Category" onChange={handleFilterChange}
+                            disabled={loadingCategories}>
                         <MenuItem value=""><em>All Categories</em></MenuItem>
-                        {loadingCategories ? <MenuItem disabled value="loading"><CircularProgress size={18} sx={{mr: 1}} /> Loading...</MenuItem> :
+                        {loadingCategories ? <MenuItem disabled value="loading"><CircularProgress size={18}
+                                                                                                  sx={{mr: 1}}/> Loading...</MenuItem> :
                             categories.map((item) => <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>)}
                     </Select>
                 </FormControl>
             </FilterBar>
 
             <Box className="filtered-page-content">
-                <LoadingBar loading={loading} />
+                <LoadingBar loading={loading}/>
 
                 <Grid container spacing={2.5} className="report-metric-grid">
                     <Grid size={{xs: 12, md: 4}}>
@@ -158,7 +174,7 @@ const ReportsPage = () => {
                             label="Total Requests"
                             value={summary.totalRequests}
                             helper="All matched service requests"
-                            icon={<AssignmentTurnedInIcon />}
+                            icon={<AssignmentTurnedInIcon/>}
                         />
                     </Grid>
                     <Grid size={{xs: 12, md: 4}}>
@@ -166,7 +182,7 @@ const ReportsPage = () => {
                             label="Assigned Requests"
                             value={summary.assignedRequests}
                             helper="Currently owned by staff"
-                            icon={<GroupsIcon />}
+                            icon={<GroupsIcon/>}
                             accent="success"
                         />
                     </Grid>
@@ -175,28 +191,28 @@ const ReportsPage = () => {
                             label="Unassigned Requests"
                             value={summary.unassignedRequests}
                             helper="Need routing or ownership"
-                            icon={<ReportProblemIcon />}
+                            icon={<ReportProblemIcon/>}
                             accent="warning"
                         />
                     </Grid>
 
                     <Grid size={{xs: 12, md: 4}}>
-                        <CountList title="By Status" rows={summary.byStatus} total={summary.totalRequests} />
+                        <CountList title="By Status" rows={summary.byStatus} total={summary.totalRequests}/>
                     </Grid>
                     <Grid size={{xs: 12, md: 4}}>
-                        <CountList title="By Priority" rows={summary.byPriority} total={summary.totalRequests} />
+                        <CountList title="By Priority" rows={summary.byPriority} total={summary.totalRequests}/>
                     </Grid>
                     <Grid size={{xs: 12, md: 4}}>
-                        <CountList title="By Routing" rows={summary.byRoutingStatus} total={summary.totalRequests} />
+                        <CountList title="By Routing" rows={summary.byRoutingStatus} total={summary.totalRequests}/>
                     </Grid>
                     <Grid size={{xs: 12, md: 4}}>
-                        <CountList title="By Department" rows={summary.byDepartment} total={summary.totalRequests} />
+                        <CountList title="By Department" rows={summary.byDepartment} total={summary.totalRequests}/>
                     </Grid>
                     <Grid size={{xs: 12, md: 4}}>
-                        <CountList title="By Municipality" rows={summary.byMunicipality} total={summary.totalRequests} />
+                        <CountList title="By Municipality" rows={summary.byMunicipality} total={summary.totalRequests}/>
                     </Grid>
                     <Grid size={{xs: 12, md: 4}}>
-                        <CountList title="By Category" rows={summary.byCategory} total={summary.totalRequests} />
+                        <CountList title="By Category" rows={summary.byCategory} total={summary.totalRequests}/>
                     </Grid>
                 </Grid>
             </Box>

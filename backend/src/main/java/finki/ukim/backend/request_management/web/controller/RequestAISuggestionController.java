@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/requests/{requestId}/ai-suggestion")
 @AllArgsConstructor
-@PreAuthorize("hasAnyRole('ADMINISTRATOR', 'MANAGER')")
+
 public class RequestAISuggestionController {
 
     private final RequestAiSuggestionApplicationService requestAiSuggestionAppService;
 
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'MANAGER', 'EMPLOYEE')")
     @GetMapping
     public ResponseEntity<?> findSuggestion(
             @PathVariable Long requestId,
@@ -27,6 +28,7 @@ public class RequestAISuggestionController {
         return ResponseEntity.ok(requestAiSuggestionAppService.findSuggestion(requestId, currentUser));
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'MANAGER')")
     @PostMapping("/process")
     public ResponseEntity<?> processSuggestion(
             @PathVariable Long requestId,
@@ -37,6 +39,7 @@ public class RequestAISuggestionController {
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'MANAGER')")
     @PostMapping("/reject")
     public ResponseEntity<?> rejectSuggestion(
             @PathVariable Long requestId,

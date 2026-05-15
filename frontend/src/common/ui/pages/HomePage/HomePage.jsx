@@ -9,14 +9,58 @@ import FactCheckIcon from '@mui/icons-material/FactCheck';
 import EngineeringIcon from '@mui/icons-material/Engineering';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import useAuth from "../../../../auth_and_access/hooks/auth/useAuth.js";
 
 const HomePage = () => {
+    const { user } = useAuth();
+
+
+    const hasRole = (allowedRoles) => {
+        if (!allowedRoles || allowedRoles.length === 0) {
+            return true;
+        }
+
+        return user?.roles?.some(roleObj => {
+            const roleName = typeof roleObj === "string" ? roleObj : roleObj.authority;
+            const cleanRole = roleName?.replace("ROLE_", "");
+
+            return allowedRoles.includes(roleName) || allowedRoles.includes(cleanRole);
+        }) === true;
+    };
+
+
     const commandStats = [
-        {label: 'Open intake', value: 'Requests', icon: <AssignmentTurnedInIcon />, to: '/requests'},
-        {label: 'Field teams', value: 'Staff', icon: <GroupsIcon />, to: '/staff'},
-        {label: 'Operational view', value: 'Reports', icon: <InsightsIcon />, to: '/reports'},
-        {label: 'Coverage zones', value: 'Areas', icon: <MapIcon />, to: '/municipalities'}
+        {
+            label: "Open intake",
+            value: "Requests",
+            icon: <AssignmentTurnedInIcon />,
+            to: "/requests"
+            // no allowedRoles = visible to everyone logged in
+        },
+        {
+            label: "Field teams",
+            value: "Staff",
+            icon: <GroupsIcon />,
+            to: "/staff",
+            allowedRoles: ["ADMINISTRATOR", "MANAGER"]
+        },
+        {
+            label: "Operational view",
+            value: "Reports",
+            icon: <InsightsIcon />,
+            to: "/reports",
+            allowedRoles: ["ADMINISTRATOR", "MANAGER"]
+        },
+        {
+            label: "Coverage zones",
+            value: "Areas",
+            icon: <MapIcon />,
+            to: "/municipalities",
+            allowedRoles: ["ADMINISTRATOR"]
+        }
     ];
+
+    const visibleCommandStats = commandStats.filter(item => hasRole(item.allowedRoles));
 
     const workflow = [
         {label: 'Submit', detail: 'Citizen requests enter the queue', icon: <AssignmentTurnedInIcon />},
@@ -99,13 +143,23 @@ const HomePage = () => {
             </Paper>
 
             <Box className="command-card-grid">
-                {commandStats.map((item) => (
-                    <Paper component={Link} to={item.to} elevation={0} className="command-card" key={item.label}>
+                {visibleCommandStats.map((item) => (
+                    <Paper
+                        component={Link}
+                        to={item.to}
+                        elevation={0}
+                        className="command-card"
+                        key={item.label}
+                    >
                         <Box className="command-card-icon">{item.icon}</Box>
+
                         <Box>
                             <Typography variant="h6">{item.value}</Typography>
-                            <Typography variant="body2" color="text.secondary">{item.label}</Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                {item.label}
+                            </Typography>
                         </Box>
+
                         <ArrowForwardIcon className="command-card-arrow" />
                     </Paper>
                 ))}

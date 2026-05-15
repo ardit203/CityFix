@@ -62,6 +62,8 @@ const RequestsPage = () => {
             ["ROLE_ADMINISTRATOR", "ROLE_CITIZEN"].includes(role)
         ) === true;
 
+    const isCitizen = user?.roles?.some(role => ["ROLE_CITIZEN"].includes(role)) === true;
+
     const {departments, loading: loadingDepartments} = useDepartments({
         paged: false,
         enabled:canLoadFilters});
@@ -72,7 +74,7 @@ const RequestsPage = () => {
         paged: false,
         enabled:canLoadFilters});
     const {deleteRequest, deleteRequestsBulk} = useRequestActions();
-    const [viewMode, setViewMode] = useState('table');
+    const [viewMode, setViewMode] = useState(!isCitizen ? 'table' : 'card');
 
     const {
         filters,

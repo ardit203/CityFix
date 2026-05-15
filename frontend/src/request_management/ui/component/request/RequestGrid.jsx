@@ -6,7 +6,7 @@ const RequestGrid = ({requests, onDelete}) => {
     return (
         <Grid container spacing={{xs: 2, md: 2.5}} className="entity-grid">
             {requests.map((request) => (
-                <Grid key={request.id} size={{xs: 12, sm: 6, lg: 4, xl: 3}}>
+                <Grid key={request.id} size={{xs: 12, sm: 12, md: 6, lg: 6, xl: 4}}>
                     <RequestCard request={request} onDelete={onDelete}/>
                 </Grid>
             ))}

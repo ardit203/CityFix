@@ -6,6 +6,10 @@ import finki.ukim.backend.administration.model.exception.InsufficientRoleExcepti
 import finki.ukim.backend.administration.model.exception.UserIsAlreadyStaffException;
 import finki.ukim.backend.administration.model.exception.UserIsNotStaffException;
 import finki.ukim.backend.administration.repository.StaffRepository;
+import finki.ukim.backend.ai_integration.model.domain.AiSuggestion;
+import finki.ukim.backend.ai_integration.model.enums.SuggestionStatus;
+import finki.ukim.backend.ai_integration.repository.AiSuggestionRepository;
+import finki.ukim.backend.ai_integration.service.domain.AiSuggestionService;
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.dto.accessScope.RequestAssignmentScopeFilters;
 import finki.ukim.backend.auth_and_access.model.dto.accessScope.RequestScopeFilters;
@@ -31,6 +35,7 @@ public class AccessScopeServiceImpl implements AccessScopeService {
     private final StaffRepository staffRepository;
     private final RequestAssignmentRepository requestAssignmentRepository;
     private final UserService userService;
+    private final AiSuggestionRepository aiSuggestionRepository;
 
     private static final List<Role> STAFF_ROLES = List.of(
             Role.ROLE_MANAGER,
@@ -186,16 +191,31 @@ public class AccessScopeServiceImpl implements AccessScopeService {
             throw new ForbiddenException("You are not allowed to access this request.");
         }
 
+        //how to add checks that if a
+        AiSuggestion suggestion = aiSuggestionRepository.findByRequest_Id(request.getId()).orElse(null);
+
         if (isManager(currentUser)) {
             StaffScope scope = getStaffScope(currentUser);
 
-            boolean sameDepartment = request.getDepartment() != null &&
-                    request.getDepartment().getId().equals(scope.departmentId());
+            boolean sameMunicipality =
+                    request.getMunicipality() != null &&
+                            request.getMunicipality().getId().equals(scope.municipalityId());
 
-            boolean sameMunicipality = request.getMunicipality() != null &&
-                    request.getMunicipality().getId().equals(scope.municipalityId());
+            boolean requestDepartmentMatches =
+                    request.getDepartment() != null &&
+                            request.getDepartment().getId().equals(scope.departmentId());
 
-            if (sameDepartment && sameMunicipality) {
+            boolean pendingAiSuggestionDepartmentMatches =
+                    suggestion != null &&
+                            suggestion.getSuggestionStatus() == SuggestionStatus.PENDING_REVIEW &&
+                            suggestion.getCategory() != null &&
+                            suggestion.getCategory().getDepartment() != null &&
+                            suggestion.getCategory().getDepartment().getId().equals(scope.departmentId());
+
+            boolean sameDepartment =
+                    requestDepartmentMatches || pendingAiSuggestionDepartmentMatches;
+
+            if (sameMunicipality && sameDepartment) {
                 return;
             }
 

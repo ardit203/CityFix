@@ -71,6 +71,11 @@ const formatLabel = (value) => {
 const RequestEditPageContent = () => {
     const {id} = useParams();
     const navigate = useNavigate();
+    const {user} = useAuth();
+    const isAdminOrManager =
+        user?.roles?.some(role =>
+            ["ROLE_ADMINISTRATOR", "ROLE_MANAGER"].includes(role)
+        ) === true;
 
     const {request, loading, error, fetchRequest} = useRequestDetails(id);
     const {suggestion: aiSuggestion} = useAiSuggestionDetails(id);
@@ -178,7 +183,10 @@ const RequestEditPageContent = () => {
     }
 
     const isAiSuggestionPending = (aiSuggestion?.status === "PENDING_REVIEW" || aiSuggestion?.status === "NOT_GENERATED");
-    const disableManualEditing = isExecuting || isAiSuggestionPending;
+    const disableManualEditing = isExecuting || isAiSuggestionPending || !isAdminOrManager;
+
+    console.log(disableManualEditing, isAdminOrManager)
+
 
     return (
         <Box>
@@ -238,7 +246,7 @@ const RequestEditPageContent = () => {
                                                     value={statusForm.status}
                                                     label="Status"
                                                     onChange={handleStatusChange}
-                                                    disabled={disableManualEditing}
+                                                    disabled={isExecuting || isAiSuggestionPending}
                                                 >
                                                     {statusOptions.map((status) => (
                                                         <MenuItem key={status} value={status}>
@@ -255,7 +263,7 @@ const RequestEditPageContent = () => {
                                                 label="Reason"
                                                 value={statusForm.reason}
                                                 onChange={handleStatusChange}
-                                                disabled={disableManualEditing}
+                                                disabled={isExecuting || isAiSuggestionPending}
                                                 fullWidth
                                             />
                                         </Grid>
@@ -266,7 +274,7 @@ const RequestEditPageContent = () => {
                                                 label="Timeline note"
                                                 value={statusForm.note}
                                                 onChange={handleStatusChange}
-                                                disabled={disableManualEditing}
+                                                disabled={isExecuting || isAiSuggestionPending}
                                                 fullWidth
                                             />
                                         </Grid>
@@ -277,7 +285,7 @@ const RequestEditPageContent = () => {
                                             variant="contained"
                                             startIcon={<Save />}
                                             onClick={handleChangeStatus}
-                                            disabled={disableManualEditing || !statusForm.status || statusForm.status === request.status}
+                                            disabled={isExecuting || isAiSuggestionPending || !statusForm.status || statusForm.status === request.status}
                                         >
                                             Update Status
                                         </Button>

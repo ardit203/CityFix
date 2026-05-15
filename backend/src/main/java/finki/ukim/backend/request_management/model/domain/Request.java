@@ -44,20 +44,6 @@ public class Request extends BaseAuditableEntity {
     @Enumerated(EnumType.STRING)
     private RequestStatus status = RequestStatus.SUBMITTED;
 
-    public Request(String title, String description, RequestLocation location, String summary, Priority priority, RequestStatus status, RoutingStatus routingStatus, User user, Municipality municipality, Category category, Department department) {
-        this.title = title;
-        this.description = description;
-        this.location = location;
-        this.summary = summary;
-        this.priority = priority;
-        this.status = status;
-        this.routingStatus = routingStatus;
-        this.user = user;
-        this.municipality = municipality;
-        this.category = category;
-        this.department = department;
-    }
-
     @Enumerated(EnumType.STRING)
     private RoutingStatus routingStatus = RoutingStatus.PENDING_REVIEW;
 
@@ -88,6 +74,21 @@ public class Request extends BaseAuditableEntity {
     public void addFiles(List<File> files) {
         files.forEach(this::addFile);
     }
+
+    public Request(String title, String description, RequestLocation location, String summary, Priority priority, RequestStatus status, RoutingStatus routingStatus, User user, Municipality municipality, Category category, Department department) {
+        this.title = title;
+        this.description = description;
+        this.location = location;
+        this.summary = summary;
+        this.priority = priority;
+        this.status = status;
+        this.routingStatus = routingStatus;
+        this.user = user;
+        this.municipality = municipality;
+        this.category = category;
+        this.department = department;
+    }
+
 
     public Request(String title, String description, User user, Municipality municipality, RequestLocation requestLocation) {
         this.title = title;

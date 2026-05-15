@@ -1,5 +1,6 @@
 package finki.ukim.backend.request_management.service.domain.impl;
 
+import finki.ukim.backend.ai_integration.model.enums.SuggestionStatus;
 import finki.ukim.backend.ai_integration.service.domain.AiSuggestionService;
 import finki.ukim.backend.auth_and_access.model.domain.User;
 import finki.ukim.backend.auth_and_access.model.dto.accessScope.RequestScopeFilters;
@@ -88,7 +89,7 @@ public class RequestServiceImpl implements RequestService {
             );
         });
 
-        aiSuggestionService.suggest(request);
+        aiSuggestionService.suggest(request);//this creates a suggestion for the request
         eventPublisher.publishEvent(new RequestCreatedEvent(created.getUser(), created.getId(), created.getTitle()));
         return created;
     }
@@ -131,6 +132,7 @@ public class RequestServiceImpl implements RequestService {
                 requestFilterDto.getStatus(),
                 requestFilterDto.getRoutingStatus(),
                 requestFilterDto.getPriority(),
+                SuggestionStatus.PENDING_REVIEW,
                 requestFilterDto.getText(),
                 requestFilterDto.getSubmittedFrom(),
                 requestFilterDto.getSubmittedTo(),

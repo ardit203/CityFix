@@ -11,6 +11,7 @@ import RegisterPage from "./auth_and_access/ui/pages/RegistrationPage.jsx";
 import LoginPage from "./auth_and_access/ui/pages/LoginPage.jsx";
 import ForgotPasswordPage from "./auth_and_access/ui/pages/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "./auth_and_access/ui/pages/ResetPasswordPage.jsx";
+import UnauthorizedPage from "./auth_and_access/ui/pages/UnauthorizedPage.jsx";
 import {userRoutes} from "./auth_and_access/routes/userRoutes.jsx";
 import {profileRoutes} from "./auth_and_access/routes/profileRoutes.jsx";
 import {staffRoutes} from "./administration/routes/staffRoutes.jsx";
@@ -26,16 +27,9 @@ function App() {
                 <Route path="/login" element={<LoginPage/>}/>
                 <Route path="/forgot-password" element={<ForgotPasswordPage/>}/>
                 <Route path="/reset-password" element={<ResetPasswordPage/>}/>
+                <Route path="/unauthorized" element={<UnauthorizedPage/>}/>
                 <Route path='/' element={<Layout/>}>
                     <Route index element={<HomePage/>}/>
-                    
-                    {/*<Route path='users' element={<UsersPage/>}/>*/}
-                    {/*<Route path='users/:id' element={<UserDetailsPage/>}/>*/}
-                    {/*<Route path='users/:id/edit' element={<UserEditPage/>}/>*/}
-                    {/*<Route path="/profile" element={<UserProfilePage />} />*/}
-                    {/*<Route path="/profile/edit" element={<ProfileSettingsPage />} />*/}
-                    
-                    {/* --- Modular Admin Routes --- */}
                     {departmentRoutes}
                     {municipalityRoutes}
                     {categoryRoutes}

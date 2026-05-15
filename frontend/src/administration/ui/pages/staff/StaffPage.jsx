@@ -178,7 +178,7 @@ const StaffPage = () => {
                         ) : (
                             municipalities.map((mun) => (
                                 <MenuItem key={mun.id} value={mun.id}>
-                                    {mun.code}
+                                    {mun.name}
                                 </MenuItem>
                             ))
                         )}

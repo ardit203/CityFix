@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
     Table,
     TableBody,
@@ -24,8 +24,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import InfoIcon from '@mui/icons-material/Info';
 import TableRowsOutlinedIcon from '@mui/icons-material/TableRowsOutlined';
+import RequireRole from "../../../auth_and_access/ui/components/auth/RequireRole.jsx";
 
-const AdminTable = ({ data, columns, onInfo, onEdit, onDelete, onBulkDelete }) => {
+const AdminTable = ({data, columns, onInfo, onEdit, onDelete, onBulkDelete}) => {
     const [selectedIds, setSelectedIds] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
     const [activeRow, setActiveRow] = useState(null);
@@ -149,7 +150,7 @@ const AdminTable = ({ data, columns, onInfo, onEdit, onDelete, onBulkDelete }) =
                         <Button
                             variant="contained"
                             color="error"
-                            startIcon={<DeleteIcon />}
+                            startIcon={<DeleteIcon/>}
                             onClick={() => {
                                 onBulkDelete(selectedIds);
                                 setSelectedIds([]); // Clear selection after delete
@@ -222,7 +223,7 @@ const AdminTable = ({ data, columns, onInfo, onEdit, onDelete, onBulkDelete }) =
                                     key={item.id}
                                     selected={isItemSelected}
                                     sx={{
-                                        '&:last-child td, &:last-child th': { border: 0 },
+                                        '&:last-child td, &:last-child th': {border: 0},
                                         '& .MuiTableCell-root': {
                                             borderBottom: '1px solid rgba(23, 32, 51, 0.07)',
                                             py: 1.75
@@ -280,7 +281,7 @@ const AdminTable = ({ data, columns, onInfo, onEdit, onDelete, onBulkDelete }) =
                                                 }
                                             }}
                                         >
-                                            <MoreVertIcon />
+                                            <MoreVertIcon/>
                                         </IconButton>
                                     </TableCell>
                                 </TableRow>
@@ -295,8 +296,8 @@ const AdminTable = ({ data, columns, onInfo, onEdit, onDelete, onBulkDelete }) =
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
-                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                transformOrigin={{horizontal: 'right', vertical: 'top'}}
+                anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
                 PaperProps={{
                     sx: {
                         mt: 1,
@@ -310,18 +311,23 @@ const AdminTable = ({ data, columns, onInfo, onEdit, onDelete, onBulkDelete }) =
             >
                 {onInfo && (
                     <MenuItem onClick={() => handleAction(onInfo)} sx={{gap: 1}}>
-                        <InfoIcon fontSize="small" sx={{ mr: 1, color: 'text.secondary' }} /> Info
+                        <InfoIcon fontSize="small" sx={{mr: 1, color: 'text.secondary'}}/> Info
                     </MenuItem>
                 )}
                 {onEdit && (
-                    <MenuItem onClick={() => handleAction(onEdit)} sx={{gap: 1}}>
-                        <EditIcon fontSize="small" sx={{ mr: 1, color: 'warning.main' }} /> Edit
-                    </MenuItem>
+                    <RequireRole allowedRoles={["ADMINISTRATOR", "MANAGER"]}>
+                        <MenuItem onClick={() => handleAction(onEdit)} sx={{gap: 1}}>
+                            <EditIcon fontSize="small" sx={{mr: 1, color: 'warning.main'}}/> Edit
+                        </MenuItem>
+                    </RequireRole>
+
                 )}
                 {onDelete && (
-                    <MenuItem onClick={() => handleAction(onDelete)} sx={{ color: 'error.main', gap: 1 }}>
-                        <DeleteIcon fontSize="small" sx={{ mr: 1, color: 'error.main' }} /> Delete
-                    </MenuItem>
+                    <RequireRole allowedRoles={["ADMINISTRATOR"]}>
+                        <MenuItem onClick={() => handleAction(onDelete)} sx={{color: 'error.main', gap: 1}}>
+                            <DeleteIcon fontSize="small" sx={{mr: 1, color: 'error.main'}}/> Delete
+                        </MenuItem>
+                    </RequireRole>
                 )}
             </Menu>
         </Paper>

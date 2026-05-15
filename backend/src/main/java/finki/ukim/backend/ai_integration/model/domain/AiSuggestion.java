@@ -19,7 +19,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AiSuggestion extends BaseAuditableEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id", nullable = false)
     private Request request;
 

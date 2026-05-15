@@ -524,7 +524,7 @@ body {
   border: 1px solid rgba(23, 32, 51, 0.08);
   border-radius: 16px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(248, 251, 253, 0.88));
+          linear-gradient(180deg, rgba(238, 243, 247, 0.96), rgba(220, 229, 236, 0.92));
 }
 
 .entity-grid {

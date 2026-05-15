@@ -96,7 +96,12 @@ public class AiSuggestionServiceImpl implements AiSuggestionService {
                     request.getDescription() != null ? request.getDescription() : "N/A");
 
             // 5. Call the LLM (with optional image contexts)
-            String rawJsonResponse = llmClient.getCompletion(systemPrompt, userMessage, imageContexts);
+//            String rawJsonResponse = llmClient.getCompletion(systemPrompt, userMessage, imageContexts);
+            String rawJsonResponse = "{\n" +
+                    "    \"category_name\": \"Illegal Dumping\",\n" +
+                    "    \"priority\": \"HIGH\",\n" +
+                    "    \"ai_summary\": \"The request reports illegal dumping in a public area. It should be reviewed by the responsible waste management department and handled with high priority because it may affect public cleanliness, safety, and the environment.\"\n" +
+                    "}";
 
             // 6. Parse the response
             JsonNode rootNode = objectMapper.readTree(rawJsonResponse);

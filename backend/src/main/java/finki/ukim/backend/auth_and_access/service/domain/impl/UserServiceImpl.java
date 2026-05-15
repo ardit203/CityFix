@@ -231,6 +231,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User deleteProfilePicture(Long id) {
         User existing = findByIdWithProfileAndPic(id);
+        if (existing.getProfile().getProfilePicture() == null) {
+            return existing;
+        }
         Long fileId = existing.getProfile().getProfilePicture().getId();
         existing.getProfile().setProfilePicture(null);
         fileService.deleteById(fileId);

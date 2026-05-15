@@ -31,6 +31,9 @@ const pages = [
     { path: '/reports', name: 'reports', allowedRoles: ['ROLE_ADMINISTRATOR', 'ROLE_MANAGER'] }
 ];
 
+console.log("Window width:", window.innerWidth);
+console.log("Window height:", window.innerHeight);
+
 const Header = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const { user } = useAuth();
@@ -47,7 +50,7 @@ const Header = () => {
     return (
         <Box className='site-header-shell'>
             <AppBar position='sticky' elevation={0} className='site-header'>
-                <Container maxWidth="xl" sx={{ width: "100%" }}>
+                <Container className='heade-container' maxWidth="xl" sx={{ width: "100%" }}>
                     <Toolbar className='site-toolbar'>
                         <IconButton
                             size='large'
